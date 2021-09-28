@@ -17,11 +17,11 @@ class WSProvider {
 
     private var _webSocketListener: WSListener? = null
 
-    fun startSocket(): Channel<TestData> {
-        _webSocketListener = WSListener()
+    fun startSocket(request: String): Channel<TestData> {
+        _webSocketListener = WSListener(request)
         return with(_webSocketListener!!) {
             _webSocket = socketOkHttpClient.newWebSocket(
-                Request.Builder().url("wss://pubwss.bithumb.com/pub/ws").build(), this
+                Request.Builder().url(BITHUMB_URL).build(), this
             )
             socketOkHttpClient.dispatcher.executorService.shutdown()
             this.socketEventChannel
@@ -30,7 +30,7 @@ class WSProvider {
 
     fun stopSocket() {
         try {
-            _webSocket?.close(NORMAL_CLOSURE_STATUS, null)
+            _webSocket?.close(STATUS_NORMAL_CLOSURE, null)
             _webSocket = null
             _webSocketListener?.socketEventChannel?.close()
             _webSocketListener = null
@@ -39,6 +39,11 @@ class WSProvider {
     }
 
     companion object {
-        const val NORMAL_CLOSURE_STATUS = 1000
+        private const val BITHUMB_URL = "wss://pubwss.bithumb.com/pub/ws"
+
+        const val STATUS_NORMAL_CLOSURE = 1000
+
+        const val REQUEST_BITHUMB_TICKER =
+            "{\"type\":\"ticker\", \"symbols\": [\"BTC_KRW\"], \"tickTypes\": [\"1H\"]}"
     }
 }

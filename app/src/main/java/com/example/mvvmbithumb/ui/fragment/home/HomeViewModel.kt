@@ -10,18 +10,18 @@ import kotlinx.coroutines.launch
 class HomeViewModel(private val wsProvider: WSProvider) : ViewModel() {
     fun subscribeToSocketEvents() {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                wsProvider.startSocket().consumeEach {
-                    if (it.exception == null) {
-                        println("Collecting : ${it.text}")
-                    } else {
-                        onSocketError(it.exception)
-                    }
+            wsProvider.startSocket(WSProvider.REQUEST_BITHUMB_TICKER).consumeEach {
+                if (it.exception == null) {
+                    onSocketReceived(it.message)
+                } else {
+                    onSocketError(it.exception)
                 }
-            } catch (exception: Exception) {
-                onSocketError(exception)
             }
         }
+    }
+
+    private fun onSocketReceived(message: String?) {
+        println("Collecting : $message")
     }
 
     private fun onSocketError(ex: Throwable) {
