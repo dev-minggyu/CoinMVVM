@@ -19,6 +19,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         val factory = ViewModelFactory(DataManager(WebSocketProvider()))
         _homeViewModel = ViewModelProvider(this, factory).get(HomeViewModel::class.java)
 
-        _homeViewModel.subscribeToSocketEvents()
+        _homeViewModel.subscribePrice()
+
+        _homeViewModel.btcPrice.observe(viewLifecycleOwner, {
+            _dataBinding.tvPriceBtc.text = "BTC : $it"
+        })
     }
 }

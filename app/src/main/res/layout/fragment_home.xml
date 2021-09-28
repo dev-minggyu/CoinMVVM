@@ -8,9 +8,10 @@
         tools:context=".ui.fragment.home.HomeFragment">
 
         <TextView
+            android:id="@+id/tv_price_btc"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Hello Home" />
+            android:text="BTC : 0" />
 
     </FrameLayout>
 
