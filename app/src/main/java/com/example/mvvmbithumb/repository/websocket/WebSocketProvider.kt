@@ -1,7 +1,7 @@
-package com.example.mvvmbithumb.ui.repository.websocket
+package com.example.mvvmbithumb.repository.websocket
 
-import com.example.mvvmbithumb.ui.data.websocket.dto.ticker.TickerData
-import com.example.mvvmbithumb.ui.repository.websocket.listener.TickerListener
+import com.example.mvvmbithumb.data.websocket.dto.ticker.TickerData
+import com.example.mvvmbithumb.repository.websocket.listener.TickerListener
 import kotlinx.coroutines.channels.Channel
 import okhttp3.OkHttpClient
 import okhttp3.Request

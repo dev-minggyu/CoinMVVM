@@ -1,9 +1,9 @@
-package com.example.mvvmbithumb.ui.repository.websocket.listener
+package com.example.mvvmbithumb.repository.websocket.listener
 
-import com.example.mvvmbithumb.ui.data.websocket.dto.ticker.Ticker
-import com.example.mvvmbithumb.ui.data.websocket.dto.ticker.TickerData
-import com.example.mvvmbithumb.ui.repository.websocket.WebSocketProvider
-import com.example.mvvmbithumb.ui.repository.websocket.exception.SocketAbortedException
+import com.example.mvvmbithumb.data.websocket.dto.ticker.Ticker
+import com.example.mvvmbithumb.data.websocket.dto.ticker.TickerData
+import com.example.mvvmbithumb.repository.websocket.WebSocketProvider
+import com.example.mvvmbithumb.repository.websocket.exception.SocketAbortedException
 import com.google.gson.Gson
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel

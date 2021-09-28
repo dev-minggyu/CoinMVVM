@@ -1,4 +1,4 @@
-package com.example.mvvmbithumb.ui.extension
+package com.example.mvvmbithumb.extension
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

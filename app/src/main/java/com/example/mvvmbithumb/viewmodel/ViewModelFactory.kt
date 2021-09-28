@@ -1,9 +1,9 @@
-package com.example.mvvmbithumb.ui.viewmodel
+package com.example.mvvmbithumb.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.mvvmbithumb.ui.fragment.home.HomeViewModel
-import com.example.mvvmbithumb.ui.repository.DataManager
+import com.example.mvvmbithumb.repository.DataManager
 
 class ViewModelFactory(
     private val _dataManager: DataManager

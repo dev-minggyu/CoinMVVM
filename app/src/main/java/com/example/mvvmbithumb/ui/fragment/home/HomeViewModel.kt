@@ -3,9 +3,9 @@ package com.example.mvvmbithumb.ui.fragment.home
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mvvmbithumb.ui.data.websocket.dto.ticker.TickerData
-import com.example.mvvmbithumb.ui.extension.asLiveData
-import com.example.mvvmbithumb.ui.repository.DataManager
+import com.example.mvvmbithumb.data.websocket.dto.ticker.TickerData
+import com.example.mvvmbithumb.extension.asLiveData
+import com.example.mvvmbithumb.repository.DataManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch

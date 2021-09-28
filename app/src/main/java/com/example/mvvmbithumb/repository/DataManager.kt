@@ -1,7 +1,7 @@
-package com.example.mvvmbithumb.ui.repository
+package com.example.mvvmbithumb.repository
 
-import com.example.mvvmbithumb.ui.data.websocket.dto.ticker.TickerData
-import com.example.mvvmbithumb.ui.repository.websocket.WebSocketProvider
+import com.example.mvvmbithumb.data.websocket.dto.ticker.TickerData
+import com.example.mvvmbithumb.repository.websocket.WebSocketProvider
 import kotlinx.coroutines.channels.Channel
 
 class DataManager(private val _webSocketProvider: WebSocketProvider) {
