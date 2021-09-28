@@ -9,17 +9,15 @@ import com.example.mvvmbithumb.databinding.ActivityMainBinding
 import com.example.mvvmbithumb.ui.base.BaseActivity
 
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
-    private lateinit var navController: NavController
+    private lateinit var _navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
         setupNavigation()
     }
 
     private fun setupNavigation() {
-        navController = findNavController(R.id.nav_host_fragment)
-        mDataBinding.navBottom.setupWithNavController(navController)
+        _navController = findNavController(R.id.nav_host_fragment)
+        _dataBinding.navBottom.setupWithNavController(_navController)
     }
 }
