@@ -11,10 +11,13 @@ import androidx.fragment.app.Fragment
 abstract class BaseFragment<T : ViewDataBinding>(private val _layoutID: Int) : Fragment() {
     lateinit var _dataBinding: T
 
+    abstract fun onInitViewModel()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         _dataBinding = DataBindingUtil.inflate(inflater, _layoutID, container, false)
+        onInitViewModel()
         return _dataBinding.root
     }
 }
