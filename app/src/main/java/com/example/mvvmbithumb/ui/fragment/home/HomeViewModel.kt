@@ -2,15 +2,15 @@ package com.example.mvvmbithumb.ui.fragment.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mvvmbithumb.ui.repository.websocket.WSProvider
+import com.example.mvvmbithumb.ui.repository.DataManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 
-class HomeViewModel(private val wsProvider: WSProvider) : ViewModel() {
+class HomeViewModel(private val _dataManager: DataManager) : ViewModel() {
     fun subscribeToSocketEvents() {
         viewModelScope.launch(Dispatchers.IO) {
-            wsProvider.startSocket(WSProvider.REQUEST_BITHUMB_TICKER).consumeEach {
+            _dataManager.startTickerSocket().consumeEach {
                 if (it.exception == null) {
                     onSocketReceived(it.message)
                 } else {
@@ -30,6 +30,6 @@ class HomeViewModel(private val wsProvider: WSProvider) : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        wsProvider.stopSocket()
+        _dataManager.stopTickerSocket()
     }
 }

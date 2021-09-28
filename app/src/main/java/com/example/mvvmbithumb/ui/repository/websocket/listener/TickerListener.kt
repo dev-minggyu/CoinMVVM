@@ -1,6 +1,7 @@
-package com.example.mvvmbithumb.ui.repository.websocket
+package com.example.mvvmbithumb.ui.repository.websocket.listener
 
 import com.example.mvvmbithumb.ui.data.websocket.dto.TestData
+import com.example.mvvmbithumb.ui.repository.websocket.WebSocketProvider
 import com.example.mvvmbithumb.ui.repository.websocket.exception.SocketAbortedException
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -9,11 +10,11 @@ import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 
-class WSListener(private val request: String) : WebSocketListener() {
+class TickerListener : WebSocketListener() {
     val socketEventChannel = Channel<TestData>()
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
-        webSocket.send(request)
+        webSocket.send("{\"type\":\"ticker\", \"symbols\": [\"BTC_KRW\"], \"tickTypes\": [\"1H\"]}")
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
@@ -26,7 +27,7 @@ class WSListener(private val request: String) : WebSocketListener() {
         GlobalScope.launch {
             socketEventChannel.send(TestData(exception = SocketAbortedException()))
         }
-        webSocket.close(WSProvider.STATUS_NORMAL_CLOSURE, null)
+        webSocket.close(WebSocketProvider.STATUS_NORMAL_CLOSURE, null)
         socketEventChannel.close()
     }
 
