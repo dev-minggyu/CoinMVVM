@@ -1,4 +1,4 @@
-package com.example.mvvmbithumb.data.websocket.dto.ticker
+package com.example.mvvmbithumb.model
 
 data class Ticker(
     val content: Content,

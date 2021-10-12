@@ -11,10 +11,6 @@ import com.example.mvvmbithumb.ui.base.BaseActivity
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     private lateinit var _navController: NavController
 
-    override fun onInitViewModel() {
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupNavigation()

@@ -1,7 +1,7 @@
 package com.example.mvvmbithumb.repository.websocket.listener
 
-import com.example.mvvmbithumb.data.websocket.dto.ticker.Ticker
-import com.example.mvvmbithumb.data.websocket.dto.ticker.TickerData
+import com.example.mvvmbithumb.model.Ticker
+import com.example.mvvmbithumb.model.TickerData
 import com.example.mvvmbithumb.repository.websocket.WebSocketProvider
 import com.example.mvvmbithumb.repository.websocket.exception.SocketAbortedException
 import com.google.gson.Gson
