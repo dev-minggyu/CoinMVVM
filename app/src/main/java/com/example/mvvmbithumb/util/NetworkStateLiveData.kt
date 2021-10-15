@@ -18,18 +18,9 @@ class NetworkStateLiveData(context: Context) : LiveData<NetworkState>() {
         .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
 
     private val connectivityManagerCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onCapabilitiesChanged(
-            network: Network,
-            networkCapabilities: NetworkCapabilities
-        ) {
-            super.onCapabilitiesChanged(network, networkCapabilities)
-            networkCapabilities.let { capabilities ->
-                if (capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                    && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-                ) {
-                    postValue(NetworkState.CONNECTED)
-                }
-            }
+        override fun onAvailable(network: Network) {
+            super.onAvailable(network)
+            postValue(NetworkState.CONNECTED)
         }
 
         override fun onLost(network: Network) {
