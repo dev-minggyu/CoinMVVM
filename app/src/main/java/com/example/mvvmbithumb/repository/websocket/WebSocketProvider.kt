@@ -26,7 +26,6 @@ class WebSocketProvider {
             _tickerSocket = _socketOkHttpClient.newWebSocket(
                 _baseRequest, this
             )
-            _socketOkHttpClient.dispatcher.executorService.shutdown()
             this.socketEventChannel
         }
     }

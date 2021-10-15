@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.example.mvvmbithumb.R
+import com.example.mvvmbithumb.constant.enums.NetworkState
 import com.example.mvvmbithumb.databinding.FragmentHomeBinding
+import com.example.mvvmbithumb.extension.getNetworkStateLiveData
 import com.example.mvvmbithumb.extension.getViewModelFactory
+import com.example.mvvmbithumb.extension.showToast
 import com.example.mvvmbithumb.ui.base.BaseFragment
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
@@ -14,7 +17,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _homeViewModel.subscribePrice()
+        getNetworkStateLiveData().observe(viewLifecycleOwner, {
+            when (it!!) {
+                NetworkState.CONNECTED -> {
+                    _homeViewModel.subscribePrice()
+                }
+                NetworkState.DISCONNECTED -> {
+                    showToast("인터넷 연결을 확인해주세요.")
+                }
+            }
+        })
 
         _homeViewModel.btcPrice.observe(viewLifecycleOwner, {
             _dataBinding.tvPriceBtc.text = "BTC : $it"

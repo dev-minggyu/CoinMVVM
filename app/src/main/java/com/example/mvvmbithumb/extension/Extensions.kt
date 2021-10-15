@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.mvvmbithumb.App
+import com.example.mvvmbithumb.util.NetworkStateLiveData
 import com.example.mvvmbithumb.viewmodel.ViewModelFactory
 
 fun <T> MutableLiveData<T>.asLiveData() = this as LiveData<T>
@@ -20,6 +21,13 @@ fun Fragment.getViewModelFactory(): ViewModelFactory {
     return ViewModelFactory(repository)
 }
 
+fun Activity.getNetworkStateLiveData(): NetworkStateLiveData {
+    return (applicationContext as App).networkStateLiveData
+}
+
+fun Fragment.getNetworkStateLiveData(): NetworkStateLiveData {
+    return (requireContext().applicationContext as App).networkStateLiveData
+}
 
 fun Activity.showToast(text: String) {
     Toast.makeText(this, text, Toast.LENGTH_LONG).show()
