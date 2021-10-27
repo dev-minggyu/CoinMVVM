@@ -10,13 +10,24 @@ import com.example.mvvmbithumb.extension.getNetworkStateLiveData
 import com.example.mvvmbithumb.extension.getViewModelFactory
 import com.example.mvvmbithumb.extension.showToast
 import com.example.mvvmbithumb.ui.base.BaseFragment
+import com.example.mvvmbithumb.ui.fragment.home.adapter.TickerAdapter
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val _homeViewModel by viewModels<HomeViewModel> { getViewModelFactory() }
 
+    private lateinit var tickerAdapter: TickerAdapter
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupListAdapter()
+
+        setupObserver()
+
+        _homeViewModel.getKRWTickers()
+    }
+
+    private fun setupObserver() {
         getNetworkStateLiveData().observe(viewLifecycleOwner, {
             when (it!!) {
                 NetworkState.CONNECTED -> {
@@ -28,8 +39,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             }
         })
 
-        _homeViewModel.btcPrice.observe(viewLifecycleOwner, {
-            _dataBinding.tvPriceBtc.text = "BTC : $it"
+        _homeViewModel.tickerList.observe(viewLifecycleOwner, {
+            tickerAdapter.submitList(it)
         })
+    }
+    private fun setupListAdapter() {
+        tickerAdapter = TickerAdapter()
+        _dataBinding.transactionList.adapter = tickerAdapter
     }
 }

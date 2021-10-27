@@ -1,6 +1,16 @@
-package com.example.mvvmbithumb.model
+package com.example.mvvmbithumb.data.model
 
-data class Content(
+data class TickerData(
+    val ticker: TickerInfo? = null,
+    val exception: Throwable? = null
+)
+
+data class TickerInfo(
+    val content: TickerContent,
+    val type: String
+)
+
+data class TickerContent(
     val buyVolume: String,
     val chgAmt: String,
     val chgRate: String,

@@ -2,7 +2,7 @@ package com.example.mvvmbithumb.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.mvvmbithumb.repository.BithumbRepository
+import com.example.mvvmbithumb.data.repository.BithumbRepository
 import com.example.mvvmbithumb.ui.fragment.home.HomeViewModel
 
 class ViewModelFactory(

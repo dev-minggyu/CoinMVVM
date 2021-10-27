@@ -1,9 +1,9 @@
-package com.example.mvvmbithumb.repository.websocket.listener
+package com.example.mvvmbithumb.data.websocket.listener
 
-import com.example.mvvmbithumb.model.Ticker
-import com.example.mvvmbithumb.model.TickerData
-import com.example.mvvmbithumb.repository.websocket.WebSocketProvider
-import com.example.mvvmbithumb.repository.websocket.exception.SocketAbortedException
+import com.example.mvvmbithumb.data.model.TickerData
+import com.example.mvvmbithumb.data.model.TickerInfo
+import com.example.mvvmbithumb.data.websocket.WebSocketProvider
+import com.example.mvvmbithumb.data.websocket.exception.SocketAbortedException
 import com.google.gson.Gson
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -16,13 +16,13 @@ class TickerListener : WebSocketListener() {
     val socketEventChannel = Channel<TickerData>()
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
-        webSocket.send("{\"type\":\"ticker\", \"symbols\": [\"BTC_KRW\"], \"tickTypes\": [\"MID\"]}")
+        webSocket.send("{\"type\":\"ticker\", \"symbols\": [\"BTC_KRW\", \"ETH_KRW\"], \"tickTypes\": [\"1H\"]}")
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
         GlobalScope.launch {
-            val ticker = Gson().fromJson(text, Ticker::class.java)
-            val tickerData = TickerData(ticker)
+            val tickerInfo = Gson().fromJson(text, TickerInfo::class.java)
+            val tickerData = TickerData(tickerInfo)
             socketEventChannel.send(tickerData)
         }
     }
