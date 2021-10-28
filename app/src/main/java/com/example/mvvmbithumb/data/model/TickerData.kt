@@ -28,3 +28,8 @@ data class TickerContent(
     val volume: String,
     val volumePower: String
 )
+
+data class Ticker(
+    val symbol: String,
+    var currentPrice: String = "0"
+)

@@ -4,8 +4,8 @@
 
     <data>
         <variable
-            name="tickerContent"
-            type="com.example.mvvmbithumb.data.model.TickerContent" />
+            name="ticker"
+            type="com.example.mvvmbithumb.data.model.Ticker" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +26,7 @@
             android:id="@+id/tv_ticker"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{tickerContent.symbol}"
+            android:text="@{ticker.symbol}"
             android:textColor="@color/black"
             android:textSize="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -38,7 +38,7 @@
             android:id="@+id/tv_price"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{tickerContent.closePrice}"
+            android:text="@{ticker.currentPrice}"
             android:textColor="@color/black"
             android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"

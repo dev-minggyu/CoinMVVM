@@ -1,6 +1,7 @@
 package com.example.mvvmbithumb.ui.fragment.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.example.mvvmbithumb.R
@@ -23,8 +24,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         setupListAdapter()
 
         setupObserver()
-
-        _homeViewModel.getKRWTickers()
     }
 
     private fun setupObserver() {

@@ -5,10 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mvvmbithumb.data.model.Ticker
 import com.example.mvvmbithumb.databinding.ItemTickerBinding
 import com.example.mvvmbithumb.data.model.TickerContent
 
-class TickerAdapter : ListAdapter<TickerContent, TickerAdapter.ViewHolder>(TransactionDiffCallback()) {
+class TickerAdapter : ListAdapter<Ticker, TickerAdapter.ViewHolder>(TransactionDiffCallback()) {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
@@ -23,20 +24,19 @@ class TickerAdapter : ListAdapter<TickerContent, TickerAdapter.ViewHolder>(Trans
     class ViewHolder(private val binding: ItemTickerBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: TickerContent) {
-            binding.tickerContent = item
-//            binding.executePendingBindings()
+        fun bind(item: Ticker) {
+            binding.ticker = item
+            binding.executePendingBindings()
         }
     }
 }
 
-class TransactionDiffCallback : DiffUtil.ItemCallback<TickerContent>() {
-    override fun areItemsTheSame(oldItem: TickerContent, newItem: TickerContent): Boolean {
+class TransactionDiffCallback : DiffUtil.ItemCallback<Ticker>() {
+    override fun areItemsTheSame(oldItem: Ticker, newItem: Ticker): Boolean {
         return oldItem.symbol == newItem.symbol
     }
 
-    override fun areContentsTheSame(oldItem: TickerContent, newItem: TickerContent): Boolean {
-        return oldItem == newItem
+    override fun areContentsTheSame(oldItem: Ticker, newItem: Ticker): Boolean {
+        return oldItem.currentPrice == newItem.currentPrice
     }
-
 }
