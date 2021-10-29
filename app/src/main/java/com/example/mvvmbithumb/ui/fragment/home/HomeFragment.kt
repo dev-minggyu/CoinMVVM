@@ -38,11 +38,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         })
 
         _homeViewModel.tickerList.observe(viewLifecycleOwner, {
-            tickerAdapter.submitList(it.map { it.copy() })
+            tickerAdapter.submitList(it)
         })
     }
+
     private fun setupListAdapter() {
+        _dataBinding.tickerList.itemAnimator = null
         tickerAdapter = TickerAdapter()
-        _dataBinding.transactionList.adapter = tickerAdapter
+        _dataBinding.tickerList.adapter = tickerAdapter
     }
 }
