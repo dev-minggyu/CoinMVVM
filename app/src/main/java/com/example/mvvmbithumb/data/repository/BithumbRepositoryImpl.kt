@@ -6,8 +6,10 @@ import com.example.mvvmbithumb.data.network.NetworkRepository
 import com.example.mvvmbithumb.data.websocket.WebSocketProvider
 import kotlinx.coroutines.channels.Channel
 
-class BithumbRepositoryImpl(private val _webSocketProvider: WebSocketProvider,
-                            private val _networkRepository: NetworkRepository) : BithumbRepository {
+class BithumbRepositoryImpl(
+    private val _webSocketProvider: WebSocketProvider,
+    private val _networkRepository: NetworkRepository
+) : BithumbRepository {
     override fun startTickerSocket(): Channel<TickerData> {
         return _webSocketProvider.startTickerSocket()
     }
