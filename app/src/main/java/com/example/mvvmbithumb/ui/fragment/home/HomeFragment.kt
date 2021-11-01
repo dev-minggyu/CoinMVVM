@@ -11,6 +11,7 @@ import com.example.mvvmbithumb.extension.getViewModelFactory
 import com.example.mvvmbithumb.extension.showToast
 import com.example.mvvmbithumb.ui.base.BaseFragment
 import com.example.mvvmbithumb.ui.fragment.home.adapter.TickerAdapter
+import com.example.mvvmbithumb.ui.fragment.home.dialog.RetryDialog
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val _homeViewModel by viewModels<HomeViewModel> { getViewModelFactory() }
@@ -29,7 +30,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         getNetworkStateLiveData().observe(viewLifecycleOwner, {
             when (it!!) {
                 NetworkState.CONNECTED -> {
-                    _homeViewModel.subscribePrice()
+                    _homeViewModel.doListenPrice()
                 }
                 NetworkState.DISCONNECTED -> {
                     showToast("인터넷 연결을 확인해주세요.")
@@ -39,6 +40,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
         _homeViewModel.tickerList.observe(viewLifecycleOwner, {
             tickerAdapter.submitList(it)
+        })
+
+        _homeViewModel.doRetry.observe(viewLifecycleOwner, {
+            RetryDialog(it).show(childFragmentManager)
         })
     }
 

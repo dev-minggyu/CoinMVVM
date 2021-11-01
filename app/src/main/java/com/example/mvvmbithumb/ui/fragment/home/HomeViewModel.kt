@@ -18,7 +18,16 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
     private val _tickerList: MutableLiveData<List<Ticker>> = MutableLiveData()
     val tickerList = _tickerList.asLiveData()
 
-    fun subscribePrice() {
+    private val _doRetry: MutableLiveData<String> = MutableLiveData()
+    val doRetry = _doRetry.asLiveData()
+
+    private suspend fun getKRWTickers() {
+        val tickerList = _bithumbRepository.getKRWTickers()
+        _tmpTickerList.clear()
+        _tmpTickerList.addAll(tickerList.toKRWTickerList())
+    }
+
+    fun doListenPrice() {
         viewModelScope.launch(Dispatchers.IO) {
             if (_tmpTickerList.isEmpty()) {
                 getKRWTickers()
@@ -37,12 +46,6 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
         }
     }
 
-    private suspend fun getKRWTickers() {
-        val tickerList = _bithumbRepository.getKRWTickers()
-        _tmpTickerList.clear()
-        _tmpTickerList.addAll(tickerList.toKRWTickerList())
-    }
-
     private fun onReceivedTicker(tickerData: TickerData?) {
         val tickerContent = tickerData?.ticker?.content
         tickerContent?.let { content ->
@@ -59,6 +62,8 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
 
     private fun onSocketError(ex: Throwable) {
         println("Error occurred : ${ex.message}")
+        _bithumbRepository.stopTickerSocket()
+        _doRetry.value = ex.message
     }
 
     override fun onCleared() {

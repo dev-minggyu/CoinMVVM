@@ -2,6 +2,7 @@ package com.example.mvvmbithumb.extension
 
 import android.app.Activity
 import android.widget.Toast
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,6 +19,11 @@ fun Activity.getViewModelFactory(): ViewModelFactory {
 }
 
 fun Fragment.getViewModelFactory(): ViewModelFactory {
+    val repository = (requireContext().applicationContext as App).bithumbRepository
+    return ViewModelFactory(repository)
+}
+
+fun DialogFragment.getViewModelFactory(): ViewModelFactory {
     val repository = (requireContext().applicationContext as App).bithumbRepository
     return ViewModelFactory(repository)
 }
