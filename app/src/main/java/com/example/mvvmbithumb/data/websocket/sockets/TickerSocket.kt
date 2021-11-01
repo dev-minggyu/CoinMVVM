@@ -19,12 +19,17 @@ class TickerSocket {
     private var _tickerListener: TickerListener? = null
 
     fun listenTickerSocket(requestTickerData: RequestTickerData): Channel<TickerData> {
-        _tickerListener = TickerListener(requestTickerData)
+        if (_tickerListener == null) {
+            _tickerListener = TickerListener(requestTickerData)
+        }
+
         return with(_tickerListener!!) {
-            _tickerSocket = WebSocketProvider.socketOkHttpClient.newWebSocket(
-                WebSocketProvider.baseRequest, this
-            )
-            this.socketEventChannel
+            if (_tickerSocket == null) {
+                _tickerSocket = WebSocketProvider.socketOkHttpClient.newWebSocket(
+                    WebSocketProvider.baseRequest, this
+                )
+            }
+            socketEventChannel
         }
     }
 
