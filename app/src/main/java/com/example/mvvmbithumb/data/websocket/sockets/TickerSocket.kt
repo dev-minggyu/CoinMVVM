@@ -1,4 +1,4 @@
-package com.example.mvvmbithumb.data.websocket.listener
+package com.example.mvvmbithumb.data.websocket.sockets
 
 import com.example.mvvmbithumb.data.model.RequestTickerData
 import com.example.mvvmbithumb.data.model.TickerData
@@ -13,7 +13,32 @@ import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 
-class TickerListener(val requestTickerData: RequestTickerData) : WebSocketListener() {
+class TickerSocket {
+    private var _tickerSocket: WebSocket? = null
+    private var _tickerListener: TickerListener? = null
+
+    fun listenTickerSocket(requestTickerData: RequestTickerData): Channel<TickerData> {
+        _tickerListener = TickerListener(requestTickerData)
+        return with(_tickerListener!!) {
+            _tickerSocket = WebSocketProvider.socketOkHttpClient.newWebSocket(
+                WebSocketProvider.baseRequest, this
+            )
+            this.socketEventChannel
+        }
+    }
+
+    fun stopTickerSocket() {
+        try {
+            _tickerSocket?.close(WebSocketProvider.STATUS_NORMAL_CLOSURE, null)
+            _tickerSocket = null
+            _tickerListener?.socketEventChannel?.close()
+            _tickerListener = null
+        } catch (ex: Exception) {
+        }
+    }
+}
+
+class TickerListener(private val requestTickerData: RequestTickerData) : WebSocketListener() {
     val socketEventChannel = Channel<TickerData>()
 
     override fun onOpen(webSocket: WebSocket, response: Response) {

@@ -12,11 +12,11 @@ class BithumbRepositoryImpl(
     private val _networkRepository: NetworkRepository
 ) : BithumbRepository {
     override fun listenTickerSocket(requestTickerData: RequestTickerData): Channel<TickerData> {
-        return _webSocketProvider.listenTickerSocket(requestTickerData)
+        return _webSocketProvider.tickerSocket.listenTickerSocket(requestTickerData)
     }
 
     override fun stopTickerSocket() {
-        _webSocketProvider.stopTickerSocket()
+        _webSocketProvider.tickerSocket.stopTickerSocket()
     }
 
     override suspend fun getKRWTickers(): TickerList {

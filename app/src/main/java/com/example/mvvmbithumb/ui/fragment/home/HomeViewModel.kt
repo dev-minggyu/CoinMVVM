@@ -1,6 +1,5 @@
 package com.example.mvvmbithumb.ui.fragment.home
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,7 +10,6 @@ import com.example.mvvmbithumb.data.repository.BithumbRepository
 import com.example.mvvmbithumb.extension.asLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
