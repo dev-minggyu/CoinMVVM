@@ -5,6 +5,7 @@ import com.example.mvvmbithumb.data.model.TickerData
 import com.example.mvvmbithumb.data.model.TickerInfo
 import com.example.mvvmbithumb.data.websocket.WebSocketProvider
 import com.example.mvvmbithumb.data.websocket.exception.SocketAbortedException
+import com.example.mvvmbithumb.extension.sendIgnoreClosed
 import com.google.gson.Gson
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -50,13 +51,13 @@ class TickerListener(private val requestTickerData: RequestTickerData) : WebSock
         GlobalScope.launch {
             val tickerInfo = Gson().fromJson(text, TickerInfo::class.java)
             val tickerData = TickerData(tickerInfo)
-            socketEventChannel.send(tickerData)
+            socketEventChannel.sendIgnoreClosed(tickerData)
         }
     }
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
         GlobalScope.launch {
-            socketEventChannel.send(TickerData(exception = SocketAbortedException()))
+            socketEventChannel.sendIgnoreClosed(TickerData(exception = SocketAbortedException()))
         }
         webSocket.close(WebSocketProvider.STATUS_NORMAL_CLOSURE, null)
         socketEventChannel.close()
@@ -64,7 +65,7 @@ class TickerListener(private val requestTickerData: RequestTickerData) : WebSock
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         GlobalScope.launch {
-            socketEventChannel.send(TickerData(exception = t))
+            socketEventChannel.sendIgnoreClosed(TickerData(exception = t))
         }
     }
 }

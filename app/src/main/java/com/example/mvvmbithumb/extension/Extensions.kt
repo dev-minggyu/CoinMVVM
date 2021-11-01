@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.mvvmbithumb.App
 import com.example.mvvmbithumb.util.NetworkStateLiveData
 import com.example.mvvmbithumb.viewmodel.ViewModelFactory
+import kotlinx.coroutines.channels.Channel
 
 fun <T> MutableLiveData<T>.asLiveData() = this as LiveData<T>
 
@@ -35,4 +36,12 @@ fun Activity.showToast(text: String) {
 
 fun Fragment.showToast(text: String) {
     Toast.makeText(requireContext(), text, Toast.LENGTH_LONG).show()
+}
+
+suspend fun <E> Channel<E>.sendIgnoreClosed(event: E) {
+    try {
+        send(event)
+    } catch (e: Exception) {
+
+    }
 }
