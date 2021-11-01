@@ -1,5 +1,6 @@
 package com.example.mvvmbithumb.data.websocket
 
+import com.example.mvvmbithumb.data.model.RequestTickerData
 import com.example.mvvmbithumb.data.model.TickerData
 import com.example.mvvmbithumb.data.websocket.listener.TickerListener
 import kotlinx.coroutines.channels.Channel
@@ -17,12 +18,11 @@ class WebSocketProvider {
     private val _baseRequest = Request.Builder().url(BITHUMB_URL).build()
 
     private var _tickerSocket: WebSocket? = null
+    private var _tickerListener: TickerListener? = null
 
-    private var _webSocketListener: TickerListener? = null
-
-    fun startTickerSocket(): Channel<TickerData> {
-        _webSocketListener = TickerListener()
-        return with(_webSocketListener!!) {
+    fun listenTickerSocket(requestTickerData: RequestTickerData): Channel<TickerData> {
+        _tickerListener = TickerListener(requestTickerData)
+        return with(_tickerListener!!) {
             _tickerSocket = _socketOkHttpClient.newWebSocket(
                 _baseRequest, this
             )
@@ -34,8 +34,8 @@ class WebSocketProvider {
         try {
             _tickerSocket?.close(STATUS_NORMAL_CLOSURE, null)
             _tickerSocket = null
-            _webSocketListener?.socketEventChannel?.close()
-            _webSocketListener = null
+            _tickerListener?.socketEventChannel?.close()
+            _tickerListener = null
         } catch (ex: Exception) {
         }
     }

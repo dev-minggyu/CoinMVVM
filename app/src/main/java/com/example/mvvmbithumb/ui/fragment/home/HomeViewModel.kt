@@ -1,14 +1,17 @@
 package com.example.mvvmbithumb.ui.fragment.home
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mvvmbithumb.data.model.RequestTickerData
 import com.example.mvvmbithumb.data.model.Ticker
 import com.example.mvvmbithumb.data.model.TickerData
 import com.example.mvvmbithumb.data.repository.BithumbRepository
 import com.example.mvvmbithumb.extension.asLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -20,10 +23,11 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
     fun subscribePrice() {
         viewModelScope.launch(Dispatchers.IO) {
             if (_tmpTickerList.isEmpty()) {
-                getTickers()
+                getKRWTickers()
             }
 
-            _bithumbRepository.startTickerSocket().consumeEach {
+            val requestTickerData = RequestTickerData(_tmpTickerList.map { it.symbol })
+            _bithumbRepository.listenTickerSocket(requestTickerData).consumeEach {
                 if (it.exception == null) {
                     withContext(Dispatchers.Main) {
                         onReceivedTicker(it)
@@ -35,20 +39,16 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
         }
     }
 
-    private suspend fun getTickers() {
+    private suspend fun getKRWTickers() {
         val tickerList = _bithumbRepository.getKRWTickers()
-        val tickers = tickerList.data.keys.toMutableList()
-        tickers.removeLast()
         _tmpTickerList.clear()
-        tickers.forEach {
-            _tmpTickerList.add(Ticker(it))
-        }
+        _tmpTickerList.addAll(tickerList.toKRWTickerList())
     }
 
     private fun onReceivedTicker(tickerData: TickerData?) {
         val tickerContent = tickerData?.ticker?.content
         tickerContent?.let { content ->
-            val tickerName = content.symbol.split("_")[0]
+            val tickerName = content.symbol
             val tickerPrice = content.closePrice
             _tickerList.value = _tmpTickerList.map { item ->
                 if (item.symbol == tickerName) {

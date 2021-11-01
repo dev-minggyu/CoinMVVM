@@ -1,5 +1,6 @@
 package com.example.mvvmbithumb.data.websocket.listener
 
+import com.example.mvvmbithumb.data.model.RequestTickerData
 import com.example.mvvmbithumb.data.model.TickerData
 import com.example.mvvmbithumb.data.model.TickerInfo
 import com.example.mvvmbithumb.data.websocket.WebSocketProvider
@@ -12,11 +13,12 @@ import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 
-class TickerListener : WebSocketListener() {
+class TickerListener(val requestTickerData: RequestTickerData) : WebSocketListener() {
     val socketEventChannel = Channel<TickerData>()
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
-        webSocket.send("{\"type\":\"ticker\", \"symbols\": [\"BTC_KRW\", \"ETH_KRW\"], \"tickTypes\": [\"1H\"]}")
+        val sendData = Gson().toJson(requestTickerData)
+        webSocket.send(sendData)
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {

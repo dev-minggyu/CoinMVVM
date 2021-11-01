@@ -1,5 +1,6 @@
 package com.example.mvvmbithumb.data.repository
 
+import com.example.mvvmbithumb.data.model.RequestTickerData
 import com.example.mvvmbithumb.data.model.TickerData
 import com.example.mvvmbithumb.data.model.TickerList
 import com.example.mvvmbithumb.data.network.NetworkRepository
@@ -10,8 +11,8 @@ class BithumbRepositoryImpl(
     private val _webSocketProvider: WebSocketProvider,
     private val _networkRepository: NetworkRepository
 ) : BithumbRepository {
-    override fun startTickerSocket(): Channel<TickerData> {
-        return _webSocketProvider.startTickerSocket()
+    override fun listenTickerSocket(requestTickerData: RequestTickerData): Channel<TickerData> {
+        return _webSocketProvider.listenTickerSocket(requestTickerData)
     }
 
     override fun stopTickerSocket() {
