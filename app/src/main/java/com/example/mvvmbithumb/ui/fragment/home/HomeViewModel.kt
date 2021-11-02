@@ -46,6 +46,11 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
         }
     }
 
+    fun doRetryListenPrice() {
+        _bithumbRepository.stopTickerSocket()
+        doListenPrice()
+    }
+
     private fun onReceivedTicker(tickerData: TickerData?) {
         val tickerContent = tickerData?.ticker?.content
         tickerContent?.let { content ->

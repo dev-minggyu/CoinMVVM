@@ -9,7 +9,6 @@ import com.example.mvvmbithumb.databinding.FragmentHomeBinding
 import com.example.mvvmbithumb.extension.getNetworkStateLiveData
 import com.example.mvvmbithumb.extension.getViewModelFactory
 import com.example.mvvmbithumb.extension.showSnackBar
-import com.example.mvvmbithumb.extension.showToast
 import com.example.mvvmbithumb.ui.base.BaseFragment
 import com.example.mvvmbithumb.ui.fragment.home.adapter.TickerAdapter
 import com.example.mvvmbithumb.ui.fragment.home.dialog.RetryDialog
@@ -34,7 +33,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                     _homeViewModel.doListenPrice()
                 }
                 NetworkState.DISCONNECTED -> {
-                    showSnackBar("인터넷 연결을 확인해주세요.")
+                    showSnackBar("인터넷 연결을 확인해주세요.", "재시도") {
+                        _homeViewModel.doRetryListenPrice()
+                    }
                 }
             }
         })
