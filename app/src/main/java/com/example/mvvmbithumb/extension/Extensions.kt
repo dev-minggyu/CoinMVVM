@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.mvvmbithumb.App
 import com.example.mvvmbithumb.util.NetworkStateLiveData
 import com.example.mvvmbithumb.viewmodel.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.channels.Channel
 
 fun <T> MutableLiveData<T>.asLiveData() = this as LiveData<T>
@@ -42,6 +43,16 @@ fun Activity.showToast(text: String) {
 
 fun Fragment.showToast(text: String) {
     Toast.makeText(requireContext(), text, Toast.LENGTH_LONG).show()
+}
+
+fun Activity.showSnackBar(text: String) {
+    Snackbar.make(window.decorView.rootView, text, Snackbar.LENGTH_LONG).show()
+}
+
+fun Fragment.showSnackBar(text: String) {
+    view?.let {
+        Snackbar.make(it, text, Snackbar.LENGTH_LONG).show()
+    }
 }
 
 suspend fun <E> Channel<E>.sendIgnoreClosed(event: E) {
