@@ -1,6 +1,7 @@
 package com.example.mvvmbithumb.extension
 
 import android.app.Activity
+import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -45,13 +46,28 @@ fun Fragment.showToast(text: String) {
     Toast.makeText(requireContext(), text, Toast.LENGTH_LONG).show()
 }
 
-fun Activity.showSnackBar(text: String) {
-    Snackbar.make(window.decorView.rootView, text, Snackbar.LENGTH_LONG).show()
+fun Activity.showSnackBar(
+    text: String,
+    buttonName: String? = null,
+    clickListener: View.OnClickListener? = null
+) {
+    val snackBar = Snackbar.make(window.decorView.rootView, text, Snackbar.LENGTH_LONG)
+    clickListener?.let {
+        snackBar.setAction(buttonName, clickListener)
+    }
+    snackBar.show()
 }
 
-fun Fragment.showSnackBar(text: String) {
+fun Fragment.showSnackBar(
+    text: String, buttonName: String? = null,
+    clickListener: View.OnClickListener? = null
+) {
     view?.let {
-        Snackbar.make(it, text, Snackbar.LENGTH_LONG).show()
+        val snackBar = Snackbar.make(it, text, Snackbar.LENGTH_LONG)
+        clickListener?.let {
+            snackBar.setAction(buttonName, clickListener)
+        }
+        snackBar.show()
     }
 }
 
