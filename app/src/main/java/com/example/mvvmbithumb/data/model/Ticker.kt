@@ -1,19 +1,22 @@
 package com.example.mvvmbithumb.data.model
 
+import com.example.mvvmbithumb.constant.enums.PriceState
 import com.google.gson.Gson
 
 data class RequestTickerData(
     var symbols: List<String> = listOf(),
-    val tickTypes: List<String> = listOf("1H"),
+    val tickTypes: List<String> = listOf("24H"),
     val type: String = "ticker"
 )
 
 data class TickerData(
-    val ticker: TickerInfo? = null, val exception: Throwable? = null
+    val ticker: TickerInfo? = null,
+    val exception: Throwable? = null
 )
 
 data class TickerInfo(
-    val content: TickerContent, val type: String
+    val content: TickerContent,
+    val type: String
 )
 
 data class TickerContent(
@@ -36,16 +39,31 @@ data class TickerContent(
 )
 
 data class Ticker(
-    var symbol: String, var currentPrice: String = "0"
-)
+    var symbol: String,
+    var currentPrice: String = "0",
+    var prevPrice: String = "0",
+) {
+    fun getPriceState(): PriceState {
+        return if (currentPrice == prevPrice) {
+            PriceState.SAME
+        } else {
+            if (currentPrice > prevPrice) {
+                PriceState.UP
+            } else {
+                PriceState.DOWN
+            }
+        }
+    }
+}
 
 data class TickerList(
-    val data: Map<String, Any>, val status: String
+    val data: Map<String, Any>,
+    val status: String
 ) {
     fun toKRWTickerList(): List<Ticker> {
         return data.filter { it.key != "date" }.map {
             val symbolValue = Gson().fromJson(it.value.toString(), SymbolValue::class.java)
-            Ticker(it.key + "_KRW", symbolValue.closing_price)
+            Ticker(it.key + "_KRW", symbolValue.closing_price, symbolValue.prev_closing_price)
         }
     }
 }

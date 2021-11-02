@@ -49,11 +49,10 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
     private fun onReceivedTicker(tickerData: TickerData?) {
         val tickerContent = tickerData?.ticker?.content
         tickerContent?.let { content ->
-            val tickerName = content.symbol
-            val tickerPrice = content.closePrice
             _tickerList.value = _tmpTickerList.map { item ->
-                if (item.symbol == tickerName) {
-                    item.currentPrice = tickerPrice
+                if (item.symbol == content.symbol) {
+                    item.currentPrice = content.closePrice
+                    item.prevPrice = content.prevClosePrice
                 }
                 item
             }

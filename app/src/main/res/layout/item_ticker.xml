@@ -37,10 +37,10 @@
 
         <TextView
             android:id="@+id/tv_price"
+            priceColor="@{ticker.getPriceState()}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@{ticker.currentPrice}"
-            android:textColor="@color/black"
             android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/gl_center"
