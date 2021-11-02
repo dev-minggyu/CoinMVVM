@@ -34,13 +34,11 @@ class TickerSocket {
     }
 
     fun stopTickerSocket() {
-        try {
-            _tickerSocket?.close(WebSocketProvider.STATUS_NORMAL_CLOSURE, null)
-            _tickerSocket = null
-            _tickerListener?.socketEventChannel?.close()
-            _tickerListener = null
-        } catch (ex: Exception) {
-        }
+        _tickerSocket?.close(WebSocketProvider.STATUS_NORMAL_CLOSURE, null)
+        _tickerSocket = null
+
+        _tickerListener?.socketEventChannel?.close()
+        _tickerListener = null
     }
 }
 
