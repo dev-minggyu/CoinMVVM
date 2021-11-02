@@ -40,37 +40,37 @@ class TickerSocket {
         _tickerListener?.socketEventChannel?.close()
         _tickerListener = null
     }
+
+    class TickerListener(private val requestTickerData: RequestTickerData) : WebSocketListener() {
+        val socketEventChannel = Channel<TickerData>()
+
+        override fun onOpen(webSocket: WebSocket, response: Response) {
+            val sendData = Gson().toJson(requestTickerData)
+            webSocket.send(sendData)
+        }
+
+        override fun onMessage(webSocket: WebSocket, text: String) {
+            GlobalScope.launch {
+                val tickerInfo = Gson().fromJson(text, TickerInfo::class.java)
+                val tickerData = TickerData(tickerInfo)
+                socketEventChannel.sendIgnoreClosed(tickerData)
+            }
+        }
+
+        override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+            GlobalScope.launch {
+                socketEventChannel.sendIgnoreClosed(TickerData(exception = SocketAbortedException()))
+            }
+            webSocket.close(WebSocketProvider.STATUS_NORMAL_CLOSURE, null)
+            socketEventChannel.close()
+        }
+
+        override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+            GlobalScope.launch {
+                socketEventChannel.sendIgnoreClosed(TickerData(exception = t))
+            }
+        }
+    }
+
 }
-
-class TickerListener(private val requestTickerData: RequestTickerData) : WebSocketListener() {
-    val socketEventChannel = Channel<TickerData>()
-
-    override fun onOpen(webSocket: WebSocket, response: Response) {
-        val sendData = Gson().toJson(requestTickerData)
-        webSocket.send(sendData)
-    }
-
-    override fun onMessage(webSocket: WebSocket, text: String) {
-        GlobalScope.launch {
-            val tickerInfo = Gson().fromJson(text, TickerInfo::class.java)
-            val tickerData = TickerData(tickerInfo)
-            socketEventChannel.sendIgnoreClosed(tickerData)
-        }
-    }
-
-    override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-        GlobalScope.launch {
-            socketEventChannel.sendIgnoreClosed(TickerData(exception = SocketAbortedException()))
-        }
-        webSocket.close(WebSocketProvider.STATUS_NORMAL_CLOSURE, null)
-        socketEventChannel.close()
-    }
-
-    override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-        GlobalScope.launch {
-            socketEventChannel.sendIgnoreClosed(TickerData(exception = t))
-        }
-    }
-}
-
 
