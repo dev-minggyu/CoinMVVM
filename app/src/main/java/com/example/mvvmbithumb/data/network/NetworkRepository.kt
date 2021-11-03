@@ -2,15 +2,14 @@ package com.example.mvvmbithumb.data.network
 
 import com.example.mvvmbithumb.BuildConfig
 import com.example.mvvmbithumb.data.model.TickerList
+import com.example.mvvmbithumb.util.Resource
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class NetworkRepository {
-    private val mRetrofit = retrofitClient()
-
-    private val mAPI = mRetrofit.create(NetworkAPI::class.java)
+    private val mAPI = retrofitClient().create(NetworkAPI::class.java)
 
     private fun retrofitClient(): Retrofit {
         val okHttpClient = OkHttpClient.Builder()
@@ -28,8 +27,17 @@ class NetworkRepository {
             .build()
     }
 
-    suspend fun getKRWTickers(): TickerList {
-        return mAPI.getKRWTickers()
+    suspend fun getKRWTickers(): Resource<TickerList> {
+        return try {
+            val response = mAPI.getKRWTickers()
+            if (response.isSuccessful) {
+                Resource.Success(response.body()!!)
+            } else {
+                Resource.Error(response.message())
+            }
+        } catch (e: Exception) {
+            Resource.Error(e.message!!)
+        }
     }
 
     companion object {

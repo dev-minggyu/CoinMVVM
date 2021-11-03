@@ -7,6 +7,7 @@ import com.example.mvvmbithumb.data.model.TickerData
 import com.example.mvvmbithumb.data.model.TickerList
 import com.example.mvvmbithumb.data.network.NetworkRepository
 import com.example.mvvmbithumb.data.websocket.WebSocketProvider
+import com.example.mvvmbithumb.util.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.withContext
@@ -16,7 +17,7 @@ class BithumbRepositoryImpl(
     private val _networkRepository: NetworkRepository,
     private val _database: BithumbDatabase
 ) : BithumbRepository {
-    override fun listenTickerSocket(requestTickerData: RequestTickerData): Channel<TickerData> {
+    override fun listenTickerSocket(requestTickerData: RequestTickerData): Channel<Resource<TickerData>> {
         return _webSocketProvider.tickerSocket.listenTickerSocket(requestTickerData)
     }
 
@@ -24,7 +25,7 @@ class BithumbRepositoryImpl(
         _webSocketProvider.tickerSocket.stopTickerSocket()
     }
 
-    override suspend fun getKRWTickers(): TickerList {
+    override suspend fun getKRWTickers(): Resource<TickerList> {
         return withContext(Dispatchers.IO) {
             _networkRepository.getKRWTickers()
         }

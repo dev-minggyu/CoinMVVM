@@ -4,8 +4,8 @@ import com.example.mvvmbithumb.data.model.RequestTickerData
 import com.example.mvvmbithumb.data.model.TickerData
 import com.example.mvvmbithumb.data.model.TickerInfo
 import com.example.mvvmbithumb.data.websocket.WebSocketProvider
-import com.example.mvvmbithumb.data.websocket.exception.SocketAbortedException
 import com.example.mvvmbithumb.extension.sendIgnoreClosed
+import com.example.mvvmbithumb.util.Resource
 import com.google.gson.Gson
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
@@ -18,7 +18,7 @@ class TickerSocket {
     private var _tickerSocket: WebSocket? = null
     private var _tickerListener: TickerListener? = null
 
-    fun listenTickerSocket(requestTickerData: RequestTickerData): Channel<TickerData> {
+    fun listenTickerSocket(requestTickerData: RequestTickerData): Channel<Resource<TickerData>> {
         if (_tickerListener == null) {
             _tickerListener = TickerListener(requestTickerData)
         }
@@ -42,7 +42,7 @@ class TickerSocket {
     }
 
     class TickerListener(private val requestTickerData: RequestTickerData) : WebSocketListener() {
-        val socketEventChannel = Channel<TickerData>()
+        val socketEventChannel = Channel<Resource<TickerData>>()
 
         override fun onOpen(webSocket: WebSocket, response: Response) {
             val sendData = Gson().toJson(requestTickerData)
@@ -53,13 +53,13 @@ class TickerSocket {
             GlobalScope.launch {
                 val tickerInfo = Gson().fromJson(text, TickerInfo::class.java)
                 val tickerData = TickerData(tickerInfo)
-                socketEventChannel.sendIgnoreClosed(tickerData)
+                socketEventChannel.sendIgnoreClosed(Resource.Success(tickerData))
             }
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
             GlobalScope.launch {
-                socketEventChannel.sendIgnoreClosed(TickerData(exception = SocketAbortedException()))
+                socketEventChannel.sendIgnoreClosed(Resource.Error(reason))
             }
             webSocket.close(WebSocketProvider.STATUS_NORMAL_CLOSURE, null)
             socketEventChannel.close()
@@ -67,7 +67,7 @@ class TickerSocket {
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             GlobalScope.launch {
-                socketEventChannel.sendIgnoreClosed(TickerData(exception = t))
+                socketEventChannel.sendIgnoreClosed(Resource.Error(t.message ?: "Unknown"))
             }
         }
     }

@@ -10,8 +10,7 @@ data class RequestTickerData(
 )
 
 data class TickerData(
-    val ticker: TickerInfo? = null,
-    val exception: Throwable? = null
+    val ticker: TickerInfo? = null
 )
 
 data class TickerInfo(

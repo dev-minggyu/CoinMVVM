@@ -8,6 +8,7 @@ import com.example.mvvmbithumb.data.model.Ticker
 import com.example.mvvmbithumb.data.model.TickerData
 import com.example.mvvmbithumb.data.repository.BithumbRepository
 import com.example.mvvmbithumb.extension.asLiveData
+import com.example.mvvmbithumb.util.Resource
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 
@@ -20,9 +21,12 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
     val doRetry = _doRetry.asLiveData()
 
     private suspend fun getKRWTickers() {
-        val tickerList = _bithumbRepository.getKRWTickers()
-        _tmpTickerList.clear()
-        _tmpTickerList.addAll(tickerList.toKRWTickerList())
+        when (val tickerList = _bithumbRepository.getKRWTickers()) {
+            is Resource.Success -> {
+                _tmpTickerList.clear()
+                _tmpTickerList.addAll(tickerList.data.toKRWTickerList())
+            }
+        }
     }
 
     fun doListenPrice() {
@@ -33,10 +37,9 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
 
             val requestTickerData = RequestTickerData(_tmpTickerList.map { it.symbol })
             _bithumbRepository.listenTickerSocket(requestTickerData).consumeEach {
-                if (it.exception == null) {
-                    onReceivedTicker(it)
-                } else {
-                    onSocketError(it.exception)
+                when (it) {
+                    is Resource.Success -> onReceivedTicker(it.data)
+                    is Resource.Error -> onSocketError(it.message)
                 }
             }
         }
@@ -72,9 +75,9 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
         }
     }
 
-    private fun onSocketError(ex: Throwable) {
+    private fun onSocketError(message: String) {
         _bithumbRepository.stopTickerSocket()
-        _doRetry.value = ex.message
+        _doRetry.value = message
     }
 
     override fun onCleared() {
