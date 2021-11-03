@@ -11,4 +11,8 @@ interface BithumbRepository {
     fun stopTickerSocket()
 
     suspend fun getKRWTickers(): TickerList
+
+    suspend fun addFavoriteTicker(symbol: String)
+
+    suspend fun deleteFavoriteTicker(symbol: String)
 }

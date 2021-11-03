@@ -11,6 +11,7 @@ import com.example.mvvmbithumb.extension.getViewModelFactory
 import com.example.mvvmbithumb.extension.showSnackBar
 import com.example.mvvmbithumb.ui.base.BaseFragment
 import com.example.mvvmbithumb.ui.fragment.home.adapter.TickerAdapter
+import com.example.mvvmbithumb.ui.fragment.home.adapter.TickerClickListener
 import com.example.mvvmbithumb.ui.fragment.home.dialog.RetryDialog
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
@@ -21,7 +22,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupListAdapter()
+        setupTickerListAdapter()
 
         setupObserver()
     }
@@ -49,9 +50,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         })
     }
 
-    private fun setupListAdapter() {
+    private fun setupTickerListAdapter() {
         _dataBinding.tickerList.itemAnimator = null
-        tickerAdapter = TickerAdapter()
+        tickerAdapter = TickerAdapter(object : TickerClickListener {
+            override fun onFavorite(symbol: String, isChecked: Boolean) {
+                if (isChecked) {
+                    _homeViewModel.addFavoriteSymbol(symbol)
+                } else {
+                    _homeViewModel.deleteFavoriteSymbol(symbol)
+                }
+            }
+        })
         _dataBinding.tickerList.adapter = tickerAdapter
     }
 }

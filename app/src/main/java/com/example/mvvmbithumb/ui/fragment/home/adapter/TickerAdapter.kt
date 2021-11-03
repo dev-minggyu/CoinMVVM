@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mvvmbithumb.data.model.Ticker
 import com.example.mvvmbithumb.databinding.ItemTickerBinding
 
-class TickerAdapter :
+class TickerAdapter(val clickListener: TickerClickListener) :
     ListAdapter<Ticker, TickerAdapter.TickerViewHolder>(TransactionDiffCallback()) {
     override fun onBindViewHolder(holder: TickerViewHolder, position: Int) {
         val item = getItem(position)
@@ -21,11 +21,12 @@ class TickerAdapter :
         return TickerViewHolder(binding)
     }
 
-    class TickerViewHolder(private val binding: ItemTickerBinding) :
+    inner class TickerViewHolder(private val binding: ItemTickerBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Ticker) {
             binding.ticker = item
+            binding.clickListener = clickListener
             binding.executePendingBindings()
         }
     }
@@ -43,4 +44,8 @@ class TransactionDiffCallback : DiffUtil.ItemCallback<Ticker>() {
     override fun areContentsTheSame(oldItem: Ticker, newItem: Ticker): Boolean {
         return oldItem.currentPrice == newItem.currentPrice
     }
+}
+
+interface TickerClickListener {
+    fun onFavorite(symbol: String, isChecked: Boolean)
 }

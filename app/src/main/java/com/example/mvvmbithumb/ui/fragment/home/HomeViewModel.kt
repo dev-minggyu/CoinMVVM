@@ -8,10 +8,8 @@ import com.example.mvvmbithumb.data.model.Ticker
 import com.example.mvvmbithumb.data.model.TickerData
 import com.example.mvvmbithumb.data.repository.BithumbRepository
 import com.example.mvvmbithumb.extension.asLiveData
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewModel() {
     private val _tmpTickerList: MutableList<Ticker> = mutableListOf()
@@ -28,7 +26,7 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
     }
 
     fun doListenPrice() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch() {
             if (_tmpTickerList.isEmpty()) {
                 getKRWTickers()
             }
@@ -36,9 +34,7 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
             val requestTickerData = RequestTickerData(_tmpTickerList.map { it.symbol })
             _bithumbRepository.listenTickerSocket(requestTickerData).consumeEach {
                 if (it.exception == null) {
-                    withContext(Dispatchers.Main) {
-                        onReceivedTicker(it)
-                    }
+                    onReceivedTicker(it)
                 } else {
                     onSocketError(it.exception)
                 }
@@ -49,6 +45,18 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
     fun doRetryListenPrice() {
         _bithumbRepository.stopTickerSocket()
         doListenPrice()
+    }
+
+    fun addFavoriteSymbol(symbol: String) {
+        viewModelScope.launch {
+            _bithumbRepository.addFavoriteTicker(symbol)
+        }
+    }
+
+    fun deleteFavoriteSymbol(symbol: String) {
+        viewModelScope.launch {
+            _bithumbRepository.deleteFavoriteTicker(symbol)
+        }
     }
 
     private fun onReceivedTicker(tickerData: TickerData?) {
@@ -65,7 +73,6 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
     }
 
     private fun onSocketError(ex: Throwable) {
-        println("Error occurred : ${ex.message}")
         _bithumbRepository.stopTickerSocket()
         _doRetry.value = ex.message
     }
