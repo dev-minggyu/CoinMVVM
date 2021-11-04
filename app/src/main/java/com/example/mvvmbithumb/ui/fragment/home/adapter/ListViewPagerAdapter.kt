@@ -3,7 +3,7 @@ package com.example.mvvmbithumb.ui.fragment.home.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mvvmbithumb.databinding.ItemTickerListsBinding
+import com.example.mvvmbithumb.databinding.ItemTickerListBinding
 
 class ListViewPagerAdapter(
     private val mainAdapter: TickerAdapter,
@@ -16,7 +16,7 @@ class ListViewPagerAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TickerListsViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ItemTickerListsBinding.inflate(layoutInflater, parent, false)
+        val binding = ItemTickerListBinding.inflate(layoutInflater, parent, false)
         return TickerListsViewHolder(binding)
     }
 
@@ -27,7 +27,7 @@ class ListViewPagerAdapter(
         }
     }
 
-    class TickerListsViewHolder(private val binding: ItemTickerListsBinding) :
+    class TickerListsViewHolder(private val binding: ItemTickerListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun setListAdapter(adapter: TickerAdapter) {
