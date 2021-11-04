@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mvvmbithumb.data.model.Ticker
 import com.example.mvvmbithumb.databinding.ItemTickerBinding
 
-class TickerAdapter(val clickListener: TickerClickListener) :
+class TickerAdapter(val clickListener: TickerClickListener?) :
     ListAdapter<Ticker, TickerAdapter.TickerViewHolder>(TransactionDiffCallback()) {
     override fun onBindViewHolder(holder: TickerViewHolder, position: Int) {
         val item = getItem(position)
@@ -26,7 +26,9 @@ class TickerAdapter(val clickListener: TickerClickListener) :
 
         fun bind(item: Ticker) {
             binding.ticker = item
-            binding.clickListener = clickListener
+            clickListener?.let {
+                binding.clickListener = it
+            }
             binding.executePendingBindings()
         }
     }

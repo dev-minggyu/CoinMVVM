@@ -3,6 +3,7 @@ package com.example.mvvmbithumb.ui.fragment.home
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.viewpager2.widget.ViewPager2
 import com.example.mvvmbithumb.R
 import com.example.mvvmbithumb.constant.enums.NetworkState
 import com.example.mvvmbithumb.databinding.FragmentHomeBinding
@@ -10,6 +11,7 @@ import com.example.mvvmbithumb.extension.getNetworkStateLiveData
 import com.example.mvvmbithumb.extension.getViewModelFactory
 import com.example.mvvmbithumb.extension.showSnackBar
 import com.example.mvvmbithumb.ui.base.BaseFragment
+import com.example.mvvmbithumb.ui.fragment.home.adapter.ListViewPagerAdapter
 import com.example.mvvmbithumb.ui.fragment.home.adapter.TickerAdapter
 import com.example.mvvmbithumb.ui.fragment.home.adapter.TickerClickListener
 import com.example.mvvmbithumb.ui.fragment.home.dialog.RetryDialog
@@ -18,11 +20,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val _homeViewModel by viewModels<HomeViewModel> { getViewModelFactory() }
 
     private lateinit var tickerAdapter: TickerAdapter
+    private lateinit var favoriteAdapter: TickerAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupTickerListAdapter()
+        setupViewPager()
 
         setupObserver()
     }
@@ -50,8 +53,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         })
     }
 
-    private fun setupTickerListAdapter() {
-        _dataBinding.tickerList.itemAnimator = null
+    private fun setupViewPager() {
+        initListAdapters()
+
+        _dataBinding.apply {
+            viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+            viewPager.offscreenPageLimit = ListViewPagerAdapter.VIEW_LIST_COUNT
+            viewPager.adapter = ListViewPagerAdapter(tickerAdapter, favoriteAdapter)
+        }
+    }
+
+    private fun initListAdapters() {
         tickerAdapter = TickerAdapter(object : TickerClickListener {
             override fun onFavorite(symbol: String, isChecked: Boolean) {
                 if (isChecked) {
@@ -61,6 +73,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 }
             }
         })
-        _dataBinding.tickerList.adapter = tickerAdapter
+
+        favoriteAdapter = TickerAdapter(null)
     }
 }
