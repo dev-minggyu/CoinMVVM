@@ -48,6 +48,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             tickerAdapter.submitList(it)
         })
 
+        _homeViewModel.favoriteTickerList.observe(viewLifecycleOwner, {
+            favoriteAdapter.submitList(it)
+        })
+
         _homeViewModel.doRetry.observe(viewLifecycleOwner, {
             RetryDialog(it).show(childFragmentManager)
         })
@@ -64,7 +68,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     }
 
     private fun initListAdapters() {
-        tickerAdapter = TickerAdapter(object : TickerClickListener {
+        val tickerClickListener = object : TickerClickListener {
             override fun onFavorite(symbol: String, isChecked: Boolean) {
                 if (isChecked) {
                     _homeViewModel.addFavoriteSymbol(symbol)
@@ -72,8 +76,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                     _homeViewModel.deleteFavoriteSymbol(symbol)
                 }
             }
-        })
-
-        favoriteAdapter = TickerAdapter(null)
+        }
+        tickerAdapter = TickerAdapter(tickerClickListener)
+        favoriteAdapter = TickerAdapter(tickerClickListener)
     }
 }

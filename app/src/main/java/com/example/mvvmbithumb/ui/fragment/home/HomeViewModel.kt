@@ -1,8 +1,6 @@
 package com.example.mvvmbithumb.ui.fragment.home
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.mvvmbithumb.data.model.RequestTickerData
 import com.example.mvvmbithumb.data.model.Ticker
 import com.example.mvvmbithumb.data.model.TickerData
@@ -16,6 +14,12 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
     private val _tmpTickerList: MutableList<Ticker> = mutableListOf()
     private val _tickerList: MutableLiveData<List<Ticker>> = MutableLiveData()
     val tickerList = _tickerList.asLiveData()
+
+    val favoriteTickerList = Transformations.map(_tickerList) { tickerList ->
+        tickerList.filter {
+            it.isFavorite
+        }
+    }
 
     private val _doRetry: MutableLiveData<String> = MutableLiveData()
     val doRetry = _doRetry.asLiveData()
