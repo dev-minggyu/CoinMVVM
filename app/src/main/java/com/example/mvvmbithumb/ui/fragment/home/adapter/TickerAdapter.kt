@@ -44,7 +44,7 @@ class TransactionDiffCallback : DiffUtil.ItemCallback<Ticker>() {
     }
 
     override fun areContentsTheSame(oldItem: Ticker, newItem: Ticker): Boolean {
-        return oldItem.currentPrice == newItem.currentPrice
+        return oldItem == newItem
     }
 }
 

@@ -31,6 +31,12 @@ class BithumbRepositoryImpl(
         }
     }
 
+    override suspend fun getFavoriteSymbols(): List<FavoriteSymbolEntity> {
+        return withContext(Dispatchers.IO) {
+            _database.bithumbDao().getFavoriteSymbols()
+        }
+    }
+
     override suspend fun addFavoriteTicker(symbol: String) {
         withContext(Dispatchers.IO) {
             _database.bithumbDao().insertFavoriteSymbol(FavoriteSymbolEntity(symbol = symbol))

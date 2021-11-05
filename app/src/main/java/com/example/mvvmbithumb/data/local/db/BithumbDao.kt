@@ -12,7 +12,7 @@ interface BithumbDao {
      * @return all tasks.
      */
     @Query("SELECT * FROM favorite_symbol")
-    suspend fun getFavorites(): List<FavoriteSymbolEntity>
+    suspend fun getFavoriteSymbols(): List<FavoriteSymbolEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertFavoriteSymbol(symbol: FavoriteSymbolEntity)

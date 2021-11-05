@@ -17,6 +17,8 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
     private val _tickerList: MutableLiveData<List<Ticker>> = MutableLiveData()
     val tickerList = _tickerList.asLiveData()
 
+    private val _favoriteSymbolList: HashSet<String> = hashSetOf()
+
     private val _doRetry: MutableLiveData<String> = MutableLiveData()
     val doRetry = _doRetry.asLiveData()
 
@@ -30,10 +32,12 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
     }
 
     fun doListenPrice() {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             if (_tmpTickerList.isEmpty()) {
                 getKRWTickers()
             }
+
+            getFavoriteSymbols()
 
             val requestTickerData = RequestTickerData(_tmpTickerList.map { it.symbol })
             _bithumbRepository.listenTickerSocket(requestTickerData).consumeEach {
@@ -50,14 +54,26 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
         doListenPrice()
     }
 
+    private suspend fun getFavoriteSymbols() {
+        viewModelScope.launch {
+            val list = _bithumbRepository.getFavoriteSymbols().map {
+                it.symbol
+            }
+            _favoriteSymbolList.clear()
+            _favoriteSymbolList.addAll(list)
+        }
+    }
+
     fun addFavoriteSymbol(symbol: String) {
         viewModelScope.launch {
+            _favoriteSymbolList.add(symbol)
             _bithumbRepository.addFavoriteTicker(symbol)
         }
     }
 
     fun deleteFavoriteSymbol(symbol: String) {
         viewModelScope.launch {
+            _favoriteSymbolList.remove(symbol)
             _bithumbRepository.deleteFavoriteTicker(symbol)
         }
     }
@@ -69,6 +85,7 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
                 if (item.symbol == content.symbol) {
                     item.currentPrice = content.closePrice
                     item.prevPrice = content.prevClosePrice
+                    item.isFavorite = _favoriteSymbolList.contains(content.symbol)
                 }
                 item
             }

@@ -1,5 +1,6 @@
 package com.example.mvvmbithumb.data.repository
 
+import com.example.mvvmbithumb.data.local.db.entity.FavoriteSymbolEntity
 import com.example.mvvmbithumb.data.model.RequestTickerData
 import com.example.mvvmbithumb.data.model.TickerData
 import com.example.mvvmbithumb.data.model.TickerList
@@ -12,6 +13,8 @@ interface BithumbRepository {
     fun stopTickerSocket()
 
     suspend fun getKRWTickers(): Resource<TickerList>
+
+    suspend fun getFavoriteSymbols(): List<FavoriteSymbolEntity>
 
     suspend fun addFavoriteTicker(symbol: String)
 
