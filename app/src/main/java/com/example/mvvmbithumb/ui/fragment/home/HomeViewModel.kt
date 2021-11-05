@@ -24,26 +24,24 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
     private val _doRetry: MutableLiveData<String> = MutableLiveData()
     val doRetry = _doRetry.asLiveData()
 
-    private suspend fun getKRWTickers() {
-        when (val tickers = _bithumbRepository.getKRWTickers()) {
+    private suspend fun getKRWTickers(): Boolean {
+        return when (val tickerList = _bithumbRepository.getKRWTickers()) {
             is Resource.Success -> {
-                val favoriteSymbolList = _bithumbRepository.getFavoriteSymbols().map {
-                    it.symbol
-                }
-                val tickerList = tickers.data.toKRWTickerList()
-                tickerList.forEach {
-                    it.isFavorite = favoriteSymbolList.contains(it.symbol)
-                }
                 _tmpTickerList.clear()
-                _tmpTickerList.addAll(tickerList)
+                _tmpTickerList.addAll(tickerList.data)
+                true
             }
+            else -> false
         }
     }
 
     fun doListenPrice() {
         viewModelScope.launch {
             if (_tmpTickerList.isEmpty()) {
-                getKRWTickers()
+                if (!getKRWTickers()) {
+                    onSocketError("Error")
+                    return@launch
+                }
             }
 
             val requestTickerData = RequestTickerData(_tmpTickerList.map { it.symbol })

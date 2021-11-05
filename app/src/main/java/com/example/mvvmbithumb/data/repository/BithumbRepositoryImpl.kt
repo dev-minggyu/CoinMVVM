@@ -3,6 +3,7 @@ package com.example.mvvmbithumb.data.repository
 import com.example.mvvmbithumb.data.local.db.BithumbDatabase
 import com.example.mvvmbithumb.data.local.db.entity.FavoriteSymbolEntity
 import com.example.mvvmbithumb.data.model.RequestTickerData
+import com.example.mvvmbithumb.data.model.Ticker
 import com.example.mvvmbithumb.data.model.TickerData
 import com.example.mvvmbithumb.data.model.TickerList
 import com.example.mvvmbithumb.data.network.NetworkRepository
@@ -25,9 +26,21 @@ class BithumbRepositoryImpl(
         _webSocketProvider.tickerSocket.stopTickerSocket()
     }
 
-    override suspend fun getKRWTickers(): Resource<TickerList> {
+    override suspend fun getKRWTickers(): Resource<List<Ticker>> {
         return withContext(Dispatchers.IO) {
-            _networkRepository.getKRWTickers()
+            when (val response = _networkRepository.getKRWTickers()) {
+                is Resource.Success -> {
+                    val tickerList = response.data.toKRWTickerList()
+                    val favoriteList = getFavoriteSymbols().map {
+                        it.symbol
+                    }
+                    tickerList.forEach {
+                        it.isFavorite = favoriteList.contains(it.symbol)
+                    }
+                    Resource.Success(tickerList)
+                }
+                else -> Resource.Error("Error")
+            }
         }
     }
 
