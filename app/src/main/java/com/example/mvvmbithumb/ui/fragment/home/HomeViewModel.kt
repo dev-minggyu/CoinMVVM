@@ -14,19 +14,24 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewModel() {
     private val _tmpTickerList: MutableList<Ticker> = mutableListOf()
-    private val _tickerList: MutableLiveData<List<Ticker>> = MutableLiveData()
+    private val _tickerList: MutableLiveData<MutableList<Ticker>> = MutableLiveData()
     val tickerList = _tickerList.asLiveData()
-
-    private val _favoriteSymbolList: HashSet<String> = hashSetOf()
 
     private val _doRetry: MutableLiveData<String> = MutableLiveData()
     val doRetry = _doRetry.asLiveData()
 
     private suspend fun getKRWTickers() {
-        when (val tickerList = _bithumbRepository.getKRWTickers()) {
+        when (val tickers = _bithumbRepository.getKRWTickers()) {
             is Resource.Success -> {
+                val favoriteSymbolList = _bithumbRepository.getFavoriteSymbols().map {
+                    it.symbol
+                }
+                val tickerList = tickers.data.toKRWTickerList()
+                tickerList.forEach {
+                    it.isFavorite = favoriteSymbolList.contains(it.symbol)
+                }
                 _tmpTickerList.clear()
-                _tmpTickerList.addAll(tickerList.data.toKRWTickerList())
+                _tmpTickerList.addAll(tickerList)
             }
         }
     }
@@ -36,8 +41,6 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
             if (_tmpTickerList.isEmpty()) {
                 getKRWTickers()
             }
-
-            getFavoriteSymbols()
 
             val requestTickerData = RequestTickerData(_tmpTickerList.map { it.symbol })
             _bithumbRepository.listenTickerSocket(requestTickerData).consumeEach {
@@ -54,26 +57,26 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
         doListenPrice()
     }
 
-    private suspend fun getFavoriteSymbols() {
-        viewModelScope.launch {
-            val list = _bithumbRepository.getFavoriteSymbols().map {
-                it.symbol
-            }
-            _favoriteSymbolList.clear()
-            _favoriteSymbolList.addAll(list)
-        }
-    }
-
     fun addFavoriteSymbol(symbol: String) {
         viewModelScope.launch {
-            _favoriteSymbolList.add(symbol)
+            _tmpTickerList.forEach {
+                if (it.symbol == symbol) {
+                    it.isFavorite = true
+                    return@forEach
+                }
+            }
             _bithumbRepository.addFavoriteTicker(symbol)
         }
     }
 
     fun deleteFavoriteSymbol(symbol: String) {
         viewModelScope.launch {
-            _favoriteSymbolList.remove(symbol)
+            _tmpTickerList.forEach {
+                if (it.symbol == symbol) {
+                    it.isFavorite = false
+                    return@forEach
+                }
+            }
             _bithumbRepository.deleteFavoriteTicker(symbol)
         }
     }
@@ -85,10 +88,9 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
                 if (item.symbol == content.symbol) {
                     item.currentPrice = content.closePrice
                     item.prevPrice = content.prevClosePrice
-                    item.isFavorite = _favoriteSymbolList.contains(content.symbol)
                 }
                 item
-            }
+            }.toMutableList()
         }
     }
 
