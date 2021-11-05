@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewModel() {
     private val _tmpTickerList: MutableList<Ticker> = mutableListOf()
-    private val _tickerList: MutableLiveData<MutableList<Ticker>> = MutableLiveData()
+    private val _tickerList: MutableLiveData<List<Ticker>> = MutableLiveData()
     val tickerList = _tickerList.asLiveData()
 
     private val _doRetry: MutableLiveData<String> = MutableLiveData()
@@ -90,7 +90,7 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
                     item.prevPrice = content.prevClosePrice
                 }
                 item
-            }.toMutableList()
+            }
         }
     }
 
