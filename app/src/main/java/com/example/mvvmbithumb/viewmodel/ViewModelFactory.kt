@@ -9,7 +9,7 @@ class ViewModelFactory(
     private val _bithumbRepository: BithumbRepository
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T = with(modelClass) {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = with(modelClass) {
         when {
             isAssignableFrom(HomeViewModel::class.java) -> HomeViewModel(_bithumbRepository)
             else -> error("Invalid View Model class")
