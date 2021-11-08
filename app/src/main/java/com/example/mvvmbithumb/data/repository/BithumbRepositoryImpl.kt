@@ -5,7 +5,6 @@ import com.example.mvvmbithumb.data.local.db.entity.FavoriteSymbolEntity
 import com.example.mvvmbithumb.data.model.RequestTickerData
 import com.example.mvvmbithumb.data.model.Ticker
 import com.example.mvvmbithumb.data.model.TickerData
-import com.example.mvvmbithumb.data.model.TickerList
 import com.example.mvvmbithumb.data.network.NetworkRepository
 import com.example.mvvmbithumb.data.websocket.WebSocketProvider
 import com.example.mvvmbithumb.util.Resource
@@ -18,6 +17,7 @@ class BithumbRepositoryImpl(
     private val _networkRepository: NetworkRepository,
     private val _database: BithumbDatabase
 ) : BithumbRepository {
+
     override fun listenTickerSocket(requestTickerData: RequestTickerData): Channel<Resource<TickerData>> {
         return _webSocketProvider.tickerSocket.listenTickerSocket(requestTickerData)
     }
