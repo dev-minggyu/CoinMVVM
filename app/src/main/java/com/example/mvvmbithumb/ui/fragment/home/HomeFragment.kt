@@ -19,8 +19,8 @@ import com.example.mvvmbithumb.ui.fragment.home.dialog.RetryDialog
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val _homeViewModel by viewModels<HomeViewModel> { getViewModelFactory() }
 
-    private lateinit var tickerAdapter: TickerAdapter
-    private lateinit var favoriteAdapter: TickerAdapter
+    private var tickerAdapter: TickerAdapter? = null
+    private var favoriteAdapter: TickerAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,11 +45,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         })
 
         _homeViewModel.tickerList.observe(viewLifecycleOwner, {
-            tickerAdapter.submitList(it)
+            tickerAdapter?.submitList(it)
         })
 
         _homeViewModel.favoriteTickerList.observe(viewLifecycleOwner, {
-            favoriteAdapter.submitList(it)
+            favoriteAdapter?.submitList(it)
         })
 
         _homeViewModel.doRetry.observe(viewLifecycleOwner, {
@@ -60,10 +60,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private fun setupViewPager() {
         initListAdapters()
 
-        _dataBinding.apply {
+        dataBinding.apply {
             viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
             viewPager.offscreenPageLimit = ListViewPagerAdapter.VIEW_LIST_COUNT
-            viewPager.adapter = ListViewPagerAdapter(tickerAdapter, favoriteAdapter)
+            viewPager.adapter = ListViewPagerAdapter(tickerAdapter!!, favoriteAdapter!!)
         }
     }
 
@@ -79,5 +79,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         }
         tickerAdapter = TickerAdapter(tickerClickListener)
         favoriteAdapter = TickerAdapter(tickerClickListener)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        tickerAdapter = null
+        favoriteAdapter = null
     }
 }
