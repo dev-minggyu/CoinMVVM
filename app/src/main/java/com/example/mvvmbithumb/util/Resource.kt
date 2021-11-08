@@ -1,8 +1,8 @@
 package com.example.mvvmbithumb.util
 
-sealed class Resource<T> {
-    class Success<T>(val data: T) : Resource<T>()
-    class Error<T>(val message: String) : Resource<T>()
+sealed class Resource<T : Any> {
+    class Success<T : Any>(val data: T) : Resource<T>()
+    class Error<T : Any>(val message: String) : Resource<T>()
     object Loading : Resource<Nothing>()
 }
 
