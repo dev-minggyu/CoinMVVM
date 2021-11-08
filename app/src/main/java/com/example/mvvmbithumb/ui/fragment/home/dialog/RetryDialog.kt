@@ -24,11 +24,11 @@ class RetryDialog(private val reason: String) :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _dataBinding.tvReason.text = reason
+        dataBinding.tvReason.text = reason
 
-        _dataBinding.btnCancel.setOnClickListener { dismiss() }
+        dataBinding.btnCancel.setOnClickListener { dismiss() }
 
-        _dataBinding.btnRetry.setOnClickListener {
+        dataBinding.btnRetry.setOnClickListener {
             _sharedViewModel.doRetryListenPrice()
             dismiss()
         }

@@ -18,6 +18,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
     private fun setupNavigation() {
         _navController = findNavController(R.id.nav_host_fragment)
-        _dataBinding.navBottom.setupWithNavController(_navController)
+        dataBinding.navBottom.setupWithNavController(_navController)
     }
 }

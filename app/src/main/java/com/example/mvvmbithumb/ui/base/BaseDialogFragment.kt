@@ -11,13 +11,19 @@ import androidx.fragment.app.FragmentManager
 
 abstract class BaseDialogFragment<T : ViewDataBinding>(private val _layoutID: Int) :
     DialogFragment() {
-    lateinit var _dataBinding: T
+    private var _dataBinding: T? = null
+    val dataBinding get() = _dataBinding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         _dataBinding = DataBindingUtil.inflate(inflater, _layoutID, container, false)
-        return _dataBinding.root
+        return _dataBinding?.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _dataBinding = null
     }
 
     fun show(manager: FragmentManager) {
