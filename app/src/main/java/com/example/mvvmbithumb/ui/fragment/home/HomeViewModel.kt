@@ -29,6 +29,7 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
             is Resource.Success -> {
                 _tmpTickerList.clear()
                 _tmpTickerList.addAll(tickerList.data)
+                _tickerList.value = _tmpTickerList.toList()
                 true
             }
             else -> false
