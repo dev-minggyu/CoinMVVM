@@ -46,7 +46,7 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
             }
 
             val requestTickerData = RequestTickerData(_tmpTickerList.map { it.symbol })
-            _bithumbRepository.listenTickerSocket(requestTickerData).consumeEach {
+            _bithumbRepository.listenTickerSocket(viewModelScope, requestTickerData).consumeEach {
                 when (it) {
                     is Resource.Success -> onReceivedTicker(it.data)
                     is Resource.Error -> onSocketError(it.message)
