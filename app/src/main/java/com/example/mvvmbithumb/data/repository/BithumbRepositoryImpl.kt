@@ -9,7 +9,7 @@ import com.example.mvvmbithumb.data.network.NetworkRepository
 import com.example.mvvmbithumb.data.websocket.WebSocketProvider
 import com.example.mvvmbithumb.util.Resource
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class BithumbRepositoryImpl(
@@ -18,7 +18,7 @@ class BithumbRepositoryImpl(
     private val _database: BithumbDatabase
 ) : BithumbRepository {
 
-    override fun listenTickerSocket(requestTickerData: RequestTickerData): Channel<Resource<TickerData>> {
+    override fun listenTickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>> {
         return _webSocketProvider.tickerSocket.listenTickerSocket(requestTickerData)
     }
 

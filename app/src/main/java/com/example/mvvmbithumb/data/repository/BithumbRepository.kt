@@ -5,10 +5,10 @@ import com.example.mvvmbithumb.data.model.RequestTickerData
 import com.example.mvvmbithumb.data.model.Ticker
 import com.example.mvvmbithumb.data.model.TickerData
 import com.example.mvvmbithumb.util.Resource
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 
 interface BithumbRepository {
-    fun listenTickerSocket(requestTickerData: RequestTickerData): Channel<Resource<TickerData>>
+    fun listenTickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>>
 
     fun stopTickerSocket()
 

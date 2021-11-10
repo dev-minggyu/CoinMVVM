@@ -54,6 +54,10 @@ dependencies {
     // OkHttp (WebSocket)
     implementation "com.squareup.okhttp3:okhttp:4.9.1"
 
+    // Ktor
+    implementation 'io.ktor:ktor-client-websockets:1.6.5'
+    implementation 'io.ktor:ktor-client-okhttp:1.6.5'
+
     // Gson
     implementation 'com.google.code.gson:gson:2.8.7'
 

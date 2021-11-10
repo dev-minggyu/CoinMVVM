@@ -7,7 +7,7 @@ import com.example.mvvmbithumb.data.model.TickerData
 import com.example.mvvmbithumb.data.repository.BithumbRepository
 import com.example.mvvmbithumb.extension.asLiveData
 import com.example.mvvmbithumb.util.Resource
-import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewModel() {
@@ -46,7 +46,7 @@ class HomeViewModel(private val _bithumbRepository: BithumbRepository) : ViewMod
             }
 
             val requestTickerData = RequestTickerData(_tmpTickerList.map { it.symbol })
-            _bithumbRepository.listenTickerSocket(requestTickerData).consumeEach {
+            _bithumbRepository.listenTickerSocket(requestTickerData).collect {
                 when (it) {
                     is Resource.Success -> onReceivedTicker(it.data)
                     is Resource.Error -> onSocketError(it.message)
