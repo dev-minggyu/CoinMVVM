@@ -15,12 +15,15 @@ import com.example.mvvmbithumb.ui.fragment.home.adapter.ListViewPagerAdapter
 import com.example.mvvmbithumb.ui.fragment.home.adapter.TickerAdapter
 import com.example.mvvmbithumb.ui.fragment.home.adapter.TickerClickListener
 import com.example.mvvmbithumb.ui.fragment.home.dialog.RetryDialog
+import com.google.android.material.snackbar.Snackbar
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val _homeViewModel by viewModels<HomeViewModel> { getViewModelFactory() }
 
     private var tickerAdapter: TickerAdapter? = null
     private var favoriteAdapter: TickerAdapter? = null
+
+    private var _networkSnackBar: Snackbar? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -31,30 +34,31 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     }
 
     private fun setupObserver() {
-        getNetworkStateLiveData().observe(viewLifecycleOwner, {
+        getNetworkStateLiveData().observe(viewLifecycleOwner) {
             when (it!!) {
                 NetworkState.CONNECTED -> {
+                    _networkSnackBar?.dismiss()
                     _homeViewModel.doListenPrice()
                 }
                 NetworkState.DISCONNECTED -> {
-                    showSnackBar("인터넷 연결을 확인해주세요.", "재시도") {
-                        _homeViewModel.doRetryListenPrice()
+                    _networkSnackBar = showSnackBar("인터넷 연결을 확인해주세요.", "재시도") {
+                        getNetworkStateLiveData().updateState()
                     }
                 }
             }
-        })
+        }
 
-        _homeViewModel.tickerList.observe(viewLifecycleOwner, {
+        _homeViewModel.tickerList.observe(viewLifecycleOwner) {
             tickerAdapter?.submitList(it)
-        })
+        }
 
-        _homeViewModel.favoriteTickerList.observe(viewLifecycleOwner, {
+        _homeViewModel.favoriteTickerList.observe(viewLifecycleOwner) {
             favoriteAdapter?.submitList(it)
-        })
+        }
 
-        _homeViewModel.doRetry.observe(viewLifecycleOwner, {
+        _homeViewModel.doRetry.observe(viewLifecycleOwner) {
             RetryDialog(it).show(childFragmentManager)
-        })
+        }
     }
 
     private fun setupViewPager() {
