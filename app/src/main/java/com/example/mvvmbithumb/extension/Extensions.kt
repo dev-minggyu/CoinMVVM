@@ -61,14 +61,17 @@ fun Activity.showSnackBar(
 fun Fragment.showSnackBar(
     text: String, buttonName: String? = null,
     clickListener: View.OnClickListener? = null
-) {
+): Snackbar? {
+    var snackBar: Snackbar? = null
     view?.let {
-        val snackBar = Snackbar.make(it, text, Snackbar.LENGTH_LONG)
-        clickListener?.let {
-            snackBar.setAction(buttonName, clickListener)
+        snackBar = Snackbar.make(it, text, Snackbar.LENGTH_INDEFINITE).also { snackBar ->
+            clickListener?.let {
+                snackBar.setAction(buttonName, clickListener)
+            }
+            snackBar.show()
         }
-        snackBar.show()
     }
+    return snackBar
 }
 
 suspend fun <E> Channel<E>.sendIgnoreClosed(event: E) {
