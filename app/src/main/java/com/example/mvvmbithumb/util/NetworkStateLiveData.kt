@@ -47,7 +47,7 @@ class NetworkStateLiveData(context: Context) : LiveData<NetworkState>() {
         )
     }
 
-    private fun updateState() {
+    fun updateState() {
         val capabilities =
             connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         if (capabilities == null) {

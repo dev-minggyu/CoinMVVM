@@ -1,9 +1,9 @@
-package com.example.mvvmbithumb.data.websocket.sockets
+package com.example.mvvmbithumb.data.remote.websocket.sockets
 
 import com.example.mvvmbithumb.data.model.RequestTickerData
 import com.example.mvvmbithumb.data.model.TickerData
 import com.example.mvvmbithumb.data.model.TickerInfo
-import com.example.mvvmbithumb.data.websocket.WebSocketProvider
+import com.example.mvvmbithumb.data.remote.websocket.WebSocketProvider
 import com.example.mvvmbithumb.util.Resource
 import com.google.gson.Gson
 import io.ktor.client.*
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class TickerSocket {
-    private lateinit var _tickerSocket: HttpClient
+    private var _tickerSocket: HttpClient? = null
 
     fun listenTickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>> = flow {
         try {
@@ -23,7 +23,7 @@ class TickerSocket {
                 install(WebSockets)
             }
 
-            _tickerSocket.wss(WebSocketProvider.BITHUMB_URL) {
+            _tickerSocket!!.wss(WebSocketProvider.BITHUMB_URL) {
                 val jsonData = Gson().toJson(requestTickerData)
                 outgoing.send(Frame.Text(jsonData))
                 incoming.consumeEach {
@@ -48,7 +48,7 @@ class TickerSocket {
     }
 
     fun stopTickerSocket() {
-        _tickerSocket.close()
+        _tickerSocket?.close()
     }
 }
 

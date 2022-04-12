@@ -1,4 +1,4 @@
-package com.example.mvvmbithumb.data.network
+package com.example.mvvmbithumb.data.remote.network
 
 import com.example.mvvmbithumb.BuildConfig
 import com.example.mvvmbithumb.data.model.TickerList

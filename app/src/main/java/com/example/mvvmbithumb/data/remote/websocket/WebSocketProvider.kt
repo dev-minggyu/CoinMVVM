@@ -1,6 +1,6 @@
-package com.example.mvvmbithumb.data.websocket
+package com.example.mvvmbithumb.data.remote.websocket
 
-import com.example.mvvmbithumb.data.websocket.sockets.TickerSocket
+import com.example.mvvmbithumb.data.remote.websocket.sockets.TickerSocket
 
 class WebSocketProvider {
     val tickerSocket = TickerSocket()

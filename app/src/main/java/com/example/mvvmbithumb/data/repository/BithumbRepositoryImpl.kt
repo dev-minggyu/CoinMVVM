@@ -5,8 +5,8 @@ import com.example.mvvmbithumb.data.local.db.entity.FavoriteSymbolEntity
 import com.example.mvvmbithumb.data.model.RequestTickerData
 import com.example.mvvmbithumb.data.model.Ticker
 import com.example.mvvmbithumb.data.model.TickerData
-import com.example.mvvmbithumb.data.network.NetworkRepository
-import com.example.mvvmbithumb.data.websocket.WebSocketProvider
+import com.example.mvvmbithumb.data.remote.network.NetworkRepository
+import com.example.mvvmbithumb.data.remote.websocket.WebSocketProvider
 import com.example.mvvmbithumb.util.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
