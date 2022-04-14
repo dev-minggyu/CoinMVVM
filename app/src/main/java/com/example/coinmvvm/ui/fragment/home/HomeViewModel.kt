@@ -53,6 +53,7 @@ class HomeViewModel(private val _coinRepository: CoinRepository) : ViewModel() {
                 when (it) {
                     is Resource.Success -> onReceivedTicker(it.data)
                     is Resource.Error -> onSocketError(it.message)
+                    is Resource.Loading -> {}
                 }
             }
         }
