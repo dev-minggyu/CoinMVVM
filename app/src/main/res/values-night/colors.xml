@@ -6,7 +6,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="color_text">#000000</color>
+    <color name="color_text">#FFFFFF</color>
 
     <color name="color_price_same">#000000</color>
     <color name="color_price_up">#FF0000</color>
