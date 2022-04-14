@@ -64,11 +64,11 @@ fun Fragment.showSnackBar(
 ): Snackbar? {
     var snackBar: Snackbar? = null
     view?.let {
-        snackBar = Snackbar.make(it, text, Snackbar.LENGTH_INDEFINITE).also { snackBar ->
+        snackBar = Snackbar.make(it, text, Snackbar.LENGTH_INDEFINITE).apply {
             clickListener?.let {
-                snackBar.setAction(buttonName, clickListener)
+                setAction(buttonName, clickListener)
             }
-            snackBar.show()
+            show()
         }
     }
     return snackBar
