@@ -13,24 +13,20 @@ abstract class BithumbDatabase : RoomDatabase() {
 
     companion object {
 
+        @Volatile
         private var INSTANCE: BithumbDatabase? = null
-
-        private val lock = Any()
 
         private const val DB_FILE_NAME = "Bithumb.db"
 
-        fun getInstance(context: Context): BithumbDatabase {
-            synchronized(lock) {
-                if (INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(
-                        context.applicationContext,
-                        BithumbDatabase::class.java, DB_FILE_NAME
-                    )
-                        .build()
-                }
-                return INSTANCE!!
+        fun getInstance(context: Context) =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
             }
-        }
-    }
 
+        private fun buildDatabase(context: Context) =
+            Room.databaseBuilder(
+                context.applicationContext,
+                BithumbDatabase::class.java, DB_FILE_NAME
+            ).build()
+    }
 }
