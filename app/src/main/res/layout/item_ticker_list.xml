@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.example.mvvmbithumb.util.NestedScrollableHost
+        <com.example.coinmvvm.util.NestedScrollableHost
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -15,7 +15,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-        </com.example.mvvmbithumb.util.NestedScrollableHost>
+        </com.example.coinmvvm.util.NestedScrollableHost>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

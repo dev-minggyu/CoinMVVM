@@ -6,11 +6,11 @@
 
         <variable
             name="ticker"
-            type="com.example.mvvmbithumb.data.model.Ticker" />
+            type="com.example.coinmvvm.data.model.Ticker" />
 
         <variable
             name="clickListener"
-            type="com.example.mvvmbithumb.ui.fragment.home.adapter.TickerClickListener" />
+            type="com.example.coinmvvm.ui.fragment.home.adapter.TickerClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
