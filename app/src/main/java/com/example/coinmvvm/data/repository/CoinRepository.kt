@@ -8,7 +8,7 @@ import com.example.coinmvvm.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface CoinRepository {
-    fun listenTickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>>
+    fun tickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>>
 
     fun stopTickerSocket()
 

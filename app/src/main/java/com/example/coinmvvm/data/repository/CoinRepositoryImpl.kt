@@ -6,24 +6,24 @@ import com.example.coinmvvm.data.model.RequestTickerData
 import com.example.coinmvvm.data.model.Ticker
 import com.example.coinmvvm.data.model.TickerData
 import com.example.coinmvvm.data.remote.network.NetworkRepository
-import com.example.coinmvvm.data.remote.websocket.WebSocketProvider
+import com.example.coinmvvm.data.remote.websocket.WebSocketRepository
 import com.example.coinmvvm.util.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class CoinRepositoryImpl(
-    private val _webSocketProvider: WebSocketProvider,
+    private val _webSocketRepository: WebSocketRepository,
     private val _networkRepository: NetworkRepository,
     private val _database: CoinDatabase
 ) : CoinRepository {
 
-    override fun listenTickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>> {
-        return _webSocketProvider.tickerSocket.listenTickerSocket(requestTickerData)
+    override fun tickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>> {
+        return _webSocketRepository.tickerSocket(requestTickerData)
     }
 
     override fun stopTickerSocket() {
-        _webSocketProvider.tickerSocket.stopTickerSocket()
+        _webSocketRepository.stopTickerSocket()
     }
 
     override suspend fun getKRWTickers(): Resource<List<Ticker>> {

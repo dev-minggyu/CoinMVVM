@@ -3,7 +3,7 @@ package com.example.coinmvvm
 import android.app.Application
 import com.example.coinmvvm.data.local.db.CoinDatabase
 import com.example.coinmvvm.data.remote.network.NetworkRepository
-import com.example.coinmvvm.data.remote.websocket.WebSocketProvider
+import com.example.coinmvvm.data.remote.websocket.WebSocketRepository
 import com.example.coinmvvm.data.repository.CoinRepositoryImpl
 import com.example.coinmvvm.util.NetworkStateLiveData
 
@@ -16,7 +16,7 @@ class App : Application() {
         super.onCreate()
 
         coinRepository = CoinRepositoryImpl(
-            WebSocketProvider(),
+            WebSocketRepository(),
             NetworkRepository(),
             CoinDatabase.getInstance(applicationContext)
         )

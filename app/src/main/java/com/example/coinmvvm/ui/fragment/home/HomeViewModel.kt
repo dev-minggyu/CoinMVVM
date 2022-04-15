@@ -10,7 +10,6 @@ import com.example.coinmvvm.data.model.TickerData
 import com.example.coinmvvm.data.repository.CoinRepository
 import com.example.coinmvvm.extension.asLiveData
 import com.example.coinmvvm.util.Resource
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val _coinRepository: CoinRepository) : ViewModel() {
@@ -49,7 +48,7 @@ class HomeViewModel(private val _coinRepository: CoinRepository) : ViewModel() {
             }
 
             val requestTickerData = RequestTickerData(_tmpTickerList.map { it.symbol })
-            _coinRepository.listenTickerSocket(requestTickerData).collect {
+            _coinRepository.tickerSocket(requestTickerData).collect {
                 when (it) {
                     is Resource.Success -> onReceivedTicker(it.data)
                     is Resource.Error -> onSocketError(it.message)
