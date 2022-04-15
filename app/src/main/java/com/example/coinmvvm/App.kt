@@ -15,12 +15,21 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        INSTANCE = this
+
         coinRepository = CoinRepositoryImpl(
             WebSocketRepository(),
             NetworkRepository(),
             CoinDatabase.getInstance(applicationContext)
         )
-
         networkStateLiveData = NetworkStateLiveData(applicationContext)
+    }
+
+    companion object {
+        private lateinit var INSTANCE: App
+
+        fun getString(resID: Int): String {
+            return INSTANCE.getString(resID)
+        }
     }
 }

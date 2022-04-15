@@ -11,11 +11,12 @@ import com.example.coinmvvm.extension.getNetworkStateLiveData
 import com.example.coinmvvm.extension.getViewModelFactory
 import com.example.coinmvvm.extension.showSnackBar
 import com.example.coinmvvm.ui.base.BaseFragment
-import com.example.coinmvvm.ui.fragment.home.adapter.ListViewPagerAdapter
+import com.example.coinmvvm.ui.fragment.home.adapter.CoinListPagerAdapter
 import com.example.coinmvvm.ui.fragment.home.adapter.TickerAdapter
 import com.example.coinmvvm.ui.fragment.home.adapter.TickerClickListener
 import com.example.coinmvvm.ui.fragment.home.dialog.RetryDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayoutMediator
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val _homeViewModel by viewModels<HomeViewModel> { getViewModelFactory() }
@@ -66,8 +67,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
         dataBinding.apply {
             viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-            viewPager.offscreenPageLimit = ListViewPagerAdapter.VIEW_LIST_COUNT
-            viewPager.adapter = ListViewPagerAdapter(tickerAdapter!!, favoriteAdapter!!)
+            viewPager.offscreenPageLimit = ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
+            viewPager.adapter = CoinListPagerAdapter(tickerAdapter!!, favoriteAdapter!!)
+
+            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                tab.text = (viewPager.adapter as CoinListPagerAdapter).getListTitle(position)
+            }.attach()
         }
     }
 
@@ -81,8 +86,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 }
             }
         }
-        tickerAdapter = TickerAdapter(tickerClickListener)
-        favoriteAdapter = TickerAdapter(tickerClickListener)
+        tickerAdapter = TickerAdapter(tickerClickListener).apply {
+            tabTitle = "전체"
+        }
+        favoriteAdapter = TickerAdapter(tickerClickListener).apply {
+            tabTitle = "즐겨찾기"
+        }
     }
 
     override fun onDestroyView() {

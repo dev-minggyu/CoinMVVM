@@ -3,12 +3,14 @@ package com.example.coinmvvm.ui.fragment.home.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.coinmvvm.App
+import com.example.coinmvvm.R
 import com.example.coinmvvm.databinding.ItemTickerListBinding
 
-class ListViewPagerAdapter(
+class CoinListPagerAdapter(
     private val mainAdapter: TickerAdapter,
     private val favoriteAdapter: TickerAdapter
-) : RecyclerView.Adapter<ListViewPagerAdapter.TickerListsViewHolder>() {
+) : RecyclerView.Adapter<CoinListPagerAdapter.TickerListsViewHolder>() {
 
     override fun getItemCount(): Int {
         return VIEW_LIST_COUNT
@@ -27,6 +29,14 @@ class ListViewPagerAdapter(
         }
     }
 
+    fun getListTitle(position: Int): String {
+        return when (position) {
+            VIEW_LIST_MAIN -> App.getString(R.string.tab_coinlist_all)
+            VIEW_LIST_FAVORITE -> App.getString(R.string.tab_coinlist_favorite)
+            else -> ""
+        }
+    }
+
     class TickerListsViewHolder(private val binding: ItemTickerListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -36,9 +46,8 @@ class ListViewPagerAdapter(
     }
 
     companion object {
-        @JvmStatic
-        val VIEW_LIST_COUNT = 2
         const val VIEW_LIST_MAIN = 0
         const val VIEW_LIST_FAVORITE = 1
+        const val VIEW_LIST_COUNT = 2
     }
 }

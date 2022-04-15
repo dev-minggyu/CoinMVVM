@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Coin_MVVM</string>
+    <string name="tab_coinlist_all">전체</string>
+    <string name="tab_coinlist_favorite">즐겨찾기</string>
 </resources>
