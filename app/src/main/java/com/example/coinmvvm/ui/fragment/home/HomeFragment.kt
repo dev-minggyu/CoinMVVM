@@ -8,7 +8,6 @@ import com.example.coinmvvm.R
 import com.example.coinmvvm.constant.enums.NetworkState
 import com.example.coinmvvm.databinding.FragmentHomeBinding
 import com.example.coinmvvm.extension.getNetworkStateLiveData
-import com.example.coinmvvm.extension.getViewModelFactory
 import com.example.coinmvvm.extension.showSnackBar
 import com.example.coinmvvm.ui.base.BaseFragment
 import com.example.coinmvvm.ui.fragment.home.adapter.CoinListPagerAdapter
@@ -17,9 +16,11 @@ import com.example.coinmvvm.ui.fragment.home.adapter.TickerClickListener
 import com.example.coinmvvm.ui.fragment.home.dialog.RetryDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
-    private val _homeViewModel by viewModels<HomeViewModel> { getViewModelFactory() }
+    private val _homeViewModel: HomeViewModel by viewModels()
 
     private var tickerAdapter: TickerAdapter? = null
     private var favoriteAdapter: TickerAdapter? = null

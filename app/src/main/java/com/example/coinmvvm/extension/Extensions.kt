@@ -3,32 +3,15 @@ package com.example.coinmvvm.extension
 import android.app.Activity
 import android.view.View
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.coinmvvm.App
 import com.example.coinmvvm.util.NetworkStateLiveData
-import com.example.coinmvvm.viewmodel.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.channels.Channel
 
 fun <T> MutableLiveData<T>.asLiveData() = this as LiveData<T>
-
-fun Activity.getViewModelFactory(): ViewModelFactory {
-    val repository = (applicationContext as App).coinRepository
-    return ViewModelFactory(repository)
-}
-
-fun Fragment.getViewModelFactory(): ViewModelFactory {
-    val repository = (requireContext().applicationContext as App).coinRepository
-    return ViewModelFactory(repository)
-}
-
-fun DialogFragment.getViewModelFactory(): ViewModelFactory {
-    val repository = (requireContext().applicationContext as App).coinRepository
-    return ViewModelFactory(repository)
-}
 
 fun Activity.getNetworkStateLiveData(): NetworkStateLiveData {
     return (applicationContext as App).networkStateLiveData

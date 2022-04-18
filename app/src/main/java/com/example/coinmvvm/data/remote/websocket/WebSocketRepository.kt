@@ -6,23 +6,16 @@ import com.example.coinmvvm.data.model.TickerInfo
 import com.example.coinmvvm.util.Resource
 import com.google.gson.Gson
 import io.ktor.client.*
-import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class WebSocketRepository {
-    private var _tickerSocket: HttpClient? = null
-
+class WebSocketRepository(private val webSocket: HttpClient) {
     fun tickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>> = flow {
         try {
-            _tickerSocket = HttpClient(OkHttp) {
-                install(WebSockets)
-            }
-
-            _tickerSocket!!.wss(TICKER_URL) {
+            webSocket.wss(TICKER_URL) {
                 val jsonData = Gson().toJson(requestTickerData)
                 outgoing.send(Frame.Text(jsonData))
                 incoming.consumeEach {
@@ -47,7 +40,7 @@ class WebSocketRepository {
     }
 
     fun stopTickerSocket() {
-        _tickerSocket?.close()
+        webSocket.close()
     }
 
     companion object {

@@ -5,16 +5,14 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.example.coinmvvm.R
 import com.example.coinmvvm.databinding.DialogRetryBinding
-import com.example.coinmvvm.extension.getViewModelFactory
 import com.example.coinmvvm.ui.base.BaseDialogFragment
 import com.example.coinmvvm.ui.fragment.home.HomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RetryDialog(private val reason: String) :
     BaseDialogFragment<DialogRetryBinding>(R.layout.dialog_retry) {
-    private val _sharedViewModel: HomeViewModel by viewModels(
-        { requireParentFragment() },
-        { getViewModelFactory() }
-    )
+    private val _sharedViewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

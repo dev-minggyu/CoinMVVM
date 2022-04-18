@@ -7,7 +7,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.coinmvvm.R
 import com.example.coinmvvm.databinding.ActivityMainBinding
 import com.example.coinmvvm.ui.base.BaseActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     private lateinit var _navController: NavController
 

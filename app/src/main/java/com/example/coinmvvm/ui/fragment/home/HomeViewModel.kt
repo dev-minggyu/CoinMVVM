@@ -10,9 +10,14 @@ import com.example.coinmvvm.data.model.TickerData
 import com.example.coinmvvm.data.repository.CoinRepository
 import com.example.coinmvvm.extension.asLiveData
 import com.example.coinmvvm.util.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel(private val _coinRepository: CoinRepository) : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val _coinRepository: CoinRepository
+) : ViewModel() {
     private val _tmpTickerList: MutableList<Ticker> = mutableListOf()
     private val _tickerList: MutableLiveData<List<Ticker>> = MutableLiveData()
     val tickerList = _tickerList.asLiveData()
