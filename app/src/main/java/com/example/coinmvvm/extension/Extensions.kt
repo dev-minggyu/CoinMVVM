@@ -6,20 +6,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.coinmvvm.App
-import com.example.coinmvvm.util.NetworkStateLiveData
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.channels.Channel
 
 fun <T> MutableLiveData<T>.asLiveData() = this as LiveData<T>
-
-fun Activity.getNetworkStateLiveData(): NetworkStateLiveData {
-    return (applicationContext as App).networkStateLiveData
-}
-
-fun Fragment.getNetworkStateLiveData(): NetworkStateLiveData {
-    return (requireContext().applicationContext as App).networkStateLiveData
-}
 
 fun Activity.showToast(text: String) {
     Toast.makeText(this, text, Toast.LENGTH_LONG).show()

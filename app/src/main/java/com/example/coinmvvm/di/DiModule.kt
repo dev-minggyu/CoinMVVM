@@ -10,6 +10,7 @@ import com.example.coinmvvm.data.remote.network.NetworkRepository
 import com.example.coinmvvm.data.remote.websocket.WebSocketRepository
 import com.example.coinmvvm.data.repository.CoinRepository
 import com.example.coinmvvm.data.repository.CoinRepositoryImpl
+import com.example.coinmvvm.util.NetworkStateLiveData
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -98,5 +99,11 @@ class DiModule {
     @Provides
     fun provideCoinDao(coinDB: CoinDatabase): CoinDao {
         return coinDB.coinDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideNetworkStateLiveData(@ApplicationContext context: Context): NetworkStateLiveData {
+        return NetworkStateLiveData(context)
     }
 }

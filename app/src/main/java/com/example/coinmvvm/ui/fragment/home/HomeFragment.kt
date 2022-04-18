@@ -7,7 +7,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.coinmvvm.R
 import com.example.coinmvvm.constant.enums.NetworkState
 import com.example.coinmvvm.databinding.FragmentHomeBinding
-import com.example.coinmvvm.extension.getNetworkStateLiveData
 import com.example.coinmvvm.extension.showSnackBar
 import com.example.coinmvvm.ui.base.BaseFragment
 import com.example.coinmvvm.ui.fragment.home.adapter.CoinListPagerAdapter
@@ -36,7 +35,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     }
 
     private fun setupObserver() {
-        getNetworkStateLiveData().observe(viewLifecycleOwner) {
+        networkStateLiveData.observe(viewLifecycleOwner) {
             when (it!!) {
                 NetworkState.CONNECTED -> {
                     _networkSnackBar?.dismiss()
@@ -44,7 +43,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 }
                 NetworkState.DISCONNECTED -> {
                     _networkSnackBar = showSnackBar("인터넷 연결을 확인해주세요.", "재시도") {
-                        getNetworkStateLiveData().updateState()
+                        networkStateLiveData.updateState()
                     }
                 }
             }
