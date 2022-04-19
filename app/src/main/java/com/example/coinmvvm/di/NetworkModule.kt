@@ -2,7 +2,7 @@ package com.example.coinmvvm.di
 
 import com.example.coinmvvm.BuildConfig
 import com.example.coinmvvm.data.remote.network.NetworkAPI
-import com.example.coinmvvm.data.remote.network.NetworkRepository
+import com.example.coinmvvm.data.remote.network.NetworkRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,7 +28,7 @@ class NetworkModule {
         }
 
         return Retrofit.Builder()
-            .baseUrl(NetworkRepository.BASE_URL)
+            .baseUrl(NetworkRepositoryImpl.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient.build())
             .build()

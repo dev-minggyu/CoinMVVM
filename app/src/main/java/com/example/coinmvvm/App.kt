@@ -1,7 +1,6 @@
 package com.example.coinmvvm
 
 import android.app.Application
-import com.example.coinmvvm.util.NetworkStateLiveData
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp

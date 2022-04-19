@@ -11,8 +11,9 @@ import com.example.coinmvvm.util.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class CoinRepositoryImpl(
+class CoinRepositoryImpl @Inject constructor(
     private val _webSocketRepository: WebSocketRepository,
     private val _networkRepository: NetworkRepository,
     private val _database: CoinDatabase

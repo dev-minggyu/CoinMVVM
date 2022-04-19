@@ -1,44 +1,29 @@
 package com.example.coinmvvm.di
 
-import com.example.coinmvvm.data.local.db.CoinDatabase
-import com.example.coinmvvm.data.remote.network.NetworkAPI
 import com.example.coinmvvm.data.remote.network.NetworkRepository
+import com.example.coinmvvm.data.remote.network.NetworkRepositoryImpl
 import com.example.coinmvvm.data.remote.websocket.WebSocketRepository
+import com.example.coinmvvm.data.remote.websocket.WebSocketRepositoryImpl
 import com.example.coinmvvm.data.repository.CoinRepository
 import com.example.coinmvvm.data.repository.CoinRepositoryImpl
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import io.ktor.client.*
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class RepositoryModule {
+abstract class RepositoryModule {
+    @Binds
     @Singleton
-    @Provides
-    fun provideCoinRepository(
-        webSocketRepository: WebSocketRepository,
-        networkRepository: NetworkRepository,
-        coinDatabase: CoinDatabase
-    ): CoinRepository {
-        return CoinRepositoryImpl(
-            webSocketRepository,
-            networkRepository,
-            coinDatabase
-        )
-    }
+    abstract fun bindRepository(coinRepositoryImpl: CoinRepositoryImpl): CoinRepository
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideNetworkRepository(networkAPI: NetworkAPI): NetworkRepository {
-        return NetworkRepository(networkAPI)
-    }
+    abstract fun bindNetworkRepository(networkRepositoryImpl: NetworkRepositoryImpl): NetworkRepository
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideWebSocketRepository(webSocket: HttpClient): WebSocketRepository {
-        return WebSocketRepository(webSocket)
-    }
+    abstract fun bindWebSocketRepository(webSocketRepositoryImpl: WebSocketRepositoryImpl): WebSocketRepository
 }
