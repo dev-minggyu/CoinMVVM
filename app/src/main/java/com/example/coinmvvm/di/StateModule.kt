@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class StateModule {
+object StateModule {
     @Singleton
     @Provides
     fun provideNetworkStateLiveData(@ApplicationContext context: Context): NetworkStateLiveData {

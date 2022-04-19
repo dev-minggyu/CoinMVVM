@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class WebSocketModule {
+object WebSocketModule {
     @Provides
     @Singleton
     fun provideWebSocket(): HttpClient {
