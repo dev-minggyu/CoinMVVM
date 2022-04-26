@@ -15,7 +15,7 @@ interface CoinDao {
     suspend fun getFavoriteSymbols(): List<FavoriteSymbolEntity>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertFavoriteSymbol(symbol: FavoriteSymbolEntity)
+    suspend fun addFavoriteTicker(symbol: FavoriteSymbolEntity): Long
 
     /**
      * @return the number of favorite deleted. This should always be 1.

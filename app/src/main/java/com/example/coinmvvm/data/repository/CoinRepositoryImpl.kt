@@ -32,11 +32,14 @@ class CoinRepositoryImpl @Inject constructor(
             when (val response = _networkRepository.getKRWTickers()) {
                 is Resource.Success -> {
                     val tickerList = response.data.toKRWTickerList()
-                    val favoriteList = getFavoriteSymbols().map {
-                        it.symbol
-                    }
-                    tickerList.forEach {
-                        it.isFavorite = favoriteList.contains(it.symbol)
+                    val favoriteList = getFavoriteSymbols()
+                    tickerList.forEach { ticker ->
+                        favoriteList.find {
+                            it.symbol == ticker.symbol
+                        }?.let {
+                            ticker.isFavorite = true
+                            ticker.favoriteIndex = it.id
+                        }
                     }
                     Resource.Success(tickerList)
                 }
@@ -51,9 +54,9 @@ class CoinRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addFavoriteTicker(symbol: String) {
-        withContext(Dispatchers.IO) {
-            _database.coinDao().insertFavoriteSymbol(FavoriteSymbolEntity(symbol = symbol))
+    override suspend fun addFavoriteTicker(symbol: String): Long {
+        return withContext(Dispatchers.IO) {
+            _database.coinDao().addFavoriteTicker(FavoriteSymbolEntity(symbol = symbol))
         }
     }
 

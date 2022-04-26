@@ -25,6 +25,8 @@ class HomeViewModel @Inject constructor(
     val favoriteTickerList = Transformations.map(_tickerList) { tickerList ->
         tickerList.filter {
             it.isFavorite
+        }.sortedBy {
+            it.favoriteIndex
         }
     }
 
@@ -70,25 +72,26 @@ class HomeViewModel @Inject constructor(
 
     fun addFavoriteSymbol(symbol: String) {
         viewModelScope.launch {
-            _tmpTickerList.forEach {
-                if (it.symbol == symbol) {
-                    it.isFavorite = true
-                    return@forEach
-                }
+            val index = _coinRepository.addFavoriteTicker(symbol)
+            _tmpTickerList.find {
+                it.symbol == symbol
+            }?.apply {
+                isFavorite = true
+                favoriteIndex = index
             }
-            _coinRepository.addFavoriteTicker(symbol)
+            _tickerList.value = _tmpTickerList
         }
     }
 
     fun deleteFavoriteSymbol(symbol: String) {
         viewModelScope.launch {
-            _tmpTickerList.forEach {
-                if (it.symbol == symbol) {
-                    it.isFavorite = false
-                    return@forEach
-                }
-            }
             _coinRepository.deleteFavoriteTicker(symbol)
+            _tmpTickerList.find {
+                it.symbol == symbol
+            }?.apply {
+                isFavorite = false
+            }
+            _tickerList.value = _tmpTickerList
         }
     }
 

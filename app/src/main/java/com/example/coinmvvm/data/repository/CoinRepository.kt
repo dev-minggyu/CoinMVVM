@@ -16,7 +16,7 @@ interface CoinRepository {
 
     suspend fun getFavoriteSymbols(): List<FavoriteSymbolEntity>
 
-    suspend fun addFavoriteTicker(symbol: String)
+    suspend fun addFavoriteTicker(symbol: String): Long
 
     suspend fun deleteFavoriteTicker(symbol: String)
 }

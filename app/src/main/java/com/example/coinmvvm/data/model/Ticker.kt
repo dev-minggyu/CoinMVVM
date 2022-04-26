@@ -41,7 +41,8 @@ data class Ticker(
     var symbol: String,
     var currentPrice: String = "0",
     var prevPrice: String = "0",
-    var isFavorite: Boolean = false
+    var isFavorite: Boolean = false,
+    var favoriteIndex: Long = -1
 ) {
     fun getPriceState(): PriceState {
         return if (currentPrice == prevPrice) {
