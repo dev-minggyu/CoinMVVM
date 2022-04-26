@@ -98,13 +98,13 @@ class HomeViewModel @Inject constructor(
     private fun onReceivedTicker(tickerData: TickerData?) {
         val tickerContent = tickerData?.ticker?.content
         tickerContent?.let { content ->
-            _tickerList.value = _tmpTickerList.map { item ->
-                if (item.symbol == content.symbol) {
-                    item.currentPrice = content.closePrice
-                    item.prevPrice = content.prevClosePrice
-                }
-                item
+            _tmpTickerList.find {
+                it.symbol == content.symbol
+            }?.apply {
+                currentPrice = content.closePrice
+                prevPrice = content.prevClosePrice
             }
+            _tickerList.value = _tmpTickerList
         }
     }
 
