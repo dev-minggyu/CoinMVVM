@@ -77,19 +77,20 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     }
 
     private fun initListAdapters() {
-        val tickerClickListener = object : FavoriteClickListener {
-            override fun onFavorite(symbol: String, isChecked: Boolean) {
-                if (isChecked) {
-                    _homeViewModel.addFavoriteSymbol(symbol)
-                } else {
-                    _homeViewModel.deleteFavoriteSymbol(symbol)
-                }
+        val favoriteClickListener = object : FavoriteClickListener {
+            override fun onAddFavorite(symbol: String) {
+                _homeViewModel.addFavoriteSymbol(symbol)
             }
+
+            override fun onDeleteFavorite(symbol: String) {
+                _homeViewModel.deleteFavoriteSymbol(symbol)
+            }
+
         }
-        tickerAdapter = TickerAdapter(tickerClickListener).apply {
+        tickerAdapter = TickerAdapter(favoriteClickListener).apply {
             tabTitle = "전체"
         }
-        favoriteAdapter = TickerAdapter(tickerClickListener).apply {
+        favoriteAdapter = TickerAdapter(favoriteClickListener).apply {
             tabTitle = "즐겨찾기"
         }
     }

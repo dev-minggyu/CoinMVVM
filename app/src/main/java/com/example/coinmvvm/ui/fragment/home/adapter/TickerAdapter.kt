@@ -29,9 +29,11 @@ class TickerAdapter(val favoriteClickListener: FavoriteClickListener?) :
 
         fun bind(item: Ticker) {
             binding.ticker = item
-            binding.btnFavorite.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (buttonView.isPressed) {
-                    favoriteClickListener?.onFavorite(item.symbol, isChecked)
+            binding.btnFavorite.setOnClickListener {
+                if (binding.btnFavorite.isChecked) {
+                    favoriteClickListener?.onAddFavorite(item.symbol)
+                } else {
+                    favoriteClickListener?.onDeleteFavorite(item.symbol)
                 }
             }
             binding.executePendingBindings()
@@ -54,5 +56,6 @@ class TransactionDiffCallback : DiffUtil.ItemCallback<Ticker>() {
 }
 
 interface FavoriteClickListener {
-    fun onFavorite(symbol: String, isChecked: Boolean)
+    fun onAddFavorite(symbol: String)
+    fun onDeleteFavorite(symbol: String)
 }
