@@ -85,14 +85,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             override fun onDeleteFavorite(symbol: String) {
                 _homeViewModel.deleteFavoriteSymbol(symbol)
             }
-
         }
-        tickerAdapter = TickerAdapter(favoriteClickListener).apply {
-            tabTitle = "전체"
-        }
-        favoriteAdapter = TickerAdapter(favoriteClickListener).apply {
-            tabTitle = "즐겨찾기"
-        }
+        tickerAdapter = TickerAdapter(favoriteClickListener)
+        favoriteAdapter = TickerAdapter(favoriteClickListener)
     }
 
     override fun onDestroyView() {

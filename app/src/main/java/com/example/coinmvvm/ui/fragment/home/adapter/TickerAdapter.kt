@@ -11,8 +11,6 @@ import com.example.coinmvvm.databinding.ItemTickerBinding
 class TickerAdapter(val favoriteClickListener: FavoriteClickListener?) :
     ListAdapter<Ticker, TickerAdapter.TickerViewHolder>(TransactionDiffCallback()) {
 
-    var tabTitle: String? = null
-
     override fun onBindViewHolder(holder: TickerViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
