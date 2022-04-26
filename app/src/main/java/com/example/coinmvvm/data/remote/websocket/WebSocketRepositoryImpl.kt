@@ -6,6 +6,7 @@ import com.example.coinmvvm.data.model.TickerInfo
 import com.example.coinmvvm.util.Resource
 import com.google.gson.Gson
 import io.ktor.client.*
+import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.channels.consumeEach
@@ -13,25 +14,32 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class WebSocketRepositoryImpl @Inject constructor(private val webSocket: HttpClient) : WebSocketRepository {
+class WebSocketRepositoryImpl @Inject constructor() : WebSocketRepository {
+
+    private var webSocket: HttpClient? = null
+
     override fun tickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>> = flow {
         try {
-            webSocket.wss(TICKER_URL) {
-                val gson = Gson()
-                val jsonData = gson.toJson(requestTickerData)
-                outgoing.send(Frame.Text(jsonData))
-                incoming.consumeEach {
-                    when (it) {
-                        is Frame.Text -> {
-                            val tickerInfo = gson.fromJson(it.readText(), TickerInfo::class.java)
-                            val tickerData = TickerData(tickerInfo)
-                            emit(Resource.Success(tickerData))
-                        }
-                        is Frame.Close -> {
-                            emit(Resource.Error(closeReason.await()!!.message))
-                        }
-                        else -> {
-                            emit(Resource.Error("Unknown Error"))
+            webSocket = HttpClient(OkHttp) {
+                install(WebSockets)
+            }.also {
+                it.wss(TICKER_URL) {
+                    val gson = Gson()
+                    val jsonData = gson.toJson(requestTickerData)
+                    outgoing.send(Frame.Text(jsonData))
+                    incoming.consumeEach { frame ->
+                        when (frame) {
+                            is Frame.Text -> {
+                                val tickerInfo = gson.fromJson(frame.readText(), TickerInfo::class.java)
+                                val tickerData = TickerData(tickerInfo)
+                                emit(Resource.Success(tickerData))
+                            }
+                            is Frame.Close -> {
+                                emit(Resource.Error(closeReason.await()!!.message))
+                            }
+                            else -> {
+                                emit(Resource.Error("Unknown Error"))
+                            }
                         }
                     }
                 }
@@ -42,7 +50,7 @@ class WebSocketRepositoryImpl @Inject constructor(private val webSocket: HttpCli
     }
 
     override fun stopTickerSocket() {
-        webSocket.close()
+        webSocket?.close()
     }
 
     companion object {
