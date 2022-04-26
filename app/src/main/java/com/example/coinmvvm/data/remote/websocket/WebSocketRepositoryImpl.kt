@@ -17,12 +17,13 @@ class WebSocketRepositoryImpl @Inject constructor(private val webSocket: HttpCli
     override fun tickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>> = flow {
         try {
             webSocket.wss(TICKER_URL) {
-                val jsonData = Gson().toJson(requestTickerData)
+                val gson = Gson()
+                val jsonData = gson.toJson(requestTickerData)
                 outgoing.send(Frame.Text(jsonData))
                 incoming.consumeEach {
                     when (it) {
                         is Frame.Text -> {
-                            val tickerInfo = Gson().fromJson(it.readText(), TickerInfo::class.java)
+                            val tickerInfo = gson.fromJson(it.readText(), TickerInfo::class.java)
                             val tickerData = TickerData(tickerInfo)
                             emit(Resource.Success(tickerData))
                         }
