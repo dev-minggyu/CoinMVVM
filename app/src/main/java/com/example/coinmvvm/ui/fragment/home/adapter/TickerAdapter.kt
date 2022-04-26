@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.coinmvvm.data.model.Ticker
 import com.example.coinmvvm.databinding.ItemTickerBinding
 
-class TickerAdapter(val clickListener: TickerClickListener?) :
+class TickerAdapter(val favoriteClickListener: FavoriteClickListener?) :
     ListAdapter<Ticker, TickerAdapter.TickerViewHolder>(TransactionDiffCallback()) {
 
     var tabTitle: String? = null
@@ -29,8 +29,10 @@ class TickerAdapter(val clickListener: TickerClickListener?) :
 
         fun bind(item: Ticker) {
             binding.ticker = item
-            clickListener?.let {
-                binding.clickListener = it
+            binding.btnFavorite.setOnCheckedChangeListener { buttonView, isChecked ->
+                if (buttonView.isPressed) {
+                    favoriteClickListener?.onFavorite(item.symbol, isChecked)
+                }
             }
             binding.executePendingBindings()
         }
@@ -51,6 +53,6 @@ class TransactionDiffCallback : DiffUtil.ItemCallback<Ticker>() {
     }
 }
 
-interface TickerClickListener {
+interface FavoriteClickListener {
     fun onFavorite(symbol: String, isChecked: Boolean)
 }

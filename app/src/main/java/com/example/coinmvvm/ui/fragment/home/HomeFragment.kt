@@ -10,8 +10,8 @@ import com.example.coinmvvm.databinding.FragmentHomeBinding
 import com.example.coinmvvm.extension.showSnackBar
 import com.example.coinmvvm.ui.base.BaseFragment
 import com.example.coinmvvm.ui.fragment.home.adapter.CoinListPagerAdapter
+import com.example.coinmvvm.ui.fragment.home.adapter.FavoriteClickListener
 import com.example.coinmvvm.ui.fragment.home.adapter.TickerAdapter
-import com.example.coinmvvm.ui.fragment.home.adapter.TickerClickListener
 import com.example.coinmvvm.ui.fragment.home.dialog.RetryDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
@@ -77,7 +77,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     }
 
     private fun initListAdapters() {
-        val tickerClickListener = object : TickerClickListener {
+        val tickerClickListener = object : FavoriteClickListener {
             override fun onFavorite(symbol: String, isChecked: Boolean) {
                 if (isChecked) {
                     _homeViewModel.addFavoriteSymbol(symbol)
