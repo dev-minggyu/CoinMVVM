@@ -8,6 +8,8 @@
 
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+
+        <!-- View custom -->
+        <item name="radioButtonStyle">@style/CustomRadioButton</item>
     </style>
 </resources>

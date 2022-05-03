@@ -9,7 +9,7 @@
         android:name="com.example.coinmvvm.ui.fragment.home.HomeFragment"
         android:label="HomeFragment" />
     <fragment
-        android:id="@+id/test_fragment"
-        android:name="com.example.coinmvvm.ui.fragment.test.TestFragment"
-        android:label="TestFragment" />
+        android:id="@+id/setting_fragment"
+        android:name="com.example.coinmvvm.ui.fragment.setting.SettingFragment"
+        android:label="SettingFragment" />
 </navigation>

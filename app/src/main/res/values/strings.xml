@@ -2,4 +2,8 @@
     <string name="app_name">Coin_MVVM</string>
     <string name="tab_coinlist_all">전체</string>
     <string name="tab_coinlist_favorite">즐겨찾기</string>
+    <string name="title_setting_theme">테마</string>
+    <string name="app_theme_system">시스템</string>
+    <string name="app_theme_light">라이트</string>
+    <string name="app_theme_dark">다크</string>
 </resources>

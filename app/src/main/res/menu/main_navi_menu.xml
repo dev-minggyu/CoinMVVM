@@ -6,7 +6,7 @@
         android:title="홈" />
 
     <item
-        android:id="@+id/test_fragment"
+        android:id="@+id/setting_fragment"
         android:icon="@drawable/ic_launcher_foreground"
         android:title="테스트" />
 </menu>

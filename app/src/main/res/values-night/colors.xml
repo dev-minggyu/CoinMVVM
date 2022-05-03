@@ -3,8 +3,10 @@
     <color name="color_primary">#03A9F4</color>
     <color name="color_primary_variant">#2196F3</color>
 
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="color_background_regular">#646464</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 
     <color name="color_text">#FFFFFF</color>
 
