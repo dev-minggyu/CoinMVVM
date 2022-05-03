@@ -10,6 +10,7 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
 
         <!-- View custom -->
+        <item name="android:textViewStyle">@style/CustomTextView</item>
         <item name="radioButtonStyle">@style/CustomRadioButton</item>
     </style>
 </resources>
