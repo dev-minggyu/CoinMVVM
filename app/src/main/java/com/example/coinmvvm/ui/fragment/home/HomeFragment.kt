@@ -21,8 +21,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val _homeViewModel: HomeViewModel by viewModels()
 
-    private var tickerAdapter: TickerAdapter? = null
-    private var favoriteAdapter: TickerAdapter? = null
+    private var _tickerAdapter: TickerAdapter? = null
+    private var _favoriteAdapter: TickerAdapter? = null
 
     private var _networkSnackBar: Snackbar? = null
 
@@ -50,11 +50,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         }
 
         _homeViewModel.tickerList.observe(viewLifecycleOwner) {
-            tickerAdapter?.submitList(it)
+            _tickerAdapter?.submitList(it)
         }
 
         _homeViewModel.favoriteTickerList.observe(viewLifecycleOwner) {
-            favoriteAdapter?.submitList(it)
+            _favoriteAdapter?.submitList(it)
         }
 
         _homeViewModel.doRetry.observe(viewLifecycleOwner) {
@@ -68,7 +68,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         dataBinding.apply {
             viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
             viewPager.offscreenPageLimit = ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT
-            viewPager.adapter = CoinListPagerAdapter(tickerAdapter!!, favoriteAdapter!!)
+            viewPager.adapter = CoinListPagerAdapter(_tickerAdapter!!, _favoriteAdapter!!)
 
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 tab.text = (viewPager.adapter as CoinListPagerAdapter).getListTitle(position)
@@ -86,13 +86,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 _homeViewModel.deleteFavoriteSymbol(symbol)
             }
         }
-        tickerAdapter = TickerAdapter(favoriteClickListener)
-        favoriteAdapter = TickerAdapter(favoriteClickListener)
+        _tickerAdapter = TickerAdapter(favoriteClickListener)
+        _favoriteAdapter = TickerAdapter(favoriteClickListener)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        tickerAdapter = null
-        favoriteAdapter = null
+        _tickerAdapter = null
+        _favoriteAdapter = null
+        _networkSnackBar = null
     }
 }
