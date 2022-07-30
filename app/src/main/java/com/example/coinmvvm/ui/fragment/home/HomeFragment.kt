@@ -36,6 +36,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         setupListFilter()
     }
 
+    override fun onStart() {
+        super.onStart()
+        _homeViewModel.listenPrice()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        _homeViewModel.unlistenPrice()
+    }
+
     private fun setupListFilter() {
         dataBinding.apply {
             layoutSort.tvSortName.setOnClickListener {
@@ -83,7 +93,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             when (it!!) {
                 NetworkState.CONNECTED -> {
                     _networkSnackBar?.dismiss()
-                    _homeViewModel.doListenPrice()
+                    _homeViewModel.listenPrice()
                 }
                 NetworkState.DISCONNECTED -> {
                     _networkSnackBar = showSnackBar(

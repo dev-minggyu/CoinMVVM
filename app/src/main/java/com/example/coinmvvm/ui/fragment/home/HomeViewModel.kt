@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.coinmvvm.App.Companion.getString
+import com.example.coinmvvm.R
 import com.example.coinmvvm.constant.enums.SortState
 import com.example.coinmvvm.data.model.RequestTickerData
 import com.example.coinmvvm.data.model.Ticker
@@ -47,13 +49,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun doListenPrice() {
+    fun listenPrice() {
         if (_isSocketClose) {
             viewModelScope.launch {
                 if (_tmpTickerList.isEmpty()) {
                     if (!getKRWTickers()) {
                         _isSocketClose = true
-                        onSocketError("Error")
+                        onSocketError(getString(R.string.error_getting_coin_list))
                         return@launch
                     }
                 }
@@ -76,9 +78,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun doRetryListenPrice() {
+    fun unlistenPrice() {
         _coinRepository.stopTickerSocket()
-        doListenPrice()
+    }
+
+    fun retryListenPrice() {
+        _coinRepository.stopTickerSocket()
+        listenPrice()
     }
 
     fun addFavoriteSymbol(symbol: String) {
