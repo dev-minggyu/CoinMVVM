@@ -12,6 +12,8 @@ import com.example.coinmvvm.data.repository.CoinRepository
 import com.example.coinmvvm.extension.asLiveData
 import com.example.coinmvvm.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -57,7 +59,7 @@ class HomeViewModel @Inject constructor(
                 }
 
                 val requestTickerData = RequestTickerData(_tmpTickerList.map { it.symbol })
-                _coinRepository.tickerSocket(requestTickerData).collect {
+                _coinRepository.tickerSocket(requestTickerData).onEach {
                     when (it) {
                         is Resource.Success -> {
                             _isSocketClose = false
@@ -69,7 +71,7 @@ class HomeViewModel @Inject constructor(
                         }
                         is Resource.Loading -> {}
                     }
-                }
+                }.launchIn(viewModelScope)
             }
         }
     }
