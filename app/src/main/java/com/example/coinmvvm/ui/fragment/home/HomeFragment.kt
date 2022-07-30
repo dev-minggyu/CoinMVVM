@@ -13,7 +13,6 @@ import com.example.coinmvvm.ui.base.BaseFragment
 import com.example.coinmvvm.ui.fragment.home.adapter.CoinListPagerAdapter
 import com.example.coinmvvm.ui.fragment.home.adapter.FavoriteClickListener
 import com.example.coinmvvm.ui.fragment.home.adapter.TickerAdapter
-import com.example.coinmvvm.ui.fragment.home.dialog.RetryDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -87,7 +86,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                     _homeViewModel.doListenPrice()
                 }
                 NetworkState.DISCONNECTED -> {
-                    _networkSnackBar = showSnackBar("인터넷 연결을 확인해주세요.", "재시도") {
+                    _networkSnackBar = showSnackBar(
+                        getString(R.string.snackbar_check_internet_connection),
+                        getString(R.string.snackbar_retry)
+                    ) {
                         networkStateLiveData.updateState()
                     }
                 }
@@ -102,8 +104,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             _favoriteAdapter?.submitList(it)
         }
 
-        _homeViewModel.doRetry.observe(viewLifecycleOwner) {
-            RetryDialog(it).show(childFragmentManager)
+        _homeViewModel.socketError.observe(viewLifecycleOwner) {
+            _networkSnackBar = showSnackBar(
+                getString(R.string.snackbar_occur_network_error),
+                getString(R.string.snackbar_retry)
+            ) {
+                networkStateLiveData.updateState()
+            }
         }
     }
 

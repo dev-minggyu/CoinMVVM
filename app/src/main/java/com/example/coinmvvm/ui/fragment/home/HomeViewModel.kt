@@ -28,8 +28,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private val _doRetry: MutableLiveData<String> = MutableLiveData()
-    val doRetry = _doRetry.asLiveData()
+    private val _socketError: MutableLiveData<String> = MutableLiveData()
+    val socketError = _socketError.asLiveData()
+
+    private var _isSocketClose = true
 
     private suspend fun getKRWTickers(): Boolean {
         return when (val tickerList = _coinRepository.getKRWTickers()) {
@@ -44,20 +46,29 @@ class HomeViewModel @Inject constructor(
     }
 
     fun doListenPrice() {
-        viewModelScope.launch {
-            if (_tmpTickerList.isEmpty()) {
-                if (!getKRWTickers()) {
-                    onSocketError("Error")
-                    return@launch
+        if (_isSocketClose) {
+            viewModelScope.launch {
+                if (_tmpTickerList.isEmpty()) {
+                    if (!getKRWTickers()) {
+                        _isSocketClose = true
+                        onSocketError("Error")
+                        return@launch
+                    }
                 }
-            }
 
-            val requestTickerData = RequestTickerData(_tmpTickerList.map { it.symbol })
-            _coinRepository.tickerSocket(requestTickerData).collect {
-                when (it) {
-                    is Resource.Success -> onReceivedTicker(it.data)
-                    is Resource.Error -> onSocketError(it.message)
-                    is Resource.Loading -> {}
+                val requestTickerData = RequestTickerData(_tmpTickerList.map { it.symbol })
+                _coinRepository.tickerSocket(requestTickerData).collect {
+                    when (it) {
+                        is Resource.Success -> {
+                            _isSocketClose = false
+                            onReceivedTicker(it.data)
+                        }
+                        is Resource.Error -> {
+                            _isSocketClose = true
+                            onSocketError(it.message)
+                        }
+                        is Resource.Loading -> {}
+                    }
                 }
             }
         }
