@@ -6,6 +6,8 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.LiveData
 import com.example.coinmvvm.constant.enums.NetworkState
 
@@ -21,15 +23,9 @@ class NetworkStateLiveData(context: Context) : LiveData<NetworkState>() {
 
         override fun onLost(network: Network) {
             super.onLost(network)
-
-            val capabilities =
-                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-
-            if (capabilities == null
-                || !capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                || !capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)) {
-                postValue(NetworkState.DISCONNECTED)
-            }
+            Handler(Looper.getMainLooper()).postDelayed({
+                updateState()
+            }, 1000)
         }
     }
 
