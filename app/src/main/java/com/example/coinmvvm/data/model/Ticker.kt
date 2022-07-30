@@ -38,6 +38,7 @@ data class TickerContent(
 )
 
 data class Ticker(
+    var index: Int,
     var symbol: String,
     var currentPrice: String = "0",
     var prevPrice: String = "0",
@@ -62,9 +63,15 @@ data class TickerList(
     val status: String
 ) {
     fun toKRWTickerList(): List<Ticker> {
+        var index = 0
         return data.filter { it.key != "date" }.map {
             val symbolValue = Gson().fromJson(it.value.toString(), SymbolValue::class.java)
-            Ticker(it.key + "_KRW", symbolValue.closing_price, symbolValue.prev_closing_price)
+            Ticker(
+                index++,
+                it.key + "_KRW",
+                symbolValue.closing_price,
+                symbolValue.prev_closing_price
+            )
         }
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.coinmvvm.constant.enums.SortState
 import com.example.coinmvvm.data.model.RequestTickerData
 import com.example.coinmvvm.data.model.Ticker
 import com.example.coinmvvm.data.model.TickerData
@@ -21,12 +22,9 @@ class HomeViewModel @Inject constructor(
     private val _tmpTickerList: MutableList<Ticker> = mutableListOf()
     private val _tickerList: MutableLiveData<List<Ticker>> = MutableLiveData()
     val tickerList = _tickerList.asLiveData()
-
     val favoriteTickerList = Transformations.map(_tickerList) { tickerList ->
         tickerList.filter {
             it.isFavorite
-        }.sortedBy {
-            it.favoriteIndex
         }
     }
 
@@ -93,6 +91,17 @@ class HomeViewModel @Inject constructor(
             }
             _tickerList.value = _tmpTickerList
         }
+    }
+
+    fun sortTicker(sortState: SortState) {
+        when (sortState) {
+            SortState.NO -> _tmpTickerList.sortBy { it.index }
+            SortState.NAME_DESC -> _tmpTickerList.sortByDescending { it.symbol }
+            SortState.NAME_ASC -> _tmpTickerList.sortBy { it.symbol }
+            SortState.PRICE_DESC -> _tmpTickerList.sortByDescending { it.currentPrice.toFloat() }
+            SortState.PRICE_ASC -> _tmpTickerList.sortBy { it.currentPrice.toFloat() }
+        }
+        _tickerList.value = _tmpTickerList
     }
 
     private fun onReceivedTicker(tickerData: TickerData?) {

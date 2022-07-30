@@ -19,6 +19,11 @@ class CoinListPagerAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TickerListsViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ItemTickerListBinding.inflate(layoutInflater, parent, false)
+
+        binding.tickerList.apply {
+            itemAnimator = null
+        }
+
         return TickerListsViewHolder(binding)
     }
 

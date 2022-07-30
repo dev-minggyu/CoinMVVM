@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.example.coinmvvm.R
 import com.example.coinmvvm.constant.enums.NetworkState
+import com.example.coinmvvm.constant.enums.SortState
 import com.example.coinmvvm.databinding.FragmentHomeBinding
 import com.example.coinmvvm.extension.showSnackBar
 import com.example.coinmvvm.ui.base.BaseFragment
@@ -32,6 +33,50 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         setupViewPager()
 
         setupObserver()
+
+        setupListFilter()
+    }
+
+    private fun setupListFilter() {
+        dataBinding.apply {
+            layoutSort.tvSortName.setOnClickListener {
+                _tickerAdapter?.submitList(null)
+                layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_no)
+                when (layoutSort.tvSortName.text) {
+                    getString(R.string.sort_coin_name_no) -> {
+                        layoutSort.tvSortName.text = getString(R.string.sort_coin_name_desc)
+                        _homeViewModel.sortTicker(SortState.NAME_DESC)
+                    }
+                    getString(R.string.sort_coin_name_desc) -> {
+                        layoutSort.tvSortName.text = getString(R.string.sort_coin_name_asc)
+                        _homeViewModel.sortTicker(SortState.NAME_ASC)
+                    }
+                    getString(R.string.sort_coin_name_asc) -> {
+                        layoutSort.tvSortName.text = getString(R.string.sort_coin_name_no)
+                        _homeViewModel.sortTicker(SortState.NO)
+                    }
+                }
+            }
+
+            layoutSort.tvSortPrice.setOnClickListener {
+                _tickerAdapter?.submitList(null)
+                layoutSort.tvSortName.text = getString(R.string.sort_coin_name_no)
+                when (layoutSort.tvSortPrice.text) {
+                    getString(R.string.sort_coin_price_no) -> {
+                        layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_desc)
+                        _homeViewModel.sortTicker(SortState.PRICE_DESC)
+                    }
+                    getString(R.string.sort_coin_price_desc) -> {
+                        layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_asc)
+                        _homeViewModel.sortTicker(SortState.PRICE_ASC)
+                    }
+                    getString(R.string.sort_coin_price_asc) -> {
+                        layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_no)
+                        _homeViewModel.sortTicker(SortState.NO)
+                    }
+                }
+            }
+        }
     }
 
     private fun setupObserver() {

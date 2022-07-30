@@ -6,4 +6,12 @@
     <string name="app_theme_system">시스템</string>
     <string name="app_theme_light">라이트</string>
     <string name="app_theme_dark">다크</string>
+
+    <string name="sort_coin_price_no">가격 ▽</string>
+    <string name="sort_coin_price_desc">가격 ▼</string>
+    <string name="sort_coin_price_asc">가격 ▲</string>
+
+    <string name="sort_coin_name_no">이름 ▽</string>
+    <string name="sort_coin_name_desc">이름 ▼</string>
+    <string name="sort_coin_name_asc">이름 ▲</string>
 </resources>
