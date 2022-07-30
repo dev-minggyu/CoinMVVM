@@ -130,7 +130,7 @@ class HomeViewModel @Inject constructor(
 
     private fun onSocketError(message: String) {
         _coinRepository.stopTickerSocket()
-        _doRetry.value = message
+        _socketError.value = message
     }
 
     override fun onCleared() {
