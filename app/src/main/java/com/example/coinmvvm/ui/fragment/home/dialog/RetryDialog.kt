@@ -12,7 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class RetryDialog(private val reason: String) :
     BaseDialogFragment<DialogRetryBinding>(R.layout.dialog_retry) {
-    private val _sharedViewModel: HomeViewModel by viewModels()
+    private val _sharedViewModel: HomeViewModel by viewModels(ownerProducer = { requireParentFragment() })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
