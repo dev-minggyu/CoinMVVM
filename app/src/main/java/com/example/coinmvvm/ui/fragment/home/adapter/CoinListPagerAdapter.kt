@@ -2,6 +2,7 @@ package com.example.coinmvvm.ui.fragment.home.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.coinmvvm.App
 import com.example.coinmvvm.R
@@ -22,6 +23,7 @@ class CoinListPagerAdapter(
 
         binding.tickerList.apply {
             itemAnimator = null
+            addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
         }
 
         return TickerListsViewHolder(binding)
