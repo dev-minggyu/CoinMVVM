@@ -3,6 +3,7 @@ package com.example.coinmvvm.data.model
 import com.example.coinmvvm.constant.enums.CurrencyType
 import com.example.coinmvvm.constant.enums.PriceState
 import com.google.gson.Gson
+import java.text.DecimalFormat
 
 data class RequestTickerData(
     var symbols: List<String> = listOf(),
@@ -48,7 +49,7 @@ data class Ticker(
     var favoriteIndex: Long = -1
 ) {
     fun getSymbolName(): String {
-        return symbol + "_" + currencyType.name
+        return symbol + "_" + currencyType.currency
     }
 
     fun getPriceState(): PriceState {
@@ -61,6 +62,11 @@ data class Ticker(
                 PriceState.DOWN
             }
         }
+    }
+
+    fun getDecimalPrice(): String {
+        val decimalFormat = DecimalFormat("#,###.####")
+        return decimalFormat.format(currentPrice.toDouble())
     }
 }
 
