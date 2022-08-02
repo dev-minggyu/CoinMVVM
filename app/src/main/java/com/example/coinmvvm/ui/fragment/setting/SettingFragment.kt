@@ -2,7 +2,6 @@ package com.example.coinmvvm.ui.fragment.setting
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.preference.PreferenceFragmentCompat
 import com.example.coinmvvm.R
 import com.example.coinmvvm.util.AppThemeManager
