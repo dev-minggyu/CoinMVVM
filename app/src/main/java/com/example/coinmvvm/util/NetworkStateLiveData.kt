@@ -35,7 +35,6 @@ class NetworkStateLiveData(context: Context) : LiveData<NetworkState>() {
 
     override fun onActive() {
         super.onActive()
-        updateState()
         registerNetworkCallback()
     }
 
