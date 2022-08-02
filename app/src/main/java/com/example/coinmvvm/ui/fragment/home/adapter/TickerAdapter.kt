@@ -29,9 +29,9 @@ class TickerAdapter(val favoriteClickListener: FavoriteClickListener?) :
             binding.ticker = item
             binding.btnFavorite.setOnClickListener {
                 if (binding.btnFavorite.isChecked) {
-                    favoriteClickListener?.onAddFavorite(item.symbol)
+                    favoriteClickListener?.onAddFavorite(item.getSymbolName())
                 } else {
-                    favoriteClickListener?.onDeleteFavorite(item.symbol)
+                    favoriteClickListener?.onDeleteFavorite(item.getSymbolName())
                 }
             }
             binding.executePendingBindings()
@@ -45,7 +45,7 @@ class TickerAdapter(val favoriteClickListener: FavoriteClickListener?) :
 
 class TransactionDiffCallback : DiffUtil.ItemCallback<Ticker>() {
     override fun areItemsTheSame(oldItem: Ticker, newItem: Ticker): Boolean {
-        return oldItem.symbol == newItem.symbol
+        return oldItem.getSymbolName() == newItem.getSymbolName()
     }
 
     override fun areContentsTheSame(oldItem: Ticker, newItem: Ticker): Boolean {

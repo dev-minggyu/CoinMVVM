@@ -61,7 +61,7 @@ class HomeViewModel @Inject constructor(
                     }
                 }
 
-                val requestTickerData = RequestTickerData(_tmpTickerList.map { it.symbol })
+                val requestTickerData = RequestTickerData(_tmpTickerList.map { it.getSymbolName() })
                 _coinRepository.tickerSocket(requestTickerData).onEach {
                     when (it) {
                         is Resource.Success -> {
@@ -91,7 +91,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val index = _coinRepository.addFavoriteTicker(symbol)
             _tmpTickerList.find {
-                it.symbol == symbol
+                it.getSymbolName() == symbol
             }?.apply {
                 isFavorite = true
                 favoriteIndex = index
@@ -104,7 +104,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _coinRepository.deleteFavoriteTicker(symbol)
             _tmpTickerList.find {
-                it.symbol == symbol
+                it.getSymbolName() == symbol
             }?.apply {
                 isFavorite = false
             }
@@ -127,7 +127,7 @@ class HomeViewModel @Inject constructor(
         val tickerContent = tickerData?.ticker?.content
         tickerContent?.let { content ->
             _tmpTickerList.find {
-                it.symbol == content.symbol
+                it.getSymbolName() == content.symbol
             }?.apply {
                 currentPrice = content.closePrice
                 prevPrice = content.prevClosePrice

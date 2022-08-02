@@ -1,5 +1,6 @@
 package com.example.coinmvvm.data.model
 
+import com.example.coinmvvm.constant.enums.CurrencyType
 import com.example.coinmvvm.constant.enums.PriceState
 import com.google.gson.Gson
 
@@ -40,11 +41,16 @@ data class TickerContent(
 data class Ticker(
     var index: Int,
     var symbol: String,
+    var currencyType: CurrencyType,
     var currentPrice: String = "0",
     var prevPrice: String = "0",
     var isFavorite: Boolean = false,
     var favoriteIndex: Long = -1
 ) {
+    fun getSymbolName(): String {
+        return symbol + "_" + currencyType.name
+    }
+
     fun getPriceState(): PriceState {
         return if (currentPrice == prevPrice) {
             PriceState.SAME
@@ -68,7 +74,8 @@ data class TickerList(
             val symbolValue = Gson().fromJson(it.value.toString(), SymbolValue::class.java)
             Ticker(
                 index++,
-                it.key + "_KRW",
+                it.key,
+                CurrencyType.KRW,
                 symbolValue.closing_price,
                 symbolValue.prev_closing_price
             )

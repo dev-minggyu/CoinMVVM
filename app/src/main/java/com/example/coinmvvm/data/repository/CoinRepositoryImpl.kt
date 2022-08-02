@@ -35,7 +35,7 @@ class CoinRepositoryImpl @Inject constructor(
                     val favoriteList = getFavoriteSymbols()
                     tickerList.forEach { ticker ->
                         favoriteList.find {
-                            it.symbol == ticker.symbol
+                            it.symbol == ticker.getSymbolName()
                         }?.let {
                             ticker.isFavorite = true
                             ticker.favoriteIndex = it.id
