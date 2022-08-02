@@ -8,5 +8,5 @@ import kotlinx.coroutines.flow.Flow
 interface WebSocketRepository {
     fun tickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>>
 
-    fun stopTickerSocket()
+    suspend fun stopTickerSocket()
 }

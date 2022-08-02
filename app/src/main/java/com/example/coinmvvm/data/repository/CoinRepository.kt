@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface CoinRepository {
     fun tickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>>
 
-    fun stopTickerSocket()
+    suspend fun stopTickerSocket()
 
     suspend fun getKRWTickers(): Resource<List<Ticker>>
 

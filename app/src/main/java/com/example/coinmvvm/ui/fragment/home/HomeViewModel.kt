@@ -79,11 +79,13 @@ class HomeViewModel @Inject constructor(
     }
 
     fun unlistenPrice() {
-        _coinRepository.stopTickerSocket()
+        viewModelScope.launch {
+            _coinRepository.stopTickerSocket()
+        }
     }
 
     fun retryListenPrice() {
-        _coinRepository.stopTickerSocket()
+        unlistenPrice()
         listenPrice()
     }
 
@@ -137,12 +139,12 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onSocketError(message: String) {
-        _coinRepository.stopTickerSocket()
+        unlistenPrice()
         _socketError.value = message
     }
 
     override fun onCleared() {
         super.onCleared()
-        _coinRepository.stopTickerSocket()
+        unlistenPrice()
     }
 }

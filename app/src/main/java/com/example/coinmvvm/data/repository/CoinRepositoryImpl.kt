@@ -23,7 +23,7 @@ class CoinRepositoryImpl @Inject constructor(
         return _webSocketRepository.tickerSocket(requestTickerData)
     }
 
-    override fun stopTickerSocket() {
+    override suspend fun stopTickerSocket() {
         _webSocketRepository.stopTickerSocket()
     }
 

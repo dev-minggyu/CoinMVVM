@@ -7,6 +7,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.ktor.client.*
+import io.ktor.client.engine.okhttp.*
+import io.ktor.client.plugins.websocket.*
+import io.ktor.serialization.gson.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -38,5 +42,15 @@ object NetworkModule {
     @Singleton
     fun provideNetworkAPI(retrofit: Retrofit): NetworkAPI {
         return retrofit.create(NetworkAPI::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHttpClient(): HttpClient {
+        return HttpClient(OkHttp) {
+            install(WebSockets) {
+                contentConverter = GsonWebsocketContentConverter()
+            }
+        }
     }
 }
