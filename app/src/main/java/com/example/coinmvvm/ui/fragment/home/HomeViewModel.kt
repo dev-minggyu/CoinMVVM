@@ -51,6 +51,7 @@ class HomeViewModel @Inject constructor(
 
     fun listenPrice() {
         if (_isSocketClose) {
+            _isSocketClose = false
             viewModelScope.launch {
                 if (_tmpTickerList.isEmpty()) {
                     if (!getKRWTickers()) {
@@ -64,7 +65,6 @@ class HomeViewModel @Inject constructor(
                 _coinRepository.tickerSocket(requestTickerData).onEach {
                     when (it) {
                         is Resource.Success -> {
-                            _isSocketClose = false
                             onReceivedTicker(it.data)
                         }
                         is Resource.Error -> {
