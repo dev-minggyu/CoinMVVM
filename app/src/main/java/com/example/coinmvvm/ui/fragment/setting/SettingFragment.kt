@@ -17,7 +17,7 @@ class SettingFragment : PreferenceFragmentCompat() {
         _preference = PreferenceManager.getDefaultSharedPreferences(requireContext())
         _preference.registerOnSharedPreferenceChangeListener { pref, key ->
             when (key) {
-                "app_theme" -> {
+                getString(R.string.key_pref_app_theme) -> {
                     val theme = pref.getString(key, AppThemeManager.THEME_SYSTEM)!!
                     AppThemeManager.applyTheme(theme)
                 }
