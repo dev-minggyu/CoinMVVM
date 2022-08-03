@@ -53,12 +53,10 @@ class HomeViewModel @Inject constructor(
         if (_isSocketClose) {
             _isSocketClose = false
             viewModelScope.launch {
-                if (_tmpTickerList.isEmpty()) {
-                    if (!getKRWTickers()) {
-                        _isSocketClose = true
-                        onSocketError(getString(R.string.error_getting_coin_list))
-                        return@launch
-                    }
+                if (!getKRWTickers()) {
+                    _isSocketClose = true
+                    onSocketError(getString(R.string.error_getting_coin_list))
+                    return@launch
                 }
 
                 val requestTickerData = RequestTickerData(_tmpTickerList.map { it.getSymbolName() })
