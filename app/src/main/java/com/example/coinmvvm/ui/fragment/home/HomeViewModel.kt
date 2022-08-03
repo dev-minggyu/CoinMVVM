@@ -68,6 +68,7 @@ class HomeViewModel @Inject constructor(
                             onReceivedTicker(it.data)
                         }
                         is Resource.Error -> {
+                            _isSocketClose = true
                             onError(it.message ?: getString(R.string.error_getting_coin_list))
                         }
                     }
