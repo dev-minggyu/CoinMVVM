@@ -23,23 +23,15 @@ class WebSocketRepositoryImpl @Inject constructor(
                 webSocket = this
                 sendSerialized(requestTickerData)
                 incoming.consumeEach { frame ->
-                    when (frame) {
-                        is Frame.Text -> {
-                            val tickerInfo = receiveDeserialized<TickerInfo>()
-                            val tickerData = TickerData(tickerInfo)
-                            emit(Resource.Success(tickerData))
-                        }
-                        is Frame.Close -> {
-                            emit(Resource.Error(closeReason.await()!!.message))
-                        }
-                        else -> {
-                            emit(Resource.Error("Unknown Error"))
-                        }
+                    if (frame is Frame.Text) {
+                        val tickerInfo = receiveDeserialized<TickerInfo>()
+                        val tickerData = TickerData(tickerInfo)
+                        emit(Resource.Success(tickerData))
                     }
                 }
             }
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Unknown Error"))
+            emit(Resource.Error(e.message))
         }
     }
 

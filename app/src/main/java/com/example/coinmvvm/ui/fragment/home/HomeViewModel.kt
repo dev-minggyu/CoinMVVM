@@ -14,8 +14,6 @@ import com.example.coinmvvm.data.repository.CoinRepository
 import com.example.coinmvvm.extension.asLiveData
 import com.example.coinmvvm.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -59,22 +57,21 @@ class HomeViewModel @Inject constructor(
             viewModelScope.launch {
                 if (!getKRWTickers()) {
                     _isSocketClose = true
-                    onSocketError(getString(R.string.error_getting_coin_list))
+                    onError(getString(R.string.error_getting_coin_list))
                     return@launch
                 }
 
                 val requestTickerData = RequestTickerData(_tmpTickerList.map { it.getSymbolName() })
-                _coinRepository.tickerSocket(requestTickerData).onEach {
+                _coinRepository.tickerSocket(requestTickerData).collect {
                     when (it) {
                         is Resource.Success -> {
                             onReceivedTicker(it.data)
                         }
                         is Resource.Error -> {
-                            _isSocketClose = true
-                            onSocketError(it.message)
+                            onError(it.message ?: getString(R.string.error_getting_coin_list))
                         }
                     }
-                }.launchIn(viewModelScope)
+                }
             }
         }
     }
@@ -139,8 +136,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun onSocketError(message: String) {
-        unlistenPrice()
+    private fun onError(message: String) {
         _socketError.value = message
     }
 
