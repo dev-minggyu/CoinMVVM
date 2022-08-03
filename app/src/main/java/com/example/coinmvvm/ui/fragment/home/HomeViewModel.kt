@@ -24,10 +24,12 @@ class HomeViewModel @Inject constructor(
     private val _coinRepository: CoinRepository
 ) : ViewModel() {
     private val _tmpTickerList: MutableList<Ticker> = mutableListOf()
-    private val _tickerList: MutableLiveData<List<Ticker>> = MutableLiveData()
+
+    private val _tickerList: MutableLiveData<List<Ticker>?> = MutableLiveData()
     val tickerList = _tickerList.asLiveData()
+
     val favoriteTickerList = Transformations.map(_tickerList) { tickerList ->
-        tickerList.filter {
+        tickerList?.filter {
             it.isFavorite
         }
     }
@@ -38,6 +40,8 @@ class HomeViewModel @Inject constructor(
     private var _isSocketClose = true
 
     private suspend fun getKRWTickers(): Boolean {
+        _tickerList.value = null
+
         return when (val tickerList = _coinRepository.getKRWTickers()) {
             is Resource.Success -> {
                 _tmpTickerList.clear()
@@ -69,7 +73,6 @@ class HomeViewModel @Inject constructor(
                             _isSocketClose = true
                             onSocketError(it.message)
                         }
-                        is Resource.Loading -> {}
                     }
                 }.launchIn(viewModelScope)
             }
