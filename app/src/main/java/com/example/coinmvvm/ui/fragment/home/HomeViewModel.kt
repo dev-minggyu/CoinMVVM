@@ -12,7 +12,9 @@ import com.example.coinmvvm.data.model.Ticker
 import com.example.coinmvvm.data.model.TickerData
 import com.example.coinmvvm.data.repository.CoinRepository
 import com.example.coinmvvm.extension.asLiveData
+import com.example.coinmvvm.extension.asSingleLiveData
 import com.example.coinmvvm.util.Resource
+import com.example.coinmvvm.util.livedata.MutableSingleLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,8 +34,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private val _socketError: MutableLiveData<String> = MutableLiveData()
-    val socketError = _socketError.asLiveData()
+    private val _socketError: MutableSingleLiveData<String> = MutableSingleLiveData()
+    val socketError = _socketError.asSingleLiveData()
 
     private var _isSocketClose = true
 
@@ -138,7 +140,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onError(message: String) {
-        _socketError.value = message
+        _socketError.setValue(message)
     }
 
     override fun onCleared() {

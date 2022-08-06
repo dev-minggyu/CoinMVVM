@@ -6,10 +6,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.coinmvvm.util.livedata.MutableSingleLiveData
+import com.example.coinmvvm.util.livedata.SingleLiveData
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.channels.Channel
 
 fun <T> MutableLiveData<T>.asLiveData() = this as LiveData<T>
+
+fun <T> MutableSingleLiveData<T>.asSingleLiveData() = this as SingleLiveData<T>
 
 fun Activity.showToast(text: String) {
     Toast.makeText(this, text, Toast.LENGTH_LONG).show()
