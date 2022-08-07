@@ -27,12 +27,12 @@ data class TickerContent(
     val buyVolume: String,
     val chgAmt: String,
     val chgRate: String,
-    val closePrice: String,
+    val closePrice: Double,
     val date: String,
     val highPrice: String,
     val lowPrice: String,
     val openPrice: String,
-    val prevClosePrice: String,
+    val prevClosePrice: Double,
     val sellVolume: String,
     val symbol: String,
     val tickType: String,
@@ -46,8 +46,8 @@ data class Ticker(
     var index: Int,
     var symbol: String,
     var currencyType: CurrencyType,
-    var currentPrice: String = "0",
-    var prevPrice: String = "0",
+    var currentPrice: Double,
+    var prevPrice: Double,
     var transactionAmount: Double,
     var isFavorite: Boolean = false,
     var favoriteIndex: Long = -1
@@ -70,7 +70,7 @@ data class Ticker(
 
     fun getDecimalPrice(): String {
         val decimalFormat = DecimalFormat("#,###.####")
-        return decimalFormat.format(currentPrice.toDouble())
+        return decimalFormat.format(currentPrice)
     }
 
     fun getVolume(): String {
@@ -84,11 +84,11 @@ data class Ticker(
     }
 
     fun getRateOfChange(): Double {
-        return ((currentPrice.toDouble() - prevPrice.toDouble()) / prevPrice.toDouble()) * 100
+        return ((currentPrice - prevPrice) / prevPrice) * 100
     }
 
     fun getRateOfChangeWithUnit(): String {
-        val rate = ((currentPrice.toDouble() - prevPrice.toDouble()) / prevPrice.toDouble()) * 100
+        val rate = ((currentPrice - prevPrice) / prevPrice) * 100
         return String.format("%.2f", rate) + "%"
     }
 }
@@ -116,13 +116,13 @@ data class TickerList(
 data class SymbolValue(
     val acc_trade_value: Double,
     val acc_trade_value_24H: Double,
-    val closing_price: String,
+    val closing_price: Double,
     val fluctate_24H: String,
     val fluctate_rate_24H: String,
     val max_price: String,
     val min_price: String,
     val opening_price: String,
-    val prev_closing_price: String,
+    val prev_closing_price: Double,
     val units_traded: String,
     val units_traded_24H: String
 )
