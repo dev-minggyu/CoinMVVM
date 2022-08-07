@@ -13,8 +13,6 @@ abstract class SingleLiveData<T> {
         liveData.value = Event(value)
     }
 
-    fun getLiveData() = liveData
-
     protected open fun setValue(value: T) {
         liveData.value = Event(value)
     }

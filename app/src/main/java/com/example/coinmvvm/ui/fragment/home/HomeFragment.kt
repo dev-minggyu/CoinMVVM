@@ -116,7 +116,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
         _homeViewModel.socketError.observe(viewLifecycleOwner) {
             _networkSnackBar = showSnackBar(
-                getString(R.string.snackbar_occur_network_error),
+                it,
                 getString(R.string.snackbar_retry)
             ) {
                 networkStateLiveData.updateState()

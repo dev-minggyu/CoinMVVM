@@ -41,7 +41,6 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun getKRWTickers(): Boolean {
         _tickerList.value = null
-
         return when (val tickerList = _coinRepository.getKRWTickers()) {
             is Resource.Success -> {
                 _tmpTickerList.clear()
