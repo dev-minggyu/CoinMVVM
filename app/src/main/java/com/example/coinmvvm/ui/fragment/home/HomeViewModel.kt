@@ -1,6 +1,5 @@
 package com.example.coinmvvm.ui.fragment.home
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
@@ -35,17 +34,19 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private var _sortState = SortState.NO
+
     private val _socketError: MutableSingleLiveData<String> = MutableSingleLiveData()
     val socketError = _socketError.asSingleLiveData()
 
     private var _isSocketClose = true
 
     private suspend fun getKRWTickers(): Boolean {
-        _tickerList.value = null
         return when (val tickerList = _coinRepository.getKRWTickers()) {
             is Resource.Success -> {
                 _tmpTickerList.clear()
                 _tmpTickerList.addAll(tickerList.data)
+                sortTicker()
                 _tickerList.value = _tmpTickerList.toList()
                 true
             }
@@ -66,9 +67,7 @@ class HomeViewModel @Inject constructor(
                 val requestTickerData = RequestTickerData(_tmpTickerList.map { it.getSymbolName() })
                 _coinRepository.tickerSocket(requestTickerData).collect {
                     when (it) {
-                        is Resource.Success -> {
-                            onReceivedTicker(it.data)
-                        }
+                        is Resource.Success -> onReceivedTicker(it.data)
                         is Resource.Error -> {
                             _isSocketClose = true
                             onError(it.message ?: getString(R.string.error_getting_coin_list))
@@ -116,7 +115,13 @@ class HomeViewModel @Inject constructor(
     }
 
     fun sortTicker(sortState: SortState) {
-        when (sortState) {
+        _sortState = sortState
+        sortTicker()
+        _tickerList.value = _tmpTickerList
+    }
+
+    private fun sortTicker() {
+        when (_sortState) {
             SortState.NO -> _tmpTickerList.sortBy { it.index }
 
             SortState.NAME_DESC -> _tmpTickerList.sortByDescending { it.symbol }
@@ -131,7 +136,6 @@ class HomeViewModel @Inject constructor(
             SortState.VOLUME_DESC -> _tmpTickerList.sortByDescending { it.transactionAmount.toFloat() }
             SortState.VOLUME_ASC -> _tmpTickerList.sortBy { it.transactionAmount.toFloat() }
         }
-        _tickerList.value = _tmpTickerList
     }
 
     private fun onReceivedTicker(tickerData: TickerData?) {
@@ -143,6 +147,7 @@ class HomeViewModel @Inject constructor(
                 currentPrice = content.closePrice
                 prevPrice = content.prevClosePrice
             }
+            sortTicker()
             _tickerList.value = _tmpTickerList
         }
     }
