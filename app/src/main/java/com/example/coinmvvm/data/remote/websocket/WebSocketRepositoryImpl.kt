@@ -36,7 +36,12 @@ class WebSocketRepositoryImpl @Inject constructor(
     }
 
     override suspend fun stopTickerSocket() {
-        webSocket?.close()
+        try {
+            webSocket?.close()
+            webSocket?.incoming?.cancel()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     companion object {
