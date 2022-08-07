@@ -1,5 +1,8 @@
 package com.example.coinmvvm.data.model
 
+import android.util.Log
+import com.example.coinmvvm.App
+import com.example.coinmvvm.R
 import com.example.coinmvvm.constant.enums.CurrencyType
 import com.example.coinmvvm.constant.enums.PriceState
 import com.google.gson.Gson
@@ -45,6 +48,7 @@ data class Ticker(
     var currencyType: CurrencyType,
     var currentPrice: String = "0",
     var prevPrice: String = "0",
+    var transactionAmount: Double,
     var isFavorite: Boolean = false,
     var favoriteIndex: Long = -1
 ) {
@@ -68,6 +72,25 @@ data class Ticker(
         val decimalFormat = DecimalFormat("#,###.####")
         return decimalFormat.format(currentPrice.toDouble())
     }
+
+    fun getVolume(): String {
+        val decimalFormat = DecimalFormat("#,###")
+        val amount = (transactionAmount / 1_000_000).toInt()
+        return if (amount < 1) {
+            decimalFormat.format(transactionAmount) + App.getString(R.string.unit_won)
+        } else {
+            decimalFormat.format(amount) + App.getString(R.string.unit_million)
+        }
+    }
+
+    fun getRateOfChange(): Double {
+        return ((currentPrice.toDouble() - prevPrice.toDouble()) / prevPrice.toDouble()) * 100
+    }
+
+    fun getRateOfChangeWithUnit(): String {
+        val rate = ((currentPrice.toDouble() - prevPrice.toDouble()) / prevPrice.toDouble()) * 100
+        return String.format("%.2f", rate) + "%"
+    }
 }
 
 data class TickerList(
@@ -83,15 +106,16 @@ data class TickerList(
                 it.key,
                 CurrencyType.KRW,
                 symbolValue.closing_price,
-                symbolValue.prev_closing_price
+                symbolValue.prev_closing_price,
+                symbolValue.acc_trade_value_24H
             )
         }
     }
 }
 
 data class SymbolValue(
-    val acc_trade_value: String,
-    val acc_trade_value_24H: String,
+    val acc_trade_value: Double,
+    val acc_trade_value_24H: Double,
     val closing_price: String,
     val fluctate_24H: String,
     val fluctate_rate_24H: String,

@@ -9,7 +9,7 @@ import com.example.coinmvvm.constant.enums.PriceState
 object BindingAdapter {
     @JvmStatic
     @BindingAdapter("priceColor")
-    fun bindPriceColor(
+    fun bindTickerColor(
         view: TextView,
         priceState: PriceState
     ) {

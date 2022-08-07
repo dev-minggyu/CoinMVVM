@@ -1,5 +1,6 @@
 package com.example.coinmvvm.ui.fragment.home
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
@@ -117,10 +118,18 @@ class HomeViewModel @Inject constructor(
     fun sortTicker(sortState: SortState) {
         when (sortState) {
             SortState.NO -> _tmpTickerList.sortBy { it.index }
+
             SortState.NAME_DESC -> _tmpTickerList.sortByDescending { it.symbol }
             SortState.NAME_ASC -> _tmpTickerList.sortBy { it.symbol }
+
             SortState.PRICE_DESC -> _tmpTickerList.sortByDescending { it.currentPrice.toFloat() }
             SortState.PRICE_ASC -> _tmpTickerList.sortBy { it.currentPrice.toFloat() }
+
+            SortState.RATE_DESC -> _tmpTickerList.sortByDescending { it.getRateOfChange() }
+            SortState.RATE_ASC -> _tmpTickerList.sortBy { it.getRateOfChange() }
+
+            SortState.VOLUME_DESC -> _tmpTickerList.sortByDescending { it.transactionAmount.toFloat() }
+            SortState.VOLUME_ASC -> _tmpTickerList.sortBy { it.transactionAmount.toFloat() }
         }
         _tickerList.value = _tmpTickerList
     }
