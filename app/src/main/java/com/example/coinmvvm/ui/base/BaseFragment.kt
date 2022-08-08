@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import com.example.coinmvvm.util.NetworkStateLiveData
 import javax.inject.Inject
 
-abstract class BaseFragment<T : ViewDataBinding>(private val _layoutID: Int) : Fragment() {
+abstract class BaseFragment<T : ViewDataBinding>(private val layoutID: Int) : Fragment() {
     private var _dataBinding: T? = null
     val dataBinding get() = _dataBinding!!
 
@@ -20,7 +20,7 @@ abstract class BaseFragment<T : ViewDataBinding>(private val _layoutID: Int) : F
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        _dataBinding = DataBindingUtil.inflate(inflater, _layoutID, container, false)
+        _dataBinding = DataBindingUtil.inflate(inflater, layoutID, container, false)
         return _dataBinding?.root
     }
 
