@@ -1,6 +1,5 @@
 package com.example.coinmvvm.data.model
 
-import android.util.Log
 import com.example.coinmvvm.App
 import com.example.coinmvvm.R
 import com.example.coinmvvm.constant.enums.CurrencyType

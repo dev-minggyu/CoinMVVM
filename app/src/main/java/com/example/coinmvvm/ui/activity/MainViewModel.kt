@@ -7,7 +7,6 @@ import com.example.coinmvvm.R
 import com.example.coinmvvm.extension.asLiveData
 
 class MainViewModel : ViewModel() {
-
     private val _currentMenuId: MutableLiveData<Int> = MutableLiveData(R.id.home_fragment)
     val currentMenuId = _currentMenuId.asLiveData()
 
