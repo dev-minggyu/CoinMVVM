@@ -3,6 +3,10 @@ package com.example.coinmvvm.ui.fragment.home
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.viewpager2.widget.ViewPager2
 import com.example.coinmvvm.R
 import com.example.coinmvvm.constant.enums.NetworkState
@@ -34,16 +38,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         setupObserver()
 
         setupListFilter()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        _homeViewModel.listenPrice()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        _homeViewModel.unlistenPrice()
     }
 
     private fun setupListFilter() {
@@ -144,6 +138,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     }
 
     private fun setupObserver() {
+        ProcessLifecycleOwner.get().lifecycle.addObserver(object : LifecycleEventObserver {
+            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                when (event) {
+                    Lifecycle.Event.ON_RESUME -> _homeViewModel.listenPrice()
+                    Lifecycle.Event.ON_STOP -> _homeViewModel.unlistenPrice()
+                }
+            }
+        })
+
         networkStateLiveData.observe(viewLifecycleOwner) {
             when (it!!) {
                 NetworkState.CONNECTED -> {
