@@ -28,12 +28,6 @@ class HomeViewModel @Inject constructor(
     private val _tickerList: MutableLiveData<List<Ticker>?> = MutableLiveData()
     val tickerList = _tickerList.asLiveData()
 
-    val favoriteTickerList = Transformations.map(_tickerList) { tickerList ->
-        tickerList?.filter {
-            it.isFavorite
-        }
-    }
-
     private var _sortState = SortState.NO
 
     private val _socketError: MutableSingleLiveData<String> = MutableSingleLiveData()

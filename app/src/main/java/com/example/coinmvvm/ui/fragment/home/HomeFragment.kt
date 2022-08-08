@@ -166,10 +166,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
         _homeViewModel.tickerList.observe(viewLifecycleOwner) {
             _tickerAdapter?.submitList(it)
-        }
-
-        _homeViewModel.favoriteTickerList.observe(viewLifecycleOwner) {
-            _favoriteAdapter?.submitList(it)
+            _favoriteAdapter?.submitList(
+                it?.filter { ticker ->
+                    ticker.isFavorite
+                }
+            )
         }
 
         _homeViewModel.socketError.observe(viewLifecycleOwner) {
