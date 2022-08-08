@@ -48,10 +48,6 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
 
-    // Jetpack Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:2.4.2"
-    implementation "androidx.navigation:navigation-ui-ktx:2.4.2"
-
     // Ktor
     implementation 'io.ktor:ktor-client-websockets:2.0.0'
     implementation 'io.ktor:ktor-client-okhttp:2.0.0'
