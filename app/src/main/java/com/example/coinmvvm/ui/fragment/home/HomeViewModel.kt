@@ -168,7 +168,7 @@ class HomeViewModel @Inject constructor(
 
     private fun filterTicker(): List<Ticker> {
         return if (_filterTickerSymbol.isNotEmpty()) {
-            _tmpTickerList.filter { it.symbol.startsWith(_filterTickerSymbol) }
+            _tmpTickerList.filter { it.symbol.startsWith(_filterTickerSymbol, true) }
         } else {
             _tmpTickerList
         }
