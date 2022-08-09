@@ -6,7 +6,6 @@ import androidx.databinding.BindingAdapter
 import com.example.coinmvvm.R
 import com.example.coinmvvm.constant.enums.PriceState
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationBarView
 
 object BindingAdapter {
     @JvmStatic
@@ -30,10 +29,14 @@ object BindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("onNavigationItemSelected")
-    fun bindOnNavigationItemSelectedListener(
-        view: BottomNavigationView, listener: NavigationBarView.OnItemSelectedListener
+    @BindingAdapter("onItemSelectedListener")
+    fun bindOnItemSelectedListener(
+        view: BottomNavigationView, selectedNavigationItem: (Int) -> Unit
     ) {
-        view.setOnItemSelectedListener(listener)
+        view.setOnItemSelectedListener { item ->
+            selectedNavigationItem(item.itemId)
+            true
+        }
+    }
     }
 }
