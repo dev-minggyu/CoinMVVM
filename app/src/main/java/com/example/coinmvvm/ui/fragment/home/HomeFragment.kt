@@ -22,7 +22,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
+class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), LifecycleEventObserver {
     private val _homeViewModel: HomeViewModel by viewModels()
 
     private var _tickerAdapter: TickerAdapter? = null
@@ -139,15 +139,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     }
 
     private fun setupObserver() {
-        ProcessLifecycleOwner.get().lifecycle.addObserver(object : LifecycleEventObserver {
-            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                when (event) {
-                    Lifecycle.Event.ON_RESUME -> _homeViewModel.listenPrice()
-                    Lifecycle.Event.ON_STOP -> _homeViewModel.unlistenPrice()
-                    else -> {}
-                }
-            }
-        })
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
         networkStateLiveData.observe(viewLifecycleOwner) {
             when (it!!) {
@@ -218,5 +210,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         _tickerAdapter = null
         _favoriteAdapter = null
         _networkSnackBar = null
+        ProcessLifecycleOwner.get().lifecycle.removeObserver(this)
+    }
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        when (event) {
+            Lifecycle.Event.ON_RESUME -> _homeViewModel.listenPrice()
+            Lifecycle.Event.ON_STOP -> _homeViewModel.unlistenPrice()
+            else -> {}
+        }
     }
 }
