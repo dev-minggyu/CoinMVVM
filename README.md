@@ -10,13 +10,13 @@
 
 ## Features
 
-- 코인 시세 조회
+- 코인 시세 조회 및 검색
 
 - 코인 즐겨찾기
 
 - 다크 모드
 
-WIP : TradingView 차트 보기 / 내 자산 조회
+WIP : 코인 상세 보기(+TradingView 차트) / 내 자산 조회
 
 <br/>
 
@@ -36,8 +36,8 @@ WIP : TradingView 차트 보기 / 내 자산 조회
 - Databinding
 - LiveData
 - Room
-- Navigation
 - Gson
+- ~~Navigation~~
 
 <br/>
 
