@@ -2,6 +2,7 @@ package com.example.coinmvvm.ui.fragment.home
 
 import android.os.Bundle
 import android.view.View
+import android.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -32,6 +33,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        dataBinding.vm = _homeViewModel
 
         setupViewPager()
 

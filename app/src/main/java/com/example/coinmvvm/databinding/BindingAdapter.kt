@@ -1,5 +1,6 @@
 package com.example.coinmvvm.databinding
 
+import android.widget.SearchView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -38,5 +39,20 @@ object BindingAdapter {
             true
         }
     }
+
+    @JvmStatic
+    @BindingAdapter("onQueryTextListener")
+    fun bindOnQueryTextListener(
+        view: SearchView, onQueryTextChange: (String) -> Unit
+    ) {
+        view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = true
+            override fun onQueryTextChange(text: String?): Boolean {
+                text?.let {
+                    onQueryTextChange(it)
+                }
+                return true
+            }
+        })
     }
 }

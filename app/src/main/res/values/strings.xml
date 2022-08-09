@@ -31,4 +31,5 @@
     <string name="key_pref_app_theme">app_theme</string>
     <string name="unit_million">백만</string>
     <string name="unit_won">원</string>
+    <string name="hint_search_ticker">코인명 검색</string>
 </resources>

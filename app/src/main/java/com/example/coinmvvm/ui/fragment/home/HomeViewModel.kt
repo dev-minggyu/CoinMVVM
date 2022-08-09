@@ -1,7 +1,6 @@
 package com.example.coinmvvm.ui.fragment.home
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.coinmvvm.App.Companion.getString
@@ -30,10 +29,17 @@ class HomeViewModel @Inject constructor(
 
     private var _sortState = SortState.NO
 
+    private var _filterTickerSymbol: String = ""
+
     private val _socketError: MutableSingleLiveData<String> = MutableSingleLiveData()
     val socketError = _socketError.asSingleLiveData()
 
     private var _isSocketClose = true
+
+    val filterTickerSymbol = { text: String ->
+        _filterTickerSymbol = text
+        notifySortedTickerList()
+    }
 
     private suspend fun getKRWTickers(): Boolean {
         return when (val tickerList = _coinRepository.getKRWTickers()) {
@@ -92,7 +98,7 @@ class HomeViewModel @Inject constructor(
                 isFavorite = true
                 favoriteIndex = index
             }
-            _tickerList.value = _tmpTickerList
+            notifySortedTickerList()
         }
     }
 
@@ -104,14 +110,13 @@ class HomeViewModel @Inject constructor(
             }?.apply {
                 isFavorite = false
             }
-            _tickerList.value = _tmpTickerList
+            notifySortedTickerList()
         }
     }
 
     fun sortTicker(sortState: SortState) {
         _sortState = sortState
-        sortTicker()
-        _tickerList.value = _tmpTickerList
+        notifySortedTickerList()
     }
 
     private fun sortTicker() {
@@ -132,7 +137,20 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun onReceivedTicker(tickerData: TickerData?) {
+    private fun notifySortedTickerList() {
+        sortTicker()
+        _tickerList.value = filterTicker()
+    }
+
+    private fun filterTicker(): List<Ticker> {
+        return if (_filterTickerSymbol.isNotEmpty()) {
+            _tmpTickerList.filter { it.symbol.startsWith(_filterTickerSymbol) }
+        } else {
+            _tmpTickerList
+        }
+    }
+
+    private suspend fun onReceivedTicker(tickerData: TickerData?) {
         val tickerContent = tickerData?.ticker?.content
         tickerContent?.let { content ->
             _tmpTickerList.find {
@@ -141,8 +159,7 @@ class HomeViewModel @Inject constructor(
                 currentPrice = content.closePrice
                 prevPrice = content.prevClosePrice
             }
-            sortTicker()
-            _tickerList.value = _tmpTickerList
+            notifySortedTickerList()
         }
     }
 
