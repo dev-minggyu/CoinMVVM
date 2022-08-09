@@ -51,7 +51,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 layoutSort.tvSortRate.text = getString(R.string.sort_coin_rate_no)
                 layoutSort.tvSortVolume.text = getString(R.string.sort_coin_volume_no)
 
-
                 when (layoutSort.tvSortName.text) {
                     getString(R.string.sort_coin_name_no) -> {
                         layoutSort.tvSortName.text = getString(R.string.sort_coin_name_desc)
@@ -145,6 +144,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 when (event) {
                     Lifecycle.Event.ON_RESUME -> _homeViewModel.listenPrice()
                     Lifecycle.Event.ON_STOP -> _homeViewModel.unlistenPrice()
+                    else -> {}
                 }
             }
         })

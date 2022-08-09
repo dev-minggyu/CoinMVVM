@@ -72,6 +72,7 @@ class HomeViewModel @Inject constructor(
                             _isSocketClose = true
                             onError(it.message ?: getString(R.string.error_getting_coin_list))
                         }
+                        else -> {}
                     }
                 }
             }
