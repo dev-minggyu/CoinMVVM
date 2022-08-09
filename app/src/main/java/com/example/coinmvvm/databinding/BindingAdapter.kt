@@ -31,10 +31,10 @@ object BindingAdapter {
     @JvmStatic
     @BindingAdapter("onItemSelectedListener")
     fun bindOnItemSelectedListener(
-        view: BottomNavigationView, selectedNavigationItem: (Int) -> Unit
+        view: BottomNavigationView, onNavigationItemSelected: (Int) -> Unit
     ) {
         view.setOnItemSelectedListener { item ->
-            selectedNavigationItem(item.itemId)
+            onNavigationItemSelected(item.itemId)
             true
         }
     }
