@@ -33,8 +33,8 @@
 
             <include
                 android:id="@+id/layout_search"
-                app:vm="@{vm}"
-                layout="@layout/layout_list_search" />
+                layout="@layout/layout_list_search"
+                app:vm="@{vm}" />
 
             <include
                 android:id="@+id/layout_sort"

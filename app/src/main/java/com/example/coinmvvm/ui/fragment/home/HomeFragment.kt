@@ -2,7 +2,6 @@ package com.example.coinmvvm.ui.fragment.home
 
 import android.os.Bundle
 import android.view.View
-import android.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver

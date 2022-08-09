@@ -16,11 +16,11 @@
 
         <SearchView
             android:id="@+id/search_view_ticker"
+            onQueryTextListener="@{vm.filterTickerSymbol}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_search"
             android:iconifiedByDefault="false"
-            onQueryTextListener="@{vm.filterTickerSymbol}"
             android:queryBackground="@android:color/transparent"
             android:queryHint="@string/hint_search_ticker"
             android:textSize="@dimen/_14sdp"
