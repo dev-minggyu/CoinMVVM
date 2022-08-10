@@ -71,7 +71,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             when (it!!) {
                 NetworkState.CONNECTED -> {
                     _networkSnackBar?.dismiss()
-                    _homeViewModel.listenPrice()
+                    _homeViewModel.observeTickerPrice()
                 }
                 NetworkState.DISCONNECTED -> {
                     _networkSnackBar = showSnackBar(
@@ -141,8 +141,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         when (event) {
-            Lifecycle.Event.ON_RESUME -> _homeViewModel.listenPrice()
-            Lifecycle.Event.ON_STOP -> _homeViewModel.unlistenPrice()
+            Lifecycle.Event.ON_RESUME -> _homeViewModel.observeTickerPrice()
+            Lifecycle.Event.ON_STOP -> _homeViewModel.stopTickerSocket()
             else -> {}
         }
     }

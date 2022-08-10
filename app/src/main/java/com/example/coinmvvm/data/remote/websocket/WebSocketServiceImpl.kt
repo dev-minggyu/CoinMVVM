@@ -53,8 +53,8 @@ class WebSocketServiceImpl @Inject constructor(
     @OptIn(DelicateCoroutinesApi::class)
     override suspend fun listenTickerSocket() {
         if (_jobGlobalScope == null) {
-            _webSocket?.run {
-                _jobGlobalScope = GlobalScope.launch {
+            _jobGlobalScope = GlobalScope.launch {
+                _webSocket?.run {
                     try {
                         incoming.consumeEach { frame ->
                             if (frame is Frame.Text) {

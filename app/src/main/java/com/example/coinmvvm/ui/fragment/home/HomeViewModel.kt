@@ -60,7 +60,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun listenPrice() {
+    fun observeTickerPrice() {
         if (_isSocketClose) {
             _isSocketClose = false
             viewModelScope.launch {
@@ -95,15 +95,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun unlistenPrice() {
+    fun stopTickerSocket() {
         viewModelScope.launch {
             _coinRepository.stopTickerSocket()
         }
     }
 
     fun retryListenPrice() {
-        unlistenPrice()
-        listenPrice()
+        stopTickerSocket()
+        observeTickerPrice()
     }
 
     fun addFavoriteSymbol(symbol: String) {
@@ -188,6 +188,6 @@ class HomeViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        unlistenPrice()
+        stopTickerSocket()
     }
 }
