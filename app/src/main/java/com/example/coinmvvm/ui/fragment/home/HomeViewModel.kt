@@ -63,16 +63,26 @@ class HomeViewModel @Inject constructor(
                     return@launch
                 }
 
-                val requestTickerData = RequestTickerData(_tmpTickerList.map { it.getSymbolName() })
-                _coinRepository.observeTickerSocket(requestTickerData).collect {
-                    when (it) {
-                        is Resource.Success -> onReceivedTicker(it.data)
-                        is Resource.Error -> {
-                            _isSocketClose = true
-                            onError(it.message ?: getString(R.string.error_getting_coin_list))
+                when (_coinRepository.initTickerSocket()) {
+                    is Resource.Success -> {
+                        val requestTickerData = RequestTickerData(_tmpTickerList.map { it.getSymbolName() })
+                        _coinRepository.requestTickerPrice(requestTickerData)
+                        _coinRepository.observeTickerSocket().collect {
+                            when (it) {
+                                is Resource.Success -> onReceivedTicker(it.data)
+                                is Resource.Error -> {
+                                    _isSocketClose = true
+                                    onError(it.message ?: getString(R.string.error_getting_coin_list))
+                                }
+                                else -> {}
+                            }
                         }
-                        else -> {}
                     }
+                    is Resource.Error -> {
+                        _isSocketClose = true
+                        onError(getString(R.string.error_getting_coin_list))
+                    }
+                    else -> {}
                 }
             }
         }
@@ -119,7 +129,13 @@ class HomeViewModel @Inject constructor(
         notifySortedTickerList()
     }
 
+    private fun notifySortedTickerList() {
+        sortTicker()
+        _tickerList.value = filterTicker()
+    }
+
     private fun sortTicker() {
+
         when (_sortState) {
             SortState.NO -> _tmpTickerList.sortBy { it.index }
 
@@ -137,20 +153,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun notifySortedTickerList() {
-        sortTicker()
-        _tickerList.value = filterTicker()
-    }
-
     private fun filterTicker(): List<Ticker> {
         return if (_filterTickerSymbol.isNotEmpty()) {
-            _tmpTickerList.filter { it.symbol.startsWith(_filterTickerSymbol, true) }
+            _tmpTickerList.filter { it.symbol.startsWith(_filterTickerSymbol) }
         } else {
             _tmpTickerList
         }
     }
 
-    private suspend fun onReceivedTicker(tickerData: TickerData?) {
+    private fun onReceivedTicker(tickerData: TickerData?) {
         val tickerContent = tickerData?.ticker?.content
         tickerContent?.let { content ->
             _tmpTickerList.find {

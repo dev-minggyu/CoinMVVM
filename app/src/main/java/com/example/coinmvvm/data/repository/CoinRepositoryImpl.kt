@@ -6,25 +6,37 @@ import com.example.coinmvvm.data.model.RequestTickerData
 import com.example.coinmvvm.data.model.Ticker
 import com.example.coinmvvm.data.model.TickerData
 import com.example.coinmvvm.data.remote.network.NetworkRepository
-import com.example.coinmvvm.data.remote.websocket.WebSocketRepository
+import com.example.coinmvvm.data.remote.websocket.WebSocketService
 import com.example.coinmvvm.util.Resource
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CoinRepositoryImpl @Inject constructor(
-    private val _webSocketRepository: WebSocketRepository,
+    private val _webSocketService: WebSocketService,
     private val _networkRepository: NetworkRepository,
     private val _database: CoinDatabase
 ) : CoinRepository {
 
-    override fun observeTickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>> {
-        return _webSocketRepository.tickerSocket(requestTickerData)
+    override suspend fun initTickerSocket(): Resource<Unit> {
+        return when (_webSocketService.connectTickerSocket()) {
+            is Resource.Success -> {
+                _webSocketService.listenTickerSocket()
+                Resource.Success(Unit)
+            }
+            else -> Resource.Error(null)
+        }
     }
 
+    override suspend fun requestTickerPrice(requestTickerData: RequestTickerData) {
+        _webSocketService.requestTickerPrice(requestTickerData)
+    }
+
+    override suspend fun observeTickerSocket(): SharedFlow<Resource<TickerData>> = _webSocketService.observeTickerSocket
+
     override suspend fun stopTickerSocket() {
-        _webSocketRepository.stopTickerSocket()
+        _webSocketService.stopTickerSocket()
     }
 
     override suspend fun getKRWTickers(): Resource<List<Ticker>> {

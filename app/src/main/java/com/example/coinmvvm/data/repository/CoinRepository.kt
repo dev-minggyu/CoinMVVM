@@ -5,10 +5,14 @@ import com.example.coinmvvm.data.model.RequestTickerData
 import com.example.coinmvvm.data.model.Ticker
 import com.example.coinmvvm.data.model.TickerData
 import com.example.coinmvvm.util.Resource
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 
 interface CoinRepository {
-    fun observeTickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>>
+    suspend fun initTickerSocket(): Resource<Unit>
+
+    suspend fun requestTickerPrice(requestTickerData: RequestTickerData)
+
+    suspend fun observeTickerSocket(): SharedFlow<Resource<TickerData>>
 
     suspend fun stopTickerSocket()
 

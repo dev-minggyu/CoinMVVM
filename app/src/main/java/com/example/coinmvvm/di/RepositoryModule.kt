@@ -2,8 +2,8 @@ package com.example.coinmvvm.di
 
 import com.example.coinmvvm.data.remote.network.NetworkRepository
 import com.example.coinmvvm.data.remote.network.NetworkRepositoryImpl
-import com.example.coinmvvm.data.remote.websocket.WebSocketRepository
-import com.example.coinmvvm.data.remote.websocket.WebSocketRepositoryImpl
+import com.example.coinmvvm.data.remote.websocket.WebSocketService
+import com.example.coinmvvm.data.remote.websocket.WebSocketServiceImpl
 import com.example.coinmvvm.data.repository.CoinRepository
 import com.example.coinmvvm.data.repository.CoinRepositoryImpl
 import dagger.Binds
@@ -25,5 +25,5 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindWebSocketRepository(webSocketRepositoryImpl: WebSocketRepositoryImpl): WebSocketRepository
+    abstract fun bindWebSocketService(webSocketServiceImpl: WebSocketServiceImpl): WebSocketService
 }
