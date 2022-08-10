@@ -38,7 +38,8 @@
 
             <include
                 android:id="@+id/layout_sort"
-                layout="@layout/layout_list_sort" />
+                layout="@layout/layout_list_sort"
+                app:vm="@{vm}" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

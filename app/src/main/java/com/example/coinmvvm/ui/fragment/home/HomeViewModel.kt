@@ -27,6 +27,9 @@ class HomeViewModel @Inject constructor(
     private val _tickerList: MutableLiveData<List<Ticker>?> = MutableLiveData()
     val tickerList = _tickerList.asLiveData()
 
+    private val _sortEvent: MutableLiveData<SortState> = MutableLiveData()
+    val sortEvent = _sortEvent.asLiveData()
+
     private var _sortState = SortState.NO
 
     private var _filterTickerSymbol: String = ""
@@ -39,6 +42,10 @@ class HomeViewModel @Inject constructor(
     val filterTickerSymbol = { text: String ->
         _filterTickerSymbol = text
         notifySortedTickerList()
+    }
+
+    val onTickerSortClick = { sortState: SortState ->
+        sortTicker(sortState)
     }
 
     private suspend fun getKRWTickers(): Boolean {
@@ -124,14 +131,16 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun sortTicker(sortState: SortState) {
-        _sortState = sortState
-        notifySortedTickerList()
-    }
-
     private fun notifySortedTickerList() {
         sortTicker()
         _tickerList.value = filterTicker()
+    }
+
+    private fun sortTicker(sortState: SortState) {
+        _sortState = sortState
+        _sortEvent.value = sortState
+        _tickerList.value = null
+        notifySortedTickerList()
     }
 
     private fun sortTicker() {

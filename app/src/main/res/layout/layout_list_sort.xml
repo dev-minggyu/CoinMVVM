@@ -2,6 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <variable
+            name="vm"
+            type="com.example.coinmvvm.ui.fragment.home.HomeViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,6 +45,7 @@
 
         <TextView
             android:id="@+id/tv_sort_name"
+            sortClick="@{vm.onTickerSortClick}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -50,6 +58,7 @@
 
         <TextView
             android:id="@+id/tv_sort_price"
+            sortClick="@{vm.onTickerSortClick}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -62,6 +71,7 @@
 
         <TextView
             android:id="@+id/tv_sort_rate"
+            sortClick="@{vm.onTickerSortClick}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -74,6 +84,7 @@
 
         <TextView
             android:id="@+id/tv_sort_volume"
+            sortClick="@{vm.onTickerSortClick}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"

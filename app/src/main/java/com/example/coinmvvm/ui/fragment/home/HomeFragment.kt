@@ -43,95 +43,22 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     }
 
     private fun setupListFilter() {
-        dataBinding.apply {
-            layoutSort.tvSortName.setOnClickListener {
-                _tickerAdapter?.submitList(null)
-
-                layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_no)
-                layoutSort.tvSortRate.text = getString(R.string.sort_coin_rate_no)
-                layoutSort.tvSortVolume.text = getString(R.string.sort_coin_volume_no)
-
-                when (layoutSort.tvSortName.text) {
-                    getString(R.string.sort_coin_name_no) -> {
-                        layoutSort.tvSortName.text = getString(R.string.sort_coin_name_desc)
-                        _homeViewModel.sortTicker(SortState.NAME_DESC)
-                    }
-                    getString(R.string.sort_coin_name_desc) -> {
-                        layoutSort.tvSortName.text = getString(R.string.sort_coin_name_asc)
-                        _homeViewModel.sortTicker(SortState.NAME_ASC)
-                    }
-                    getString(R.string.sort_coin_name_asc) -> {
+        _homeViewModel.sortEvent.observe(viewLifecycleOwner) { sortState ->
+            dataBinding.apply {
+                when (sortState) {
+                    SortState.NAME_DESC -> layoutSort.tvSortName.text = getString(R.string.sort_coin_name_desc)
+                    SortState.NAME_ASC -> layoutSort.tvSortName.text = getString(R.string.sort_coin_name_asc)
+                    SortState.PRICE_DESC -> layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_desc)
+                    SortState.PRICE_ASC -> layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_asc)
+                    SortState.RATE_DESC -> layoutSort.tvSortRate.text = getString(R.string.sort_coin_rate_desc)
+                    SortState.RATE_ASC -> layoutSort.tvSortRate.text = getString(R.string.sort_coin_rate_asc)
+                    SortState.VOLUME_DESC -> layoutSort.tvSortVolume.text = getString(R.string.sort_coin_volume_desc)
+                    SortState.VOLUME_ASC -> layoutSort.tvSortVolume.text = getString(R.string.sort_coin_volume_asc)
+                    SortState.NO -> {
                         layoutSort.tvSortName.text = getString(R.string.sort_coin_name_no)
-                        _homeViewModel.sortTicker(SortState.NO)
-                    }
-                }
-            }
-
-            layoutSort.tvSortPrice.setOnClickListener {
-                _tickerAdapter?.submitList(null)
-
-                layoutSort.tvSortName.text = getString(R.string.sort_coin_name_no)
-                layoutSort.tvSortRate.text = getString(R.string.sort_coin_rate_no)
-                layoutSort.tvSortVolume.text = getString(R.string.sort_coin_volume_no)
-
-                when (layoutSort.tvSortPrice.text) {
-                    getString(R.string.sort_coin_price_no) -> {
-                        layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_desc)
-                        _homeViewModel.sortTicker(SortState.PRICE_DESC)
-                    }
-                    getString(R.string.sort_coin_price_desc) -> {
-                        layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_asc)
-                        _homeViewModel.sortTicker(SortState.PRICE_ASC)
-                    }
-                    getString(R.string.sort_coin_price_asc) -> {
                         layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_no)
-                        _homeViewModel.sortTicker(SortState.NO)
-                    }
-                }
-            }
-
-            layoutSort.tvSortRate.setOnClickListener {
-                _tickerAdapter?.submitList(null)
-
-                layoutSort.tvSortName.text = getString(R.string.sort_coin_name_no)
-                layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_no)
-                layoutSort.tvSortVolume.text = getString(R.string.sort_coin_volume_no)
-
-                when (layoutSort.tvSortRate.text) {
-                    getString(R.string.sort_coin_rate_no) -> {
-                        layoutSort.tvSortRate.text = getString(R.string.sort_coin_rate_desc)
-                        _homeViewModel.sortTicker(SortState.RATE_DESC)
-                    }
-                    getString(R.string.sort_coin_rate_desc) -> {
-                        layoutSort.tvSortRate.text = getString(R.string.sort_coin_rate_asc)
-                        _homeViewModel.sortTicker(SortState.RATE_ASC)
-                    }
-                    getString(R.string.sort_coin_rate_asc) -> {
                         layoutSort.tvSortRate.text = getString(R.string.sort_coin_rate_no)
-                        _homeViewModel.sortTicker(SortState.NO)
-                    }
-                }
-            }
-
-            layoutSort.tvSortVolume.setOnClickListener {
-                _tickerAdapter?.submitList(null)
-
-                layoutSort.tvSortName.text = getString(R.string.sort_coin_name_no)
-                layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_no)
-                layoutSort.tvSortRate.text = getString(R.string.sort_coin_rate_no)
-
-                when (layoutSort.tvSortVolume.text) {
-                    getString(R.string.sort_coin_volume_no) -> {
-                        layoutSort.tvSortVolume.text = getString(R.string.sort_coin_volume_desc)
-                        _homeViewModel.sortTicker(SortState.VOLUME_DESC)
-                    }
-                    getString(R.string.sort_coin_volume_desc) -> {
-                        layoutSort.tvSortVolume.text = getString(R.string.sort_coin_volume_asc)
-                        _homeViewModel.sortTicker(SortState.VOLUME_ASC)
-                    }
-                    getString(R.string.sort_coin_volume_asc) -> {
                         layoutSort.tvSortVolume.text = getString(R.string.sort_coin_volume_no)
-                        _homeViewModel.sortTicker(SortState.NO)
                     }
                 }
             }
