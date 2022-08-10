@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData
 import com.example.coinmvvm.util.livedata.MutableSingleLiveData
 import com.example.coinmvvm.util.livedata.SingleLiveData
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.channels.Channel
 
 fun <T> MutableLiveData<T>.asLiveData() = this as LiveData<T>
 
@@ -49,12 +48,4 @@ fun Fragment.showSnackBar(
         }
     }
     return snackBar
-}
-
-suspend fun <E> Channel<E>.sendIgnoreClosed(event: E) {
-    try {
-        send(event)
-    } catch (e: Exception) {
-
-    }
 }

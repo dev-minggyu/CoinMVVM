@@ -135,7 +135,6 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun sortTicker() {
-
         when (_sortState) {
             SortState.NO -> _tmpTickerList.sortBy { it.index }
 
