@@ -46,8 +46,7 @@ class HomeViewModel @Inject constructor(
             is Resource.Success -> {
                 _tmpTickerList.clear()
                 _tmpTickerList.addAll(tickerList.data)
-                sortTicker()
-                _tickerList.value = _tmpTickerList.toList()
+                notifySortedTickerList()
                 true
             }
             else -> false
@@ -65,7 +64,7 @@ class HomeViewModel @Inject constructor(
                 }
 
                 val requestTickerData = RequestTickerData(_tmpTickerList.map { it.getSymbolName() })
-                _coinRepository.tickerSocket(requestTickerData).collect {
+                _coinRepository.observeTickerSocket(requestTickerData).collect {
                     when (it) {
                         is Resource.Success -> onReceivedTicker(it.data)
                         is Resource.Error -> {

@@ -19,7 +19,7 @@ class CoinRepositoryImpl @Inject constructor(
     private val _database: CoinDatabase
 ) : CoinRepository {
 
-    override fun tickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>> {
+    override fun observeTickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>> {
         return _webSocketRepository.tickerSocket(requestTickerData)
     }
 

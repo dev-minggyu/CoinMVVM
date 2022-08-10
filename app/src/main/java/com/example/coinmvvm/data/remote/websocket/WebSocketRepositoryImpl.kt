@@ -17,7 +17,7 @@ class WebSocketRepositoryImpl @Inject constructor(
 ) : WebSocketRepository {
     private var webSocket: WebSocketSession? = null
 
-    override fun tickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>> = flow {
+    override fun observeTickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>> = flow {
         try {
             _client.wss(TICKER_URL) {
                 webSocket = this

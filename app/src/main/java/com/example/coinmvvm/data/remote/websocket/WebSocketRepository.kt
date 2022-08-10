@@ -6,7 +6,7 @@ import com.example.coinmvvm.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface WebSocketRepository {
-    fun tickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>>
+    fun observeTickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>>
 
     suspend fun stopTickerSocket()
 }
