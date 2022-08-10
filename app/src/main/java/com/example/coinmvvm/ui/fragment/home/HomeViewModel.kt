@@ -48,6 +48,21 @@ class HomeViewModel @Inject constructor(
         sortTicker(sortState)
     }
 
+    init {
+        viewModelScope.launch {
+            _coinRepository.observeTickerSocket().collect {
+                when (it) {
+                    is Resource.Success -> onReceivedTicker(it.data)
+                    is Resource.Error -> {
+                        _isSocketClose = true
+                        onError(it.message ?: getString(R.string.error_getting_coin_list))
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
     private suspend fun getKRWTickers(): Boolean {
         return when (val tickerList = _coinRepository.getKRWTickers()) {
             is Resource.Success -> {
@@ -74,16 +89,6 @@ class HomeViewModel @Inject constructor(
                     is Resource.Success -> {
                         val requestTickerData = RequestTickerData(_tmpTickerList.map { it.getSymbolName() })
                         _coinRepository.requestTickerPrice(requestTickerData)
-                        _coinRepository.observeTickerSocket().collect {
-                            when (it) {
-                                is Resource.Success -> onReceivedTicker(it.data)
-                                is Resource.Error -> {
-                                    _isSocketClose = true
-                                    onError(it.message ?: getString(R.string.error_getting_coin_list))
-                                }
-                                else -> {}
-                            }
-                        }
                     }
                     is Resource.Error -> {
                         _isSocketClose = true
