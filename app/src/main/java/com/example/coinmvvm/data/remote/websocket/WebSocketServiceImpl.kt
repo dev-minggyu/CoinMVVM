@@ -4,6 +4,7 @@ import com.example.coinmvvm.data.model.RequestTickerData
 import com.example.coinmvvm.data.model.TickerData
 import com.example.coinmvvm.data.model.TickerInfo
 import com.example.coinmvvm.util.Resource
+import com.google.gson.Gson
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
 import io.ktor.client.request.*
@@ -53,12 +54,13 @@ class WebSocketServiceImpl @Inject constructor(
     @OptIn(DelicateCoroutinesApi::class)
     override suspend fun listenTickerSocket() {
         if (_jobGlobalScope == null) {
-            _jobGlobalScope = GlobalScope.launch {
+            _jobGlobalScope = GlobalScope.launch(Dispatchers.IO) {
                 _webSocket?.run {
+                    val gson = Gson()
                     try {
                         incoming.consumeEach { frame ->
                             if (frame is Frame.Text) {
-                                val tickerInfo = receiveDeserialized<TickerInfo>()
+                                val tickerInfo = gson.fromJson(frame.readText(), TickerInfo::class.java)
                                 val tickerData = TickerData(tickerInfo)
                                 _observeTickerSocket.emit(Resource.Success(tickerData))
                             }
