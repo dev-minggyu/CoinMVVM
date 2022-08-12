@@ -1,7 +1,9 @@
 package com.example.coinmvvm.databinding
 
+import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.example.coinmvvm.App
@@ -57,6 +59,11 @@ object BindingAdapter {
             }
         })
     }
+}
 
+@BindingAdapter("android:src")
+fun ImageView.bindSrc(@DrawableRes src: Int) {
+    this.post {
+        setImageResource(src)
     }
 }
