@@ -54,6 +54,8 @@ class TransactionDiffCallback : DiffUtil.ItemCallback<Ticker>() {
 }
 
 interface FavoriteClickListener {
+    // 즐겨찾기 등록
     fun onAddFavorite(symbol: String)
+    // 즐겨찾기 해제
     fun onDeleteFavorite(symbol: String)
 }
