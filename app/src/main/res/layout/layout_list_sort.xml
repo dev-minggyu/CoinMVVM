@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.example.coinmvvm.constant.enums.SortState"/>
 
         <variable
             name="vm"
@@ -45,55 +47,108 @@
 
         <TextView
             android:id="@+id/tv_sort_name"
-            sortClick="@{vm.onTickerSortClick}"
+            android:onClick="@{() -> vm.onTickerSortClick.invoke(vm.sortEvent != SortState.NAME_DESC ? SortState.NAME_DESC : SortState.NAME_ASC)}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/sort_coin_name_no"
+            android:text="@{SortState.NAME_ASC.formattedTitle()}"
+            tools:text="@string/sort_coin_name_no"
             android:textColor="@color/color_text"
             android:textSize="@dimen/_11sdp"
             app:layout_constraintEnd_toStartOf="@id/gl_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_sort_name"
+            android:layout_width="20dp"
+            android:layout_height="0dp"
+            android:src="@{vm.sortEvent.getStateNameDrawable}"
+            tools:src="@drawable/ic_arrow_down"
+            tools:tint="@color/grey"
+            colorFilter="@{vm.sortEvent.stateName ? @color/black : @color/grey}"
+            app:layout_constraintTop_toTopOf="@id/tv_sort_name"
+            app:layout_constraintBottom_toBottomOf="@id/tv_sort_name"
+            app:layout_constraintEnd_toEndOf="@id/tv_sort_name" />
+
         <TextView
             android:id="@+id/tv_sort_price"
-            sortClick="@{vm.onTickerSortClick}"
+            android:onClick="@{() -> vm.onTickerSortClick.invoke(vm.sortEvent != SortState.PRICE_DESC ? SortState.PRICE_DESC : SortState.PRICE_ASC)}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/sort_coin_price_no"
+            android:text="@{SortState.PRICE_ASC.formattedTitle()}"
+            tools:text="@string/sort_coin_price_no"
             android:textColor="@color/color_text"
             android:textSize="@dimen/_11sdp"
             app:layout_constraintEnd_toEndOf="@id/gl_price"
             app:layout_constraintStart_toEndOf="@id/gl_name"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_sort_price"
+            android:layout_width="20dp"
+            android:layout_height="0dp"
+            android:src="@{vm.sortEvent.getStatePriceDrawable}"
+            tools:src="@drawable/ic_arrow_down"
+            tools:tint="@color/grey"
+            colorFilter="@{vm.sortEvent.statePrice ? @color/black : @color/grey}"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toTopOf="@id/tv_sort_price"
+            app:layout_constraintBottom_toBottomOf="@id/tv_sort_price"
+            app:layout_constraintEnd_toEndOf="@id/tv_sort_price" />
+
         <TextView
             android:id="@+id/tv_sort_rate"
-            sortClick="@{vm.onTickerSortClick}"
+            android:onClick="@{() -> vm.onTickerSortClick.invoke(vm.sortEvent != SortState.RATE_DESC ? SortState.RATE_DESC : SortState.RATE_ASC)}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/sort_coin_rate_no"
+            android:text="@{SortState.RATE_ASC.formattedTitle()}"
+            tools:text="@string/sort_coin_rate_no"
             android:textColor="@color/color_text"
             android:textSize="@dimen/_11sdp"
             app:layout_constraintEnd_toEndOf="@id/gl_rate"
             app:layout_constraintStart_toEndOf="@id/gl_price"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_sort_rate"
+            android:layout_width="20dp"
+            android:layout_height="0dp"
+            android:src="@{vm.sortEvent.getStateRateDrawable}"
+            tools:src="@drawable/ic_arrow_down"
+            tools:tint="@color/grey"
+            colorFilter="@{vm.sortEvent.stateRate ? @color/black : @color/grey}"
+            app:layout_constraintTop_toTopOf="@id/tv_sort_rate"
+            app:layout_constraintBottom_toBottomOf="@id/tv_sort_rate"
+            app:layout_constraintEnd_toEndOf="@id/tv_sort_rate" />
+
         <TextView
             android:id="@+id/tv_sort_volume"
-            sortClick="@{vm.onTickerSortClick}"
+            android:onClick="@{() -> vm.onTickerSortClick.invoke(vm.sortEvent != SortState.VOLUME_DESC ? SortState.VOLUME_DESC : SortState.VOLUME_ASC)}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/sort_coin_volume_no"
+            android:text="@{SortState.VOLUME_ASC.formattedTitle()}"
+            tools:text="@string/sort_coin_volume_no"
             android:textColor="@color/color_text"
             android:textSize="@dimen/_11sdp"
             app:layout_constraintEnd_toEndOf="@id/gl_volume"
             app:layout_constraintStart_toEndOf="@id/gl_rate"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_sort_volume"
+            android:layout_width="20dp"
+            android:layout_height="0dp"
+            android:src="@{vm.sortEvent.getStateVolumeDrawable}"
+            tools:src="@drawable/ic_arrow_down"
+            tools:tint="@color/grey"
+            colorFilter="@{vm.sortEvent.stateVolume ? @color/black : @color/grey}"
+            app:layout_constraintTop_toTopOf="@id/tv_sort_volume"
+            app:layout_constraintBottom_toBottomOf="@id/tv_sort_volume"
+            app:layout_constraintEnd_toEndOf="@id/tv_sort_volume" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
