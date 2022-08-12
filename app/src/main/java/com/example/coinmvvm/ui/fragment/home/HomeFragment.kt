@@ -43,8 +43,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     private fun setupObserver() {
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
-        networkStateLiveData.observe(viewLifecycleOwner) {
-            when (it!!) {
+        networkStateLiveData.observe(viewLifecycleOwner) { state ->
+            when (state) {
                 NetworkState.CONNECTED -> {
                     _networkSnackBar?.dismiss()
                     _homeViewModel.observeTickerPrice()
@@ -60,21 +60,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
             }
         }
 
-        _homeViewModel.tickerList.observe(viewLifecycleOwner) {
-            _tickerAdapter?.submitList(it)
-            _favoriteAdapter?.submitList(
-                it?.filter { ticker ->
-                    ticker.isFavorite
-                }
-            )
-        }
+        with(_homeViewModel) {
+            tickerList.observe(viewLifecycleOwner) {
+                _tickerAdapter?.submitList(it)
+                _favoriteAdapter?.submitList(
+                    it?.filter { ticker -> ticker.isFavorite }
+                )
+            }
 
-        _homeViewModel.socketError.observe(viewLifecycleOwner) {
-            _networkSnackBar = showSnackBar(
-                it,
-                getString(R.string.snackbar_retry)
-            ) {
-                networkStateLiveData.updateState()
+            socketError.observe(viewLifecycleOwner) {
+                _networkSnackBar = showSnackBar(
+                    it,
+                    getString(R.string.snackbar_retry)
+                ) {
+                    networkStateLiveData.updateState()
+                }
             }
         }
     }

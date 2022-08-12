@@ -1,5 +1,6 @@
 package com.example.coinmvvm.ui.fragment.home
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,6 +15,7 @@ import com.example.coinmvvm.extension.asLiveData
 import com.example.coinmvvm.extension.asSingleLiveData
 import com.example.coinmvvm.util.Resource
 import com.example.coinmvvm.util.livedata.MutableSingleLiveData
+import com.example.coinmvvm.util.livedata.NotNullMutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,41 +24,50 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val _coinRepository: CoinRepository
 ) : ViewModel() {
+    // 임시 데이터들
     private val _tmpTickerList: MutableList<Ticker> = mutableListOf()
 
+    // 실제 데이터들
     private val _tickerList: MutableLiveData<List<Ticker>?> = MutableLiveData()
     val tickerList = _tickerList.asLiveData()
 
-    private val _sortEvent: MutableLiveData<SortState> = MutableLiveData()
+    // 코인리스트 정렬 State
+    private val _sortEvent: NotNullMutableLiveData<SortState> = NotNullMutableLiveData(SortState.NO)
     val sortEvent = _sortEvent.asLiveData()
 
-    private var _sortState = SortState.NO
-
+    // 검색 키워드
     private var _filterTickerSymbol: String = ""
 
+    // 웹소켓 에러 핸들링 메시지
     private val _socketError: MutableSingleLiveData<String> = MutableSingleLiveData()
     val socketError = _socketError.asSingleLiveData()
 
+    // 웹소켓 연결 여부
     private var _isSocketClose = true
 
+    // 검색 키워드 TextChange Stream
     val filterTickerSymbol = { text: String ->
         _filterTickerSymbol = text
         notifySortedTickerList()
     }
 
-    val onTickerSortClick = { sortState: SortState ->
-        sortTicker(sortState)
-    }
+    // 정렬 Change Stream
+    val onTickerSortClick = { sortState: SortState -> onSortStateChanged(sortState) }
 
     init {
         viewModelScope.launch {
-            _coinRepository.observeTickerSocket().collect {
-                when (it) {
-                    is Resource.Success -> onReceivedTicker(it.data)
+            // 웹소켓 Observable 구독
+            _coinRepository.observeTickerSocket().collect { response ->
+                when (response) {
+                    is Resource.Success ->
+                        onReceivedTicker(response.data)
+
                     is Resource.Error -> {
+                        // 웹소켓 연결상태 설정
                         _isSocketClose = true
-                        onError(it.message ?: getString(R.string.error_getting_coin_list))
+                        onError(response.message ?: getString(R.string.error_getting_coin_list))
                     }
+                    // is Resource.Loading
                     else -> {}
                 }
             }
@@ -76,31 +87,35 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    // 네트워크 연결 시 호출 or 홈 Fragment onResume 시 호출
     fun observeTickerPrice() {
-        if (_isSocketClose) {
-            _isSocketClose = false
-            viewModelScope.launch {
-                if (!getKRWTickers()) {
+        // 소켓이 연결되어 있는 상태라면 return
+        if (!_isSocketClose) return
+
+        _isSocketClose = false
+        viewModelScope.launch {
+            if (!getKRWTickers()) {
+                _isSocketClose = true
+                onError(getString(R.string.error_getting_coin_list))
+                return@launch
+            }
+
+            when (_coinRepository.initTickerSocket()) {
+                is Resource.Success -> {
+                    // 재요청할 Ticker 목록
+                    val requestTickerData = RequestTickerData(_tmpTickerList.map { it.getSymbolName() })
+                    _coinRepository.requestTickerPrice(requestTickerData)
+                }
+                is Resource.Error -> {
                     _isSocketClose = true
                     onError(getString(R.string.error_getting_coin_list))
-                    return@launch
                 }
-
-                when (_coinRepository.initTickerSocket()) {
-                    is Resource.Success -> {
-                        val requestTickerData = RequestTickerData(_tmpTickerList.map { it.getSymbolName() })
-                        _coinRepository.requestTickerPrice(requestTickerData)
-                    }
-                    is Resource.Error -> {
-                        _isSocketClose = true
-                        onError(getString(R.string.error_getting_coin_list))
-                    }
-                    else -> {}
-                }
+                else -> {}
             }
         }
     }
 
+    // 웹소켓 중단 - 홈 Fragment onStop 시 호출
     fun stopTickerSocket() {
         viewModelScope.launch {
             _coinRepository.stopTickerSocket()
@@ -112,27 +127,27 @@ class HomeViewModel @Inject constructor(
         observeTickerPrice()
     }
 
+    // 즐겨찾기 등록
     fun addFavoriteSymbol(symbol: String) {
         viewModelScope.launch {
             val index = _coinRepository.addFavoriteTicker(symbol)
-            _tmpTickerList.find {
-                it.getSymbolName() == symbol
-            }?.apply {
-                isFavorite = true
-                favoriteIndex = index
-            }
+            _tmpTickerList
+                .find { it.getSymbolName() == symbol }
+                ?.apply {
+                    isFavorite = true
+                    favoriteIndex = index
+                }
             notifySortedTickerList()
         }
     }
 
+    // 즐겨찾기 해제
     fun deleteFavoriteSymbol(symbol: String) {
         viewModelScope.launch {
             _coinRepository.deleteFavoriteTicker(symbol)
-            _tmpTickerList.find {
-                it.getSymbolName() == symbol
-            }?.apply {
-                isFavorite = false
-            }
+            _tmpTickerList
+                .find { it.getSymbolName() == symbol }
+                ?.apply { isFavorite = false }
             notifySortedTickerList()
         }
     }
