@@ -58,30 +58,5 @@ object BindingAdapter {
         })
     }
 
-    @JvmStatic
-    @BindingAdapter("sortClick")
-    fun bindSortClickListener(
-        view: TextView, onTickerSortClick: (SortState) -> Unit
-    ) {
-        view.setOnClickListener {
-            when (view.text.toString()) {
-                App.getString(R.string.sort_coin_name_no) -> onTickerSortClick(SortState.NAME_DESC)
-                App.getString(R.string.sort_coin_name_desc) -> onTickerSortClick(SortState.NAME_ASC)
-                App.getString(R.string.sort_coin_name_asc) -> onTickerSortClick(SortState.NO)
-
-                App.getString(R.string.sort_coin_price_no) -> onTickerSortClick(SortState.PRICE_DESC)
-                App.getString(R.string.sort_coin_price_desc) -> onTickerSortClick(SortState.PRICE_ASC)
-                App.getString(R.string.sort_coin_price_asc) -> onTickerSortClick(SortState.NO)
-
-                App.getString(R.string.sort_coin_rate_no) -> onTickerSortClick(SortState.RATE_DESC)
-                App.getString(R.string.sort_coin_rate_desc) -> onTickerSortClick(SortState.RATE_ASC)
-                App.getString(R.string.sort_coin_rate_asc) -> onTickerSortClick(SortState.NO)
-
-                App.getString(R.string.sort_coin_volume_no) -> onTickerSortClick(SortState.VOLUME_DESC)
-                App.getString(R.string.sort_coin_volume_desc) -> onTickerSortClick(SortState.VOLUME_ASC)
-                App.getString(R.string.sort_coin_volume_asc) -> onTickerSortClick(SortState.NO)
-
-            }
-        }
     }
 }

@@ -38,30 +38,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         setupViewPager()
 
         setupObserver()
-
-        setupListFilter()
-    }
-
-    private fun setupListFilter() {
-        _homeViewModel.sortEvent.observe(viewLifecycleOwner) { sortState ->
-            dataBinding.apply {
-                layoutSort.tvSortName.text = getString(R.string.sort_coin_name_no)
-                layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_no)
-                layoutSort.tvSortRate.text = getString(R.string.sort_coin_rate_no)
-                layoutSort.tvSortVolume.text = getString(R.string.sort_coin_volume_no)
-                when (sortState) {
-                    SortState.NAME_DESC -> layoutSort.tvSortName.text = getString(R.string.sort_coin_name_desc)
-                    SortState.NAME_ASC -> layoutSort.tvSortName.text = getString(R.string.sort_coin_name_asc)
-                    SortState.PRICE_DESC -> layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_desc)
-                    SortState.PRICE_ASC -> layoutSort.tvSortPrice.text = getString(R.string.sort_coin_price_asc)
-                    SortState.RATE_DESC -> layoutSort.tvSortRate.text = getString(R.string.sort_coin_rate_desc)
-                    SortState.RATE_ASC -> layoutSort.tvSortRate.text = getString(R.string.sort_coin_rate_asc)
-                    SortState.VOLUME_DESC -> layoutSort.tvSortVolume.text = getString(R.string.sort_coin_volume_desc)
-                    SortState.VOLUME_ASC -> layoutSort.tvSortVolume.text = getString(R.string.sort_coin_volume_asc)
-                    SortState.NO -> {}
-                }
-            }
-        }
     }
 
     private fun setupObserver() {

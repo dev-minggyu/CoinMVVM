@@ -149,20 +149,23 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun sortTicker() {
-        when (_sortState) {
-            SortState.NO -> _tmpTickerList.sortBy { it.index }
+        Log.i("JAEJONG", "currentThread [${Thread.currentThread()}]")
+        _tmpTickerList.apply {
+            when (_sortEvent.value) {
+                SortState.NO -> sortBy { it.index }
 
-            SortState.NAME_DESC -> _tmpTickerList.sortByDescending { it.symbol }
-            SortState.NAME_ASC -> _tmpTickerList.sortBy { it.symbol }
+                SortState.NAME_DESC -> sortByDescending { it.symbol }
+                SortState.NAME_ASC -> sortBy { it.symbol }
 
-            SortState.PRICE_DESC -> _tmpTickerList.sortByDescending { it.currentPrice.toFloat() }
-            SortState.PRICE_ASC -> _tmpTickerList.sortBy { it.currentPrice.toFloat() }
+                SortState.PRICE_DESC -> sortByDescending { it.currentPrice.toFloat() }
+                SortState.PRICE_ASC -> sortBy { it.currentPrice.toFloat() }
 
-            SortState.RATE_DESC -> _tmpTickerList.sortByDescending { it.getRateOfChange() }
-            SortState.RATE_ASC -> _tmpTickerList.sortBy { it.getRateOfChange() }
+                SortState.RATE_DESC -> sortByDescending { it.getRateOfChange() }
+                SortState.RATE_ASC -> sortBy { it.getRateOfChange() }
 
-            SortState.VOLUME_DESC -> _tmpTickerList.sortByDescending { it.transactionAmount.toFloat() }
-            SortState.VOLUME_ASC -> _tmpTickerList.sortBy { it.transactionAmount.toFloat() }
+                SortState.VOLUME_DESC -> sortByDescending { it.transactionAmount.toFloat() }
+                SortState.VOLUME_ASC -> sortBy { it.transactionAmount.toFloat() }
+            }
         }
     }
 
