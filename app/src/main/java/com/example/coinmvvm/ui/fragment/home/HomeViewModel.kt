@@ -68,6 +68,7 @@ class HomeViewModel @Inject constructor(
             is Resource.Success -> {
                 _tmpTickerList.clear()
                 _tmpTickerList.addAll(tickerList.data)
+                sortTicker()
                 notifySortedTickerList()
                 true
             }
@@ -136,16 +137,21 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun notifySortedTickerList() {
-        sortTicker()
-        _tickerList.value = filterTicker()
-    }
+    private fun onSortStateChanged(sortState: SortState) {
+        if (_sortEvent.value == sortState) return
 
-    private fun sortTicker(sortState: SortState) {
-        _sortState = sortState
         _sortEvent.value = sortState
         _tickerList.value = null
+        sortTicker()
         notifySortedTickerList()
+    }
+
+    // 코인리스트 Notify - 조건 정렬 포함
+    // 즐겨찾기 변동
+    // 검색어 변동
+    // 네트워크 연결 및 홈 onResume
+    private fun notifySortedTickerList() {
+        filteringTicker()
     }
 
     private fun sortTicker() {
@@ -169,23 +175,23 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun filterTicker(): List<Ticker> {
-        return if (_filterTickerSymbol.isNotEmpty()) {
-            _tmpTickerList.filter { it.symbol.startsWith(_filterTickerSymbol) }
-        } else {
-            _tmpTickerList
+    private fun filteringTicker() {
+//        sortTicker()
+        _tickerList.value = _tmpTickerList.let { tmpTikcers ->
+            if (_filterTickerSymbol.isNotEmpty())
+                tmpTikcers.filter { it.symbol.contains(_filterTickerSymbol, ignoreCase = true) }
+            else
+                tmpTikcers
         }
     }
 
-    private fun onReceivedTicker(tickerData: TickerData?) {
-        val tickerContent = tickerData?.ticker?.content
-        tickerContent?.let { content ->
-            _tmpTickerList.find {
-                it.getSymbolName() == content.symbol
-            }?.apply {
-                currentPrice = content.closePrice
-                prevPrice = content.prevClosePrice
-            }
+    private fun onReceivedTicker(tickerData: TickerData) {
+        val tickerContent = tickerData.ticker?.content ?: return
+
+        _tmpTickerList.find { it.getSymbolName() == tickerContent.symbol }?.apply {
+            currentPrice = tickerContent.closePrice
+            prevPrice = tickerContent.prevClosePrice
+
             notifySortedTickerList()
         }
     }
