@@ -50,13 +50,6 @@ class SortButton(context: Context?, attrs: AttributeSet?) : LinearLayout(context
             }
         }
 
-        _dataBinding.ivSortArrow.setImageResource(
-            typedArray.getInt(
-                R.styleable.SortButton_sortArrow,
-                R.drawable.ic_arrow_normal
-            )
-        )
-
         typedArray.recycle()
     }
 
