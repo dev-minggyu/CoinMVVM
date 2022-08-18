@@ -1,6 +1,7 @@
 package com.example.coinmvvm.extension
 
 import android.app.Activity
+import android.content.res.TypedArray
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -49,3 +50,9 @@ fun Fragment.showSnackBar(
     }
     return snackBar
 }
+
+inline fun <reified T : Enum<T>> TypedArray.getEnum(index: Int) =
+    getInt(
+        index,
+        -1
+    ).let { if (it >= 0) enumValues<T>()[it] else throw IllegalAccessException("Unsupported sort category") }

@@ -7,21 +7,10 @@
     <string name="app_theme_light">라이트</string>
     <string name="app_theme_dark">다크</string>
 
-    <string name="sort_coin_price_no">가격 ▽</string>
-    <string name="sort_coin_price_desc">가격 ▼</string>
-    <string name="sort_coin_price_asc">가격 ▲</string>
-
-    <string name="sort_coin_name_no">이름 ▽</string>
-    <string name="sort_coin_name_desc">이름 ▼</string>
-    <string name="sort_coin_name_asc">이름 ▲</string>
-
-    <string name="sort_coin_rate_no">변동률 ▽</string>
-    <string name="sort_coin_rate_desc">변동률 ▼</string>
-    <string name="sort_coin_rate_asc">변동률 ▲</string>
-
-    <string name="sort_coin_volume_no">거래량 ▽</string>
-    <string name="sort_coin_volume_desc">거래량 ▼</string>
-    <string name="sort_coin_volume_asc">거래량 ▲</string>
+    <string name="sort_coin_price">가격</string>
+    <string name="sort_coin_name">이름</string>
+    <string name="sort_coin_rate">변동률</string>
+    <string name="sort_coin_volume">거래량</string>
 
     <string name="snackbar_check_internet_connection">인터넷 연결을 확인해주세요.</string>
     <string name="snackbar_retry">재시도</string>

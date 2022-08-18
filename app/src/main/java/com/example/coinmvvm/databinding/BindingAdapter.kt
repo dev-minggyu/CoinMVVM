@@ -4,10 +4,12 @@ import android.widget.SearchView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
-import com.example.coinmvvm.App
 import com.example.coinmvvm.R
 import com.example.coinmvvm.constant.enums.PriceState
-import com.example.coinmvvm.constant.enums.SortState
+import com.example.coinmvvm.constant.enums.SortCategory
+import com.example.coinmvvm.constant.enums.SortModel
+import com.example.coinmvvm.constant.enums.SortType
+import com.example.coinmvvm.ui.custom.SortButton
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 object BindingAdapter {
@@ -34,10 +36,10 @@ object BindingAdapter {
     @JvmStatic
     @BindingAdapter("onItemSelectedListener")
     fun bindOnItemSelectedListener(
-        view: BottomNavigationView, onNavigationItemSelected: (Int) -> Unit
+        view: BottomNavigationView, function: (Int) -> Unit
     ) {
         view.setOnItemSelectedListener { item ->
-            onNavigationItemSelected(item.itemId)
+            function(item.itemId)
             true
         }
     }
@@ -45,13 +47,13 @@ object BindingAdapter {
     @JvmStatic
     @BindingAdapter("onQueryTextListener")
     fun bindOnQueryTextListener(
-        view: SearchView, onQueryTextChange: (String) -> Unit
+        view: SearchView, function: (String) -> Unit
     ) {
         view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = true
             override fun onQueryTextChange(text: String?): Boolean {
                 text?.let {
-                    onQueryTextChange(it)
+                    function(it)
                 }
                 return true
             }
@@ -59,29 +61,22 @@ object BindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("sortClick")
-    fun bindSortClickListener(
-        view: TextView, onTickerSortClick: (SortState) -> Unit
+    @BindingAdapter("onSortChangedListener")
+    fun bindOnSortChangedListener(
+        view: SortButton, function: (SortModel) -> Unit
     ) {
-        view.setOnClickListener {
-            when (view.text.toString()) {
-                App.getString(R.string.sort_coin_name_no) -> onTickerSortClick(SortState.NAME_DESC)
-                App.getString(R.string.sort_coin_name_desc) -> onTickerSortClick(SortState.NAME_ASC)
-                App.getString(R.string.sort_coin_name_asc) -> onTickerSortClick(SortState.NO)
-
-                App.getString(R.string.sort_coin_price_no) -> onTickerSortClick(SortState.PRICE_DESC)
-                App.getString(R.string.sort_coin_price_desc) -> onTickerSortClick(SortState.PRICE_ASC)
-                App.getString(R.string.sort_coin_price_asc) -> onTickerSortClick(SortState.NO)
-
-                App.getString(R.string.sort_coin_rate_no) -> onTickerSortClick(SortState.RATE_DESC)
-                App.getString(R.string.sort_coin_rate_desc) -> onTickerSortClick(SortState.RATE_ASC)
-                App.getString(R.string.sort_coin_rate_asc) -> onTickerSortClick(SortState.NO)
-
-                App.getString(R.string.sort_coin_volume_no) -> onTickerSortClick(SortState.VOLUME_DESC)
-                App.getString(R.string.sort_coin_volume_desc) -> onTickerSortClick(SortState.VOLUME_ASC)
-                App.getString(R.string.sort_coin_volume_asc) -> onTickerSortClick(SortState.NO)
-
+        view.setOnSortChangedListener(object : SortButton.OnSortChangedListener {
+            override fun onChanged(sortCategory: SortCategory, sortType: SortType) {
+                function(SortModel(sortCategory, sortType))
             }
-        }
+        })
+    }
+
+    @JvmStatic
+    @BindingAdapter("sortArrow")
+    fun bindSortArrowDrawable(
+        view: SortButton, res: Int
+    ) {
+        view.setArrowDrawable(res)
     }
 }
