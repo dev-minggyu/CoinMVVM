@@ -1,17 +1,19 @@
 package com.example.coinmvvm.constant.enums
 
-enum class SortState {
+enum class SortType {
     NO,
-
-    NAME_DESC,
-    NAME_ASC,
-
-    PRICE_DESC,
-    PRICE_ASC,
-
-    RATE_DESC,
-    RATE_ASC,
-
-    VOLUME_DESC,
-    VOLUME_ASC
+    DESC,
+    ASC
 }
+
+enum class SortCategory(val id: Int) {
+    NAME(0),
+    PRICE(1),
+    RATE(2),
+    VOLUME(3)
+}
+
+data class SortModel(
+    val category: SortCategory,
+    val type: SortType = SortType.NO
+)

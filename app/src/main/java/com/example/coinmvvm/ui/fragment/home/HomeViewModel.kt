@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.coinmvvm.App.Companion.getString
 import com.example.coinmvvm.R
-import com.example.coinmvvm.constant.enums.SortState
+import com.example.coinmvvm.constant.enums.SortCategory
+import com.example.coinmvvm.constant.enums.SortModel
+import com.example.coinmvvm.constant.enums.SortType
 import com.example.coinmvvm.data.model.RequestTickerData
 import com.example.coinmvvm.data.model.Ticker
 import com.example.coinmvvm.data.model.TickerData
@@ -27,10 +29,7 @@ class HomeViewModel @Inject constructor(
     private val _tickerList: MutableLiveData<List<Ticker>?> = MutableLiveData()
     val tickerList = _tickerList.asLiveData()
 
-    private val _sortEvent: MutableLiveData<SortState> = MutableLiveData()
-    val sortEvent = _sortEvent.asLiveData()
-
-    private var _sortState = SortState.NO
+    var sortModel = SortModel(SortCategory.NAME, SortType.NO)
 
     private var _filterTickerSymbol: String = ""
 
@@ -44,8 +43,8 @@ class HomeViewModel @Inject constructor(
         notifySortedTickerList()
     }
 
-    val onTickerSortClick = { sortState: SortState ->
-        sortTicker(sortState)
+    val onTickerSortClick = { sortModel: SortModel ->
+        sortTicker(sortModel)
     }
 
     init {
@@ -141,28 +140,47 @@ class HomeViewModel @Inject constructor(
         _tickerList.value = filterTicker()
     }
 
-    private fun sortTicker(sortState: SortState) {
-        _sortState = sortState
-        _sortEvent.value = sortState
+    private fun sortTicker(sortModel: SortModel) {
+        this.sortModel = sortModel
         _tickerList.value = null
         notifySortedTickerList()
     }
 
     private fun sortTicker() {
-        when (_sortState) {
-            SortState.NO -> _tmpTickerList.sortBy { it.index }
+        sortModel.apply {
+            when (category) {
+                SortCategory.NAME -> {
+                    when (type) {
+                        SortType.NO -> _tmpTickerList.sortBy { it.index }
+                        SortType.DESC -> _tmpTickerList.sortByDescending { it.symbol }
+                        SortType.ASC -> _tmpTickerList.sortBy { it.symbol }
+                    }
+                }
 
-            SortState.NAME_DESC -> _tmpTickerList.sortByDescending { it.symbol }
-            SortState.NAME_ASC -> _tmpTickerList.sortBy { it.symbol }
+                SortCategory.PRICE -> {
+                    when (type) {
+                        SortType.NO -> _tmpTickerList.sortBy { it.index }
+                        SortType.DESC -> _tmpTickerList.sortByDescending { it.currentPrice.toFloat() }
+                        SortType.ASC -> _tmpTickerList.sortBy { it.currentPrice.toFloat() }
+                    }
+                }
 
-            SortState.PRICE_DESC -> _tmpTickerList.sortByDescending { it.currentPrice.toFloat() }
-            SortState.PRICE_ASC -> _tmpTickerList.sortBy { it.currentPrice.toFloat() }
+                SortCategory.RATE -> {
+                    when (type) {
+                        SortType.NO -> _tmpTickerList.sortBy { it.index }
+                        SortType.DESC -> _tmpTickerList.sortByDescending { it.getRateOfChange() }
+                        SortType.ASC -> _tmpTickerList.sortBy { it.getRateOfChange() }
+                    }
+                }
 
-            SortState.RATE_DESC -> _tmpTickerList.sortByDescending { it.getRateOfChange() }
-            SortState.RATE_ASC -> _tmpTickerList.sortBy { it.getRateOfChange() }
-
-            SortState.VOLUME_DESC -> _tmpTickerList.sortByDescending { it.transactionAmount.toFloat() }
-            SortState.VOLUME_ASC -> _tmpTickerList.sortBy { it.transactionAmount.toFloat() }
+                SortCategory.VOLUME -> {
+                    when (type) {
+                        SortType.NO -> _tmpTickerList.sortBy { it.index }
+                        SortType.DESC -> _tmpTickerList.sortByDescending { it.transactionAmount.toFloat() }
+                        SortType.ASC -> _tmpTickerList.sortBy { it.transactionAmount.toFloat() }
+                    }
+                }
+            }
         }
     }
 
