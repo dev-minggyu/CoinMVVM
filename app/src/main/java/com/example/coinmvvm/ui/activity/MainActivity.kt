@@ -28,7 +28,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
         _mainViewModel.currentMenuId.observe(this) {
             when (it) {
                 R.id.home_fragment -> showHomeFragment()
-                R.id.my_asset_fragment -> showMyAssetFragment()
+                R.id.my_asset_fragment -> {}
                 R.id.setting_fragment -> showSettingFragment()
             }
         }
@@ -41,9 +41,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     }
 
     private fun showMyAssetFragment() {
-        showFragment(TAG_FRAGMENT_MY_ASSET) {
-            HomeFragment()
-        }
+        // TODO
+//        showFragment(TAG_FRAGMENT_MY_ASSET) {
+//            Fragment()
+//        }
     }
 
     private fun showSettingFragment() {
