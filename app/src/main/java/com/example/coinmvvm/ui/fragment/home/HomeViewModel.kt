@@ -29,7 +29,8 @@ class HomeViewModel @Inject constructor(
     private val _tickerList: MutableLiveData<List<Ticker>?> = MutableLiveData()
     val tickerList = _tickerList.asLiveData()
 
-    var sortModel = SortModel(SortCategory.NAME, SortType.NO)
+    private val _sortModel: MutableLiveData<SortModel> = MutableLiveData(SortModel(SortCategory.NAME, SortType.NO))
+    val sortModel = _sortModel.asLiveData()
 
     private var _filterTickerSymbol: String = ""
 
@@ -141,13 +142,13 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun sortTicker(sortModel: SortModel) {
-        this.sortModel = sortModel
+        _sortModel.value = sortModel
         _tickerList.value = null
         notifySortedTickerList()
     }
 
     private fun sortTicker() {
-        sortModel.apply {
+        sortModel.value!!.apply {
             when (category) {
                 SortCategory.NAME -> {
                     when (type) {

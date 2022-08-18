@@ -1,6 +1,5 @@
 package com.example.coinmvvm.databinding
 
-import android.util.Log
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -71,5 +70,13 @@ object BindingAdapter {
                 function(SortModel(sortCategory, sortType))
             }
         })
+    }
+
+    @JvmStatic
+    @BindingAdapter("sortArrow")
+    fun bindSortArrowDrawable(
+        view: SortButton, res: Int
+    ) {
+        view.setArrowDrawable(res)
     }
 }

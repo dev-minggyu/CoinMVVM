@@ -66,6 +66,10 @@ class SortButton(context: Context?, attrs: AttributeSet?) : LinearLayout(context
         }
     }
 
+    fun setArrowDrawable(res: Int) {
+        _dataBinding.ivSortArrow.setImageResource(res)
+    }
+
     fun setOnSortChangedListener(listener: OnSortChangedListener) {
         _onSortChangedListener = listener
     }

@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="com.example.coinmvvm.constant.enums.SortCategory" />
+
         <variable
             name="vm"
             type="com.example.coinmvvm.ui.fragment.home.HomeViewModel" />
@@ -46,6 +48,7 @@
         <com.example.coinmvvm.ui.custom.SortButton
             android:id="@+id/tv_sort_name"
             onSortChangedListener="@{vm.onTickerSortClick}"
+            sortArrow="@{vm.sortModel.getArrowRes(SortCategory.NAME)}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -59,6 +62,7 @@
         <com.example.coinmvvm.ui.custom.SortButton
             android:id="@+id/tv_sort_price"
             onSortChangedListener="@{vm.onTickerSortClick}"
+            sortArrow="@{vm.sortModel.getArrowRes(SortCategory.PRICE)}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -72,6 +76,7 @@
         <com.example.coinmvvm.ui.custom.SortButton
             android:id="@+id/tv_sort_rate"
             onSortChangedListener="@{vm.onTickerSortClick}"
+            sortArrow="@{vm.sortModel.getArrowRes(SortCategory.RATE)}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -85,6 +90,7 @@
         <com.example.coinmvvm.ui.custom.SortButton
             android:id="@+id/tv_sort_volume"
             onSortChangedListener="@{vm.onTickerSortClick}"
+            sortArrow="@{vm.sortModel.getArrowRes(SortCategory.VOLUME)}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
