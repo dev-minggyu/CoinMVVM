@@ -21,8 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main), LifecycleEventObserver {
     private val _mainViewModel: MainViewModel by viewModels()
 
-    private var _networkSnackBar: Snackbar? = null
-
     companion object {
         private const val TAG_FRAGMENT_HOME = "TAG_FRAGMENT_HOME"
         private const val TAG_FRAGMENT_MY_ASSET = "TAG_FRAGMENT_MY_ASSET"
@@ -45,23 +43,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main), 
                 R.id.home_fragment -> showHomeFragment()
                 R.id.my_asset_fragment -> {}
                 R.id.setting_fragment -> showSettingFragment()
-            }
-        }
-
-        networkStateLiveData.observe(this) {
-            when (it!!) {
-                NetworkState.CONNECTED -> {
-                    _networkSnackBar?.dismiss()
-                    _mainViewModel.listenTickerPrice()
-                }
-                NetworkState.DISCONNECTED -> {
-                    _networkSnackBar = showSnackBar(
-                        getString(R.string.snackbar_check_internet_connection),
-                        getString(R.string.snackbar_retry)
-                    ) {
-                        networkStateLiveData.updateState()
-                    }
-                }
             }
         }
     }
