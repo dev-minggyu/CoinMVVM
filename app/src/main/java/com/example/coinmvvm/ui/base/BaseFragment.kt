@@ -14,9 +14,6 @@ abstract class BaseFragment<T : ViewDataBinding>(private val layoutID: Int) : Fr
     private var _dataBinding: T? = null
     val dataBinding get() = _dataBinding!!
 
-    @Inject
-    lateinit var networkStateLiveData: NetworkStateLiveData
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
