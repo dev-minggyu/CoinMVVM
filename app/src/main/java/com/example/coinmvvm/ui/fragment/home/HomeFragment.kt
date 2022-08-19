@@ -36,6 +36,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     private fun setupObserver() {
         _homeViewModel.tickerList.observe(viewLifecycleOwner) {
+            _errorSnackBar?.dismiss()
             _tickerAdapter?.submitList(it)
             _favoriteAdapter?.submitList(
                 it?.filter { ticker ->
@@ -49,7 +50,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 it,
                 getString(R.string.snackbar_retry)
             ) {
-                networkStateLiveData.updateState()
+                _homeViewModel.retryListenPrice()
             }
         }
     }

@@ -61,6 +61,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun retryListenPrice() {
+        viewModelScope.launch {
+            _coinRepository.stopTickerSocket()
+            _coinRepository.listenTickerSocket()
+        }
+    }
+
     fun addFavoriteSymbol(symbol: String) {
         viewModelScope.launch {
             val index = _coinRepository.addFavoriteTicker(symbol)
@@ -88,12 +95,15 @@ class HomeViewModel @Inject constructor(
 
     private fun notifySortedTickerList() {
         sortTicker()
-        _tickerList.value = filterTicker()
+        val filteredList = filteredTickerList()
+        if (filteredList.isNotEmpty()) {
+            _tickerList.value = null
+            _tickerList.value = filteredList
+        }
     }
 
     private fun sortTicker(sortModel: SortModel) {
         _sortModel.value = sortModel
-        _tickerList.value = null
         notifySortedTickerList()
     }
 
@@ -135,7 +145,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun filterTicker(): List<Ticker> {
+    private fun filteredTickerList(): List<Ticker> {
         return if (_filterTickerSymbol.isNotEmpty()) {
             _tmpTickerList.filter { it.symbol.startsWith(_filterTickerSymbol, true) }
         } else {
