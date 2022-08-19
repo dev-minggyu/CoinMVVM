@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.example.coinmvvm.R
+import com.example.coinmvvm.data.model.Ticker
 import com.example.coinmvvm.databinding.FragmentHomeBinding
 import com.example.coinmvvm.extension.showSnackBar
 import com.example.coinmvvm.ui.base.BaseFragment
@@ -36,16 +37,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     private fun setupObserver() {
         _homeViewModel.tickerList.observe(viewLifecycleOwner) {
-            _errorSnackBar?.dismiss()
-            _tickerAdapter?.submitList(it)
-            _favoriteAdapter?.submitList(
-                it?.filter { ticker ->
-                    ticker.isFavorite
-                }
-            )
+            if (!it.isNullOrEmpty()) {
+                _errorSnackBar?.dismiss()
+            }
+            setTickerList(it)
         }
 
         _homeViewModel.socketError.observe(viewLifecycleOwner) {
+            setTickerList(null)
             _errorSnackBar = showSnackBar(
                 it,
                 getString(R.string.snackbar_retry)
@@ -53,6 +52,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 _homeViewModel.retryListenPrice()
             }
         }
+    }
+
+    private fun setTickerList(list: List<Ticker>?) {
+        _tickerAdapter?.submitList(list)
+        _favoriteAdapter?.submitList(
+            list?.filter { ticker ->
+                ticker.isFavorite
+            } ?: run {
+                null
+            }
+        )
     }
 
     private fun setupViewPager() {
