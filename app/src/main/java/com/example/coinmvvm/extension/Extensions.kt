@@ -28,7 +28,7 @@ fun Activity.showSnackBar(
     buttonName: String? = null,
     clickListener: View.OnClickListener? = null
 ): Snackbar {
-    val snackBar = Snackbar.make(window.decorView.rootView, text, Snackbar.LENGTH_LONG)
+    val snackBar = Snackbar.make(findViewById(android.R.id.content), text, Snackbar.LENGTH_INDEFINITE)
     clickListener?.let {
         snackBar.setAction(buttonName, clickListener)
     }
