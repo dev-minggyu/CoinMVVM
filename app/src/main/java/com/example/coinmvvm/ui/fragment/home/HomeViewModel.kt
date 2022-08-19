@@ -8,9 +8,7 @@ import com.example.coinmvvm.R
 import com.example.coinmvvm.constant.enums.SortCategory
 import com.example.coinmvvm.constant.enums.SortModel
 import com.example.coinmvvm.constant.enums.SortType
-import com.example.coinmvvm.data.model.RequestTickerData
 import com.example.coinmvvm.data.model.Ticker
-import com.example.coinmvvm.data.model.TickerData
 import com.example.coinmvvm.data.repository.CoinRepository
 import com.example.coinmvvm.extension.asLiveData
 import com.example.coinmvvm.extension.asSingleLiveData
@@ -37,8 +35,6 @@ class HomeViewModel @Inject constructor(
     private val _socketError: MutableSingleLiveData<String> = MutableSingleLiveData()
     val socketError = _socketError.asSingleLiveData()
 
-    private var _isSocketClose = true
-
     val filterTickerSymbol = { text: String ->
         _filterTickerSymbol = text
         notifySortedTickerList()
@@ -52,63 +48,17 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _coinRepository.observeTickerSocket().collect {
                 when (it) {
-                    is Resource.Success -> onReceivedTicker(it.data)
-                    is Resource.Error -> {
-                        _isSocketClose = true
-                        onError(it.message ?: getString(R.string.error_getting_coin_list))
-                    }
-                    else -> {}
-                }
-            }
-        }
-    }
-
-    private suspend fun getKRWTickers(): Boolean {
-        return when (val tickerList = _coinRepository.getKRWTickers()) {
-            is Resource.Success -> {
-                _tmpTickerList.clear()
-                _tmpTickerList.addAll(tickerList.data)
-                notifySortedTickerList()
-                true
-            }
-            else -> false
-        }
-    }
-
-    fun observeTickerPrice() {
-        if (_isSocketClose) {
-            _isSocketClose = false
-            viewModelScope.launch {
-                if (!getKRWTickers()) {
-                    _isSocketClose = true
-                    onError(getString(R.string.error_getting_coin_list))
-                    return@launch
-                }
-
-                when (_coinRepository.initTickerSocket()) {
                     is Resource.Success -> {
-                        val requestTickerData = RequestTickerData(_tmpTickerList.map { it.getSymbolName() })
-                        _coinRepository.requestTickerPrice(requestTickerData)
+                        _tmpTickerList.clear()
+                        _tmpTickerList.addAll(it.data)
+                        notifySortedTickerList()
                     }
-                    is Resource.Error -> {
-                        _isSocketClose = true
+                    else -> {
                         onError(getString(R.string.error_getting_coin_list))
                     }
-                    else -> {}
                 }
             }
         }
-    }
-
-    fun stopTickerSocket() {
-        viewModelScope.launch {
-            _coinRepository.stopTickerSocket()
-        }
-    }
-
-    fun retryListenPrice() {
-        stopTickerSocket()
-        observeTickerPrice()
     }
 
     fun addFavoriteSymbol(symbol: String) {
@@ -193,25 +143,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun onReceivedTicker(tickerData: TickerData?) {
-        val tickerContent = tickerData?.ticker?.content
-        tickerContent?.let { content ->
-            _tmpTickerList.find {
-                it.getSymbolName() == content.symbol
-            }?.apply {
-                currentPrice = content.closePrice
-                prevPrice = content.prevClosePrice
-            }
-            notifySortedTickerList()
-        }
-    }
-
     private fun onError(message: String) {
         _socketError.setValue(message)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        stopTickerSocket()
     }
 }

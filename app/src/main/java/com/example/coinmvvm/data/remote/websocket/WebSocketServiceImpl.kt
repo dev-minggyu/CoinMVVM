@@ -7,80 +7,42 @@ import com.example.coinmvvm.util.Resource
 import com.google.gson.Gson
 import io.ktor.client.*
 import io.ktor.client.plugins.websocket.*
-import io.ktor.client.request.*
 import io.ktor.websocket.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.consumeEach
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class WebSocketServiceImpl @Inject constructor(
     private val _client: HttpClient
 ) : WebSocketService {
-    private var _webSocket: DefaultClientWebSocketSession? = null
-    private var _jobGlobalScope: Job? = null
+    private var _tickerSocket: DefaultClientWebSocketSession? = null
 
-    override suspend fun connectTickerSocket(): Resource<Unit> {
-        return try {
-            _webSocket = _client.webSocketSession { url(URL_TICKER) }
-            if (_webSocket?.isActive == true) {
-                Resource.Success(Unit)
-            } else {
-                Resource.Error(null)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(null)
-        }
-    }
-
-    override suspend fun requestTickerPrice(requestTickerData: RequestTickerData) {
+    override suspend fun listenTickerSocket(requestTickerData: RequestTickerData): Flow<Resource<TickerData>> = flow {
         try {
-            _webSocket?.run { sendSerialized(requestTickerData) }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    private val _observeTickerSocket = MutableSharedFlow<Resource<TickerData>>(
-        replay = 0,
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
-    override val observeTickerSocket = _observeTickerSocket.asSharedFlow()
-
-    @OptIn(DelicateCoroutinesApi::class)
-    override suspend fun listenTickerSocket() {
-        if (_jobGlobalScope == null) {
-            _jobGlobalScope = GlobalScope.launch(Dispatchers.IO) {
-                _webSocket?.run {
-                    val gson = Gson()
-                    try {
-                        incoming.consumeEach { frame ->
-                            if (frame is Frame.Text) {
-                                val tickerInfo = gson.fromJson(frame.readText(), TickerInfo::class.java)
-                                val tickerData = TickerData(tickerInfo)
-                                _observeTickerSocket.emit(Resource.Success(tickerData))
-                            }
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        _observeTickerSocket.emit(Resource.Error(e.message))
+            _client.wss(URL_TICKER) {
+                _tickerSocket = this
+                sendSerialized(requestTickerData)
+                val gson = Gson()
+                incoming.consumeEach { frame ->
+                    if (frame is Frame.Text) {
+                        val tickerInfo = gson.fromJson(frame.readText(), TickerInfo::class.java)
+                        val tickerData = TickerData(tickerInfo)
+                        emit(Resource.Success(tickerData))
                     }
                 }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(Resource.Error(e.message))
         }
     }
 
     override suspend fun stopTickerSocket() {
         try {
-            _webSocket?.run {
+            _tickerSocket?.run {
                 close()
                 incoming.cancel()
-                _jobGlobalScope?.cancel()
-                _jobGlobalScope = null
             }
         } catch (e: Exception) {
             e.printStackTrace()

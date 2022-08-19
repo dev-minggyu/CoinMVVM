@@ -27,12 +27,13 @@ fun Activity.showSnackBar(
     text: String,
     buttonName: String? = null,
     clickListener: View.OnClickListener? = null
-) {
+): Snackbar {
     val snackBar = Snackbar.make(window.decorView.rootView, text, Snackbar.LENGTH_LONG)
     clickListener?.let {
         snackBar.setAction(buttonName, clickListener)
     }
     snackBar.show()
+    return snackBar
 }
 
 fun Fragment.showSnackBar(

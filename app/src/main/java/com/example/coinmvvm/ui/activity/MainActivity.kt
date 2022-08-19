@@ -3,16 +3,25 @@ package com.example.coinmvvm.ui.activity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.example.coinmvvm.R
+import com.example.coinmvvm.constant.enums.NetworkState
 import com.example.coinmvvm.databinding.ActivityMainBinding
+import com.example.coinmvvm.extension.showSnackBar
 import com.example.coinmvvm.ui.base.BaseActivity
 import com.example.coinmvvm.ui.fragment.home.HomeFragment
 import com.example.coinmvvm.ui.fragment.setting.SettingFragment
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
+class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main), LifecycleEventObserver {
     private val _mainViewModel: MainViewModel by viewModels()
+
+    private var _networkSnackBar: Snackbar? = null
 
     companion object {
         private const val TAG_FRAGMENT_HOME = "TAG_FRAGMENT_HOME"
@@ -23,13 +32,36 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+
         dataBinding.vm = _mainViewModel
 
+        setupObserver()
+    }
+
+    private fun setupObserver() {
         _mainViewModel.currentMenuId.observe(this) {
             when (it) {
                 R.id.home_fragment -> showHomeFragment()
                 R.id.my_asset_fragment -> {}
                 R.id.setting_fragment -> showSettingFragment()
+            }
+        }
+
+        networkStateLiveData.observe(this) {
+            when (it!!) {
+                NetworkState.CONNECTED -> {
+                    _networkSnackBar?.dismiss()
+                    _mainViewModel.listenTickerPrice()
+                }
+                NetworkState.DISCONNECTED -> {
+                    _networkSnackBar = showSnackBar(
+                        getString(R.string.snackbar_check_internet_connection),
+                        getString(R.string.snackbar_retry)
+                    ) {
+                        networkStateLiveData.updateState()
+                    }
+                }
             }
         }
     }
@@ -71,5 +103,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(R.layout.activity_main) {
 
             transaction.commit()
         }
+    }
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        when (event) {
+            Lifecycle.Event.ON_RESUME -> _mainViewModel.listenTickerPrice()
+            Lifecycle.Event.ON_STOP -> _mainViewModel.stopTickerSocket()
+            else -> {}
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ProcessLifecycleOwner.get().lifecycle.removeObserver(this)
     }
 }

@@ -3,13 +3,8 @@ package com.example.coinmvvm.ui.fragment.home
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.viewpager2.widget.ViewPager2
 import com.example.coinmvvm.R
-import com.example.coinmvvm.constant.enums.NetworkState
 import com.example.coinmvvm.databinding.FragmentHomeBinding
 import com.example.coinmvvm.extension.showSnackBar
 import com.example.coinmvvm.ui.base.BaseFragment
@@ -21,13 +16,13 @@ import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), LifecycleEventObserver {
+class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val _homeViewModel: HomeViewModel by viewModels()
 
     private var _tickerAdapter: TickerAdapter? = null
     private var _favoriteAdapter: TickerAdapter? = null
 
-    private var _networkSnackBar: Snackbar? = null
+    private var _errorSnackBar: Snackbar? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,25 +40,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
     }
 
     private fun setupObserver() {
-        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
-
-        networkStateLiveData.observe(viewLifecycleOwner) {
-            when (it!!) {
-                NetworkState.CONNECTED -> {
-                    _networkSnackBar?.dismiss()
-                    _homeViewModel.observeTickerPrice()
-                }
-                NetworkState.DISCONNECTED -> {
-                    _networkSnackBar = showSnackBar(
-                        getString(R.string.snackbar_check_internet_connection),
-                        getString(R.string.snackbar_retry)
-                    ) {
-                        networkStateLiveData.updateState()
-                    }
-                }
-            }
-        }
-
         _homeViewModel.tickerList.observe(viewLifecycleOwner) {
             _tickerAdapter?.submitList(it)
             _favoriteAdapter?.submitList(
@@ -74,7 +50,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         }
 
         _homeViewModel.socketError.observe(viewLifecycleOwner) {
-            _networkSnackBar = showSnackBar(
+            _errorSnackBar = showSnackBar(
                 it,
                 getString(R.string.snackbar_retry)
             ) {
@@ -115,15 +91,5 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home), 
         super.onDestroyView()
         _tickerAdapter = null
         _favoriteAdapter = null
-        _networkSnackBar = null
-        ProcessLifecycleOwner.get().lifecycle.removeObserver(this)
-    }
-
-    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-        when (event) {
-            Lifecycle.Event.ON_RESUME -> _homeViewModel.observeTickerPrice()
-            Lifecycle.Event.ON_STOP -> _homeViewModel.stopTickerSocket()
-            else -> {}
-        }
     }
 }

@@ -27,7 +27,6 @@ class RetryDialog(private val reason: String) :
         dataBinding.btnCancel.setOnClickListener { dismiss() }
 
         dataBinding.btnRetry.setOnClickListener {
-            _sharedViewModel.retryListenPrice()
             dismiss()
         }
     }

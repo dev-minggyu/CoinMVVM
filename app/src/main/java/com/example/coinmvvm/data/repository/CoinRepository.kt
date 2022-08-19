@@ -8,11 +8,11 @@ import com.example.coinmvvm.util.Resource
 import kotlinx.coroutines.flow.SharedFlow
 
 interface CoinRepository {
-    suspend fun initTickerSocket(): Resource<Unit>
+    val observeTickerSocket: SharedFlow<Resource<List<Ticker>>>
 
-    suspend fun requestTickerPrice(requestTickerData: RequestTickerData)
+    suspend fun listenTickerSocket()
 
-    suspend fun observeTickerSocket(): SharedFlow<Resource<TickerData>>
+    suspend fun observeTickerSocket(): SharedFlow<Resource<List<Ticker>>>
 
     suspend fun stopTickerSocket()
 
