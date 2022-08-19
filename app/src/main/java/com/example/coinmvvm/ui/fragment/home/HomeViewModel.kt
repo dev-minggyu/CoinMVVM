@@ -95,15 +95,12 @@ class HomeViewModel @Inject constructor(
 
     private fun notifySortedTickerList() {
         sortTicker()
-        val filteredList = filteredTickerList()
-        if (filteredList.isNotEmpty()) {
-            _tickerList.value = null
-            _tickerList.value = filteredList
-        }
+        _tickerList.value = filteredTickerList()
     }
 
     private fun sortTicker(sortModel: SortModel) {
         _sortModel.value = sortModel
+        _tickerList.value = null
         notifySortedTickerList()
     }
 
