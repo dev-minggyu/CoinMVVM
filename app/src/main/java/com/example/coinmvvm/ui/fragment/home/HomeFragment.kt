@@ -32,11 +32,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         setupViewPager()
 
         setupObserver()
-
-        setupListFilter()
-    }
-
-    private fun setupListFilter() {
     }
 
     private fun setupObserver() {
