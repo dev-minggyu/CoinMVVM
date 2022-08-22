@@ -8,11 +8,11 @@ enum class SortType {
     ASC
 }
 
-enum class SortCategory(val id: Int) {
-    NAME(0),
-    PRICE(1),
-    RATE(2),
-    VOLUME(3)
+enum class SortCategory {
+    NAME,
+    PRICE,
+    RATE,
+    VOLUME
 }
 
 data class SortModel(
