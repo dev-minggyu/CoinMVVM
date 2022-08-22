@@ -108,31 +108,24 @@ class HomeViewModel @Inject constructor(
         val (sortCategory, sortType) = sortModel.value!!
 
         _tmpTickerList.apply {
-            if (sortType == SortType.NO) return sortBy { it.index }
+            when (sortType) {
+                SortType.NO ->
+                    sortBy { it.index }
 
-            when (sortCategory) {
-                SortCategory.NAME ->
-                    when {
-                        sortType == SortType.DESC -> sortByDescending { it.symbol }
-                        sortType == SortType.ASC -> sortBy { it.symbol }
+                SortType.DESC ->
+                    when (sortCategory) {
+                        SortCategory.NAME -> sortByDescending { it.symbol }
+                        SortCategory.PRICE -> sortByDescending { it.currentPrice.toFloat() }
+                        SortCategory.RATE -> sortByDescending { it.getRateOfChange() }
+                        SortCategory.VOLUME -> sortByDescending { it.transactionAmount.toFloat() }
                     }
 
-                SortCategory.PRICE ->
-                    when {
-                        sortType == SortType.DESC -> sortByDescending { it.currentPrice.toFloat() }
-                        sortType == SortType.ASC -> sortBy { it.currentPrice.toFloat() }
-                    }
-
-                SortCategory.RATE ->
-                    when {
-                        sortType == SortType.DESC -> sortByDescending { it.getRateOfChange() }
-                        sortType == SortType.ASC -> sortBy { it.getRateOfChange() }
-                    }
-
-                SortCategory.VOLUME ->
-                    when {
-                        sortType == SortType.DESC -> sortByDescending { it.transactionAmount.toFloat() }
-                        sortType == SortType.ASC -> sortBy { it.transactionAmount.toFloat() }
+                SortType.ASC ->
+                    when (sortCategory) {
+                        SortCategory.NAME -> sortBy { it.symbol }
+                        SortCategory.PRICE -> sortBy { it.currentPrice.toFloat() }
+                        SortCategory.RATE -> sortBy { it.getRateOfChange() }
+                        SortCategory.VOLUME -> sortBy { it.transactionAmount.toFloat() }
                     }
             }
         }
