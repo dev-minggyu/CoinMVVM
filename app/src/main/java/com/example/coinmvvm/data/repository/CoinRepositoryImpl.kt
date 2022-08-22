@@ -35,7 +35,7 @@ class CoinRepositoryImpl @Inject constructor(
         if (_isRunningTickerSocket) return
         _isRunningTickerSocket = true
 
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.Default) {
             when (val tickerList = getKRWTickers()) {
                 is Resource.Success -> {
                     val requestTickerData = RequestTickerData(tickerList.data.map { it.getSymbolName() })
