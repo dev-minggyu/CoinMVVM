@@ -8,11 +8,11 @@ enum class SortType {
     ASC
 }
 
-enum class SortCategory(val id: Int) {
-    NAME(0),
-    PRICE(1),
-    RATE(2),
-    VOLUME(3)
+enum class SortCategory {
+    NAME,
+    PRICE,
+    RATE,
+    VOLUME
 }
 
 data class SortModel(
@@ -20,14 +20,14 @@ data class SortModel(
     val type: SortType
 ) {
     fun getArrowRes(category: SortCategory): Int {
-        return if (this.category == category) {
-            when (type) {
-                SortType.NO -> R.drawable.ic_arrow_normal
-                SortType.DESC -> R.drawable.ic_arrow_down
-                SortType.ASC -> R.drawable.ic_arrow_up
-            }
-        } else {
-            R.drawable.ic_arrow_normal
+        return when (this.category) {
+            category ->
+                when (type) {
+                    SortType.NO -> R.drawable.ic_arrow_normal
+                    SortType.DESC -> R.drawable.ic_arrow_down
+                    SortType.ASC -> R.drawable.ic_arrow_up
+                }
+            else -> R.drawable.ic_arrow_normal
         }
     }
 }

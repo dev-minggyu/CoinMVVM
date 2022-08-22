@@ -56,13 +56,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     private fun setTickerList(list: List<Ticker>?) {
         _tickerAdapter?.submitList(list)
-        _favoriteAdapter?.submitList(
-            list?.filter { ticker ->
-                ticker.isFavorite
-            } ?: run {
-                null
-            }
-        )
+        _favoriteAdapter?.submitList(list?.filter { it.isFavorite } ?: null)
     }
 
     private fun setupViewPager() {
