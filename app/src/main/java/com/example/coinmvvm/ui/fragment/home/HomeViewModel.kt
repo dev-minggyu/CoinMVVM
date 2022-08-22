@@ -105,39 +105,35 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun sortTicker() {
-        sortModel.value!!.apply {
-            when (category) {
-                SortCategory.NAME -> {
-                    when (type) {
-                        SortType.NO -> _tmpTickerList.sortBy { it.index }
-                        SortType.DESC -> _tmpTickerList.sortByDescending { it.symbol }
-                        SortType.ASC -> _tmpTickerList.sortBy { it.symbol }
-                    }
-                }
+        val (sortCategory, sortType) = sortModel.value!!
 
-                SortCategory.PRICE -> {
-                    when (type) {
-                        SortType.NO -> _tmpTickerList.sortBy { it.index }
-                        SortType.DESC -> _tmpTickerList.sortByDescending { it.currentPrice.toFloat() }
-                        SortType.ASC -> _tmpTickerList.sortBy { it.currentPrice.toFloat() }
-                    }
-                }
+        _tmpTickerList.apply {
+            if (sortType == SortType.NO) return sortBy { it.index }
 
-                SortCategory.RATE -> {
-                    when (type) {
-                        SortType.NO -> _tmpTickerList.sortBy { it.index }
-                        SortType.DESC -> _tmpTickerList.sortByDescending { it.getRateOfChange() }
-                        SortType.ASC -> _tmpTickerList.sortBy { it.getRateOfChange() }
+            when (sortCategory) {
+                SortCategory.NAME ->
+                    when {
+                        sortType == SortType.DESC -> sortByDescending { it.symbol }
+                        sortType == SortType.ASC -> sortBy { it.symbol }
                     }
-                }
 
-                SortCategory.VOLUME -> {
-                    when (type) {
-                        SortType.NO -> _tmpTickerList.sortBy { it.index }
-                        SortType.DESC -> _tmpTickerList.sortByDescending { it.transactionAmount.toFloat() }
-                        SortType.ASC -> _tmpTickerList.sortBy { it.transactionAmount.toFloat() }
+                SortCategory.PRICE ->
+                    when {
+                        sortType == SortType.DESC -> sortByDescending { it.currentPrice.toFloat() }
+                        sortType == SortType.ASC -> sortBy { it.currentPrice.toFloat() }
                     }
-                }
+
+                SortCategory.RATE ->
+                    when {
+                        sortType == SortType.DESC -> sortByDescending { it.getRateOfChange() }
+                        sortType == SortType.ASC -> sortBy { it.getRateOfChange() }
+                    }
+
+                SortCategory.VOLUME ->
+                    when {
+                        sortType == SortType.DESC -> sortByDescending { it.transactionAmount.toFloat() }
+                        sortType == SortType.ASC -> sortBy { it.transactionAmount.toFloat() }
+                    }
             }
         }
     }
