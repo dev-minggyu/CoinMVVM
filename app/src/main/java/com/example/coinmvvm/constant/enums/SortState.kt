@@ -20,14 +20,15 @@ data class SortModel(
     val type: SortType
 ) {
     fun getArrowRes(category: SortCategory): Int {
-        return if (this.category == category) {
-            when (type) {
-                SortType.NO -> R.drawable.ic_arrow_normal
-                SortType.DESC -> R.drawable.ic_arrow_down
-                SortType.ASC -> R.drawable.ic_arrow_up
-            }
-        } else {
-            R.drawable.ic_arrow_normal
+        return when {
+            this.category == category ->
+                when (type) {
+                    SortType.NO -> R.drawable.ic_arrow_normal
+                    SortType.DESC -> R.drawable.ic_arrow_down
+                    SortType.ASC -> R.drawable.ic_arrow_up
+                }
+            else ->
+                R.drawable.ic_arrow_normal
         }
     }
 }
